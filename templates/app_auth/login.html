@@ -14,7 +14,7 @@ TECS: Test Essay Checking Software | Login
 	<form class="form-signin well" method="post">
 		{% csrf_token %}		
 		<h2 class="form-signin-heading">Sign in</h2>
-		{% if form.errors %}		
+		{% if errors %}		
 			<p class="text-danger">Your username and password didn't match. Please try again.</p>
 		{% endif %}
 		<!--input type="text" class="form-control" placeholder="Username" autofocus-->
