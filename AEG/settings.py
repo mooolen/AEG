@@ -82,7 +82,7 @@ STATICFILES_DIRS = (
 	# Put strings here, like "/home/html/static" or "C:/www/django/static".
 	# Always use forward slashes, even on Windows.
 	# Don't forget to use absolute paths, not relative paths.
-	'C:/Documents and Settings/ADMIN-PC/Desktop/yii-1.1.13.e9e4a0/AEG/static',
+	'./static',
 )
 
 # List of finder classes that know how to find static files in
@@ -122,7 +122,7 @@ TEMPLATE_DIRS = (
 	# Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
 	# Always use forward slashes, even on Windows.
 	# Don't forget to use absolute paths, not relative paths.
-	'C:/Documents and Settings/ADMIN-PC/Desktop/yii-1.1.13.e9e4a0/AEG/templates',
+	'./templates',
 )
 
 INSTALLED_APPS = (

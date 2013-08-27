@@ -3,4 +3,9 @@ AEG
 
 Automated Essay Grader
 
-change static directory and templates directory to work.
+Built-in top of:
+	Django
+	Haystack: pip install django-haystack
+	Boostrap
+	Flat-UI
+	Javascripts
