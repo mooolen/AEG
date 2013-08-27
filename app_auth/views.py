@@ -2,6 +2,7 @@ import urllib.parse
 
 from django.shortcuts import render_to_response
 from django.conf import settings
+from django.http import HttpResponse
 from django.template import RequestContext
 from django.contrib.auth import (
     REDIRECT_FIELD_NAME, login, logout, authenticate
@@ -30,7 +31,10 @@ class LoginView(FormView):
         if user is not None:
             if user.is_active:
                 login(self.request, user)
-                return HttpResponseRedirect(self.get_success_url())
+                if user.is_staff:
+                    return HttpResponseRedirect(self.get_success_url(1))
+                else:
+                    return HttpResponseRedirect(self.get_success_url(0))
         else:        
             return self.form_invalid(form, request)
     
@@ -39,8 +43,8 @@ class LoginView(FormView):
             'errors': 1, 'form' : form, 
         },  RequestContext(request))
     
-    def get_success_url(self):
-        if self.success_url:
+    def get_success_url(self, num):
+        if self.success_url and num:
             redirect_to = self.success_url
         else:
             redirect_to = self.request.REQUEST.get(self.redirect_field_name, '')
@@ -62,4 +66,4 @@ class LoginView(FormView):
         else:                
             return self.form_invalid(form, request)
 def user_logout(request):
-	return logout_then_login(request,login_url='/')
+    return logout_then_login(request,login_url='/')
