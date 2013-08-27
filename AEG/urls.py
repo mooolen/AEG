@@ -8,5 +8,6 @@ urlpatterns = patterns('',
 	url(r'^admin/', include(admin.site.urls)),
 	url(r'^', include('app_auth.urls', namespace='auth')),
 	url(r'^', include('app_classes.urls')),
+	url(r'^search/', include('haystack.urls'), name='haystack_search')
 )
 
