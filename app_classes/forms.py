@@ -1,19 +1,13 @@
 from django import forms
-from django.contrib.auth.models import User
-from django.utils.safestring import mark_safe
+from app_classes.models import Section
+from app_auth.models import School
+from django.utils.html import strip_tags
 
 class addClassForm(forms.Form):
-	level = forms.CharField( label='Level', widget=forms.TextInput(attrs={'type':'text', 'class': 'span4', 'placeholder': 'Year Level',}))
-	className = forms.CharField( label='Class Name', widget=forms.TextInput(attrs={'type':'text', 'class': 'span4', 'placeholder': 'Class Name',}))
-	emails = forms.CharField( label='Emails', widget=forms.Textarea(attrs={'type':'text', 'class': 'input-xlarge span4', 'placeholder': mark_safe('Each emails are separeted by comma. \n Example: '),}))
-
-	def is_valid(self):
-		form = super(addClassForm, self).is_valid()
-		for f, error in self.errors.iteritems():
-			if f != '__all_':
-				self.fields[f].widget.attrs.update({'class': 'error', 'value': strip_tags(error)})
-		return form
+	school = forms.ModelChoiceField(label='school', queryset=School.objects.all(), widget=forms.Select(attrs={'class':'btn-group select select-block span4', }))
+	year_level = forms.CharField(label='Level', widget=forms.TextInput(attrs={'type':'number', 'class': 'span4', 'placeholder': 'Year Level', 'min': 1, }))
+	section_name = forms.CharField(label='Section Name', widget=forms.TextInput(attrs={'type':'text', 'class': 'span4', 'placeholder': 'Class Name',}))
+	emails = forms.CharField(label='Emails', widget=forms.Textarea(attrs={'type':'text', 'class': 'input-xlarge span4', 'placeholder': 'Each emails are separeted by comma. Example: cheryleighverano@gmail.com, emsia@upd.edu.ph, molen.fenando@gmail.com',}))
 
 	class Meta:
-		fields = ['level', 'className', 'emails']
-		model = User
+		model = Section
