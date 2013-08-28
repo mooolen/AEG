@@ -23,6 +23,14 @@ DATABASES = {
 	}
 }
 
+import os
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+        'PATH': os.path.join(os.path.dirname(__file__), 'whoosh_index'),
+    },
+}
+
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = []
@@ -74,8 +82,12 @@ STATICFILES_DIRS = (
 	# Put strings here, like "/home/html/static" or "C:/www/django/static".
 	# Always use forward slashes, even on Windows.
 	# Don't forget to use absolute paths, not relative paths.
+<<<<<<< HEAD
 	#'C:/Documents and Settings/Admin/Desktop/AEG/static',
 	'/home/molen/Desktop/AEG/static',
+=======
+	'./static',
+>>>>>>> f93d7213a3fe3570e6c2d4f2cb223a106252f3d9
 )
 
 # List of finder classes that know how to find static files in
@@ -115,8 +127,12 @@ TEMPLATE_DIRS = (
 	# Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
 	# Always use forward slashes, even on Windows.
 	# Don't forget to use absolute paths, not relative paths.
+<<<<<<< HEAD
 	#'C:/Documents and Settings/Admin/Desktop/AEG/templates',
 	'/home/molen/Desktop/AEG/templates',
+=======
+	'./templates',
+>>>>>>> f93d7213a3fe3570e6c2d4f2cb223a106252f3d9
 )
 
 INSTALLED_APPS = (
@@ -131,6 +147,7 @@ INSTALLED_APPS = (
 	# 'django.contrib.admindocs',
 	'app_auth',
 	'app_classes',
+	'haystack',
 )
 
 # A sample logging configuration. The only tangible logging

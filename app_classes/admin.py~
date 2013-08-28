@@ -1,6 +1,0 @@
-from django.contrib import admin
-from app_classes.models import School, UserProfile, Teacher, Student, Section, Subject
-
-admin.site.register(Section)
-admin.site.register(Subject)
-admin.site.register(ClassList)
