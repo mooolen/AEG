@@ -2,6 +2,7 @@ from django.conf.urls import patterns, url
 from app_classes import views
 
 urlpatterns = patterns('',
-	#url(r'^$', 'django.contrib.auth.views.login', {'template_name': 'classes/login.html'}),
-	url(r'^dashboard/$', views.dashboard),	
+	url(r'^dashboard/$', views.dashboard),
+	url(r'^class/$'),
+	url(r'^class/add$', views.add_class),
 )
