@@ -151,9 +151,6 @@ you can use the generic selector below, but it's slower:
 .fui-check-inverted-2:before {
   content: "\e000";
 }
-.fui-repeat:before {
-  content: "\e05g";
-}
 /* 62px */
 /* 52px */
 /* 40px */
@@ -499,8 +496,6 @@ h6 {
   -o-transition: 0.25s;
   transition: 0.25s;
   -webkit-backface-visibility: hidden;
-  
-  background-color: #1abc9c;
 }
 .btn:hover,
 .btn:focus,
