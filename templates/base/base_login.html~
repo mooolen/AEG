@@ -7,29 +7,34 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	
 		<link href="{% static 'base/css/bootstrap.css' %}" rel="stylesheet" media="screen">
+		<link href="{% static 'base/css/bootstrap.css' %}" rel="stylesheet" media="screen">
 		<link href="{% static 'base/css/bootstrap-responsive.css' %}" rel="stylesheet" media="screen">
 		<link href="{% static 'base/css/flat-ui.css' %}" rel="stylesheet" media="screen">
 		<link href="{% static 'base/css/style.css' %}" rel="stylesheet" media="screen">
-
 		{% block custom_style %}{% endblock %}
 
 		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 		<!--[if lt IE 9]>
-			<script src="../../assets/js/html5shiv.js"></script>
-			<script src="../../assets/js/respond.min.js"></script>
+			<script src="../../assets/js/html5shiv.js' %}"></script>
+			<script src="../../assets/js/respond.min.js' %}"></script>
 		<![endif]-->
 	</head>
 
 	<body>
-		{% include "base/header.html" %}
-		<div class="row-fluid">
-			<div class="span3">
-				{% include "base/sidebar.html" %}
-			</div>
-		</div>
-		{% block content %}{% endblock content %}
+		{% if user.is_authenticated %}
+			{% block content %}{% endblock content %}
+		{% else %}
+			{% block login %}{% endblock login %}
+		{% endif %}
 	</body>
 
+	<script src="{% static 'base/js/jquery.js' %}"></script>
+	<script src="{% static 'base/js/bootstrap.js' %}"></script>
+	<script src="{% static 'base/js/flatui-checkbox.js' %}"></script>
+	
 	<script src="{% static 'base/js/jquery-1.8.3.min.js' %}"></script>
-	<script src="{% static 'base/js/bootstrap.min.js' %}"></script>
+
+
+    <script src="{% static 'base/js/flatui-checkbox.js' %}"></script>
+
 </html>
