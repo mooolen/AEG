@@ -1,0 +1,59 @@
+{% load staticfiles %}
+
+{% include "app_classes/dashboard.html" %}
+{% include "app_classes/teacher_sidebar.html" %}
+
+</style>
+<div class="page-content">
+	<div id="myModal" data-backdrop="static" data-keyboard="false" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-header">
+	    <h3 id="myModalLabel">Send Invitation</h3>
+	  </div>
+	  <div class="modal-body">
+	  		{% csrf_token %}
+       		{{form.as_p}}
+	  </div>
+	  <div class="modal-footer">
+	    <button class="btn btn-success" onClick="redirect()" >Send Invitation <i class="fui-check"></i></button>
+	    <button type="button" class="btn btn-warning" data-dismiss="modal" aria-hidden="true">Edit <i class="fui-new"></i></button>
+	    <button class="btn btn-danger" onClick="redirect()" >Cancel <i class="fui-cross"></i></button>
+	  </div>
+	</div>
+
+	<div class="span8">
+		<div class="row-fluid">
+			<div class="span12 content">
+				<img class="title-icons" src="{% static 'base/img/icons/plus.png' %}">
+				<h3 class="title">Add New Class</h3>
+				<div class="row-fluid">
+					<form class="form-horizontal" action="." method="post">{% csrf_token %}
+						{{ addClassForm.management_form }}
+						<fieldset>	
+							{% for form in addClassForm %}
+								<div class="control-group">
+									<label class="control-label" for="level">{{ form.label_tag }}</label>
+									<div class="controls">
+										<div class="span7">
+											{{ form }}
+										</div>
+									</div>		
+								</div> 	
+							{% endfor %}	
+								<div class="form-actions">	
+									<a href="#myModal" role="button" data-toggle="modal" class="btn btn-primary"><b>Save</b><i class="fui-check"></i></a> 
+									<button type="reset" class="btn btn-warning"><b>Reset</b><i class="fui-play"></i></button> 
+									<a href="teacher_class.php" type="button" class="btn btn-danger"><b>Cancel</b>	<i class="fui-cross"></i></a>	
+								</div>		 
+						</fieldset>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	function redirect () {
+		window.location = "teacher_class.php";
+	}
+</script>
