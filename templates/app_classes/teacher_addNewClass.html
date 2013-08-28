@@ -11,7 +11,7 @@
 	  </div>
 	  <div class="modal-body">
 	  		{% csrf_token %}
-       		{{form.as_p}}
+       		{{addClassForm.as_p}}
 	  </div>
 	  <div class="modal-footer">
 	    <button class="btn btn-success" onClick="redirect()" >Send Invitation <i class="fui-check"></i></button>
@@ -26,10 +26,11 @@
 				<img class="title-icons" src="{% static 'base/img/icons/plus.png' %}">
 				<h3 class="title">Add New Class</h3>
 				<div class="row-fluid">
-					<form class="form-horizontal" action="." method="post">{% csrf_token %}
+					<form class="form-horizontal" action="/submit/" method="post">{% csrf_token %}
 						{{ addClassForm.management_form }}
 						<fieldset>	
 							{% for form in addClassForm %}
+								{{ form.fieldname.errors|striptags }}
 								<div class="control-group">
 									<label class="control-label" for="level">{{ form.label_tag }}</label>
 									<div class="controls">
@@ -39,8 +40,9 @@
 									</div>		
 								</div> 	
 							{% endfor %}	
-								<div class="form-actions">	
-									<a href="#myModal" role="button" data-toggle="modal" class="btn btn-primary"><b>Save</b><i class="fui-check"></i></a> 
+								<div class="form-actions">
+									<input type="hidden" value="{{ next_url }}" name="next_url" />
+									<button type="submit" class="btn btn-primary"><b>Save</b><i class="fui-check"></i></button> 
 									<button type="reset" class="btn btn-warning"><b>Reset</b><i class="fui-play"></i></button> 
 									<a href="teacher_class.php" type="button" class="btn btn-danger"><b>Cancel</b>	<i class="fui-cross"></i></a>	
 								</div>		 

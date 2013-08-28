@@ -5,7 +5,9 @@ from django.contrib.auth.models import User
 class UserProfile(models.Model):
 	user = models.OneToOneField(User)
 	#avatar = models.ImageField(upload_to='static/app_auth/images/avatars/')
-	home_address = models.TextField()
+	street = models.TextField()
+	province = models.TextField()
+	municipality = models.TextField()
 	phone_number = models.TextField(max_length=7)
 	
 

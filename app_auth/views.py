@@ -1,4 +1,7 @@
-import urllib.parse
+try:
+    from urllib.parse import urlparse
+except ImportError:
+    from urlparse import urlparse
 
 from django.shortcuts import render_to_response
 from django.conf import settings
@@ -49,16 +52,14 @@ class LoginView(FormView):
         else:
             redirect_to = self.request.REQUEST.get(self.redirect_field_name, '')
 
-        #netloc = parse(redirect_to)[1]
-        #if not redirect_to:
-        #    redirect_to = settings.LOGIN_REDIRECT_URL
-        #elif netloc and netloc != self.request.get_host():
-        #    redirect_to = settings.LOGIN_REDIRECT_URL
+        netloc = urlparse(redirect_to)[1]
+        if not redirect_to:
+            redirect_to = settings.LOGIN_REDIRECT_URL
+        elif netloc and netloc != self.request.get_host():
+            redirect_to = settings.LOGIN_REDIRECT_URL
         return redirect_to
       
     def post(self, request, *args, **kwargs):
-        if request.user.is_authenticated():
-            return HttpResponseRedirect(self.get_success_url(1))
         c = {}
         c.update(csrf(request))
         form_class = self.get_form_class()
