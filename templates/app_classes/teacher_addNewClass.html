@@ -26,43 +26,24 @@
 				<img class="title-icons" src="{% static 'base/img/icons/plus.png' %}">
 				<h3 class="title">Add New Class</h3>
 				<div class="row-fluid">
-					<form class="form-horizontal">	
+					<form class="form-horizontal" action="." method="post">{% csrf_token %}
+						{{ addClassForm.management_form }}
 						<fieldset>	
+							{% for form in addClassForm %}
 								<div class="control-group">
-									<label class="control-label" for="level">Year Level</label>
+									<label class="control-label" for="level">{{ form.label_tag }}</label>
 									<div class="controls">
 										<div class="span7">
-											<input type="text" placeholder="Required" class="span4" name="level" id="level" required  />
+											{{ form }}
 										</div>
-									</div>	
-								</div> 					
-								<div class="control-group">
-									<label class="control-label" for="className">Section</label>
-									<div class="controls">
-										<div class="span7">
-											<input type="text" placeholder="Required" class="span4" name="className" id="className" required />
-										</div>
-									</div>
-								</div> 
-								<div class="control-group">  
-									<label class="control-label" for="classKey">Student Email Address</label>  
-									<div class="controls">
-										<div>
-											<p><em>Please enter one person per line. For example:</em></p>
-											<div style="padding-left: 25px">
-												<i>cheryleighverano@gmail.com<br/>master@yahoo.com</i>
-											</div>
-										</div><br/>
-										<div class="span7">
-											<textarea class="input-xlarge span4" id="q1" rows="2" placeholder="Emails"></textarea>
-										</div>
-									</div>
-							  	</div>		
+									</div>		
+								</div> 	
+							{% endfor %}	
 								<div class="form-actions">	
 									<a href="#myModal" role="button" data-toggle="modal" class="btn btn-primary"><b>Save</b><i class="fui-check"></i></a> 
 									<button type="reset" class="btn btn-warning"><b>Reset</b><i class="fui-play"></i></button> 
 									<a href="teacher_class.php" type="button" class="btn btn-danger"><b>Cancel</b>	<i class="fui-cross"></i></a>	
-								</div>	 
+								</div>		 
 						</fieldset>
 					</form>
 				</div>

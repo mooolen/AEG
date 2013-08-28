@@ -57,6 +57,8 @@ class LoginView(FormView):
         return redirect_to
       
     def post(self, request, *args, **kwargs):
+        if request.user.is_authenticated():
+            return HttpResponseRedirect(self.get_success_url(1))
         c = {}
         c.update(csrf(request))
         form_class = self.get_form_class()
