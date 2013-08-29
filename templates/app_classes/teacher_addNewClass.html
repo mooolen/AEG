@@ -26,14 +26,14 @@ TECS: Test Essay Checking Software | Teacher Add Classes
 			<img class="title-icons" src="{% static 'base/img/icons/plus.png' %}">
 			<h3 class="title">Add New Class</h3>
 				<form class="form-horizontal" action="/classes/submit/" method="post">{% csrf_token %}
-					{{ addClassForm.management_form }}
 						{% for form in addClassForm %}
-							{{ form.errors|striptags }}
 							<div class="control-group">
 								<label class="control-label" for="level">{{ form.label_tag }}</label>
 								<div class="controls">
-									<div class="span7">
-										{{ form }}
+										<div class="span7">
+											<div {% if form.errors %}class="control-group error"{% endif %} >
+											{{ form }}
+										</div>
 									</div>
 								</div>		
 							</div> 	
