@@ -22,6 +22,7 @@ TECS: Test Essay Checking Software | Teacher Classes
 					<thead>
 						<tr>
 							<th><center>#</center></th>
+							<th><center>School Name</center></th>
 							<th><center>Class Name</center></th>
 							<th><center>Students</center></th>
 							<th><center>Edit</center></th>
@@ -29,62 +30,16 @@ TECS: Test Essay Checking Software | Teacher Classes
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td><center>1</center></td>
-							<td><center>I-Amethyst</center></td>
-							<td><center>35</center></td>
-							<td><center><a href="teacher_editClass.php" class="btn btn-primary"><span class=""><i class="fui-new"></i></span></a></center></td>
-							<td><center><button onclick="return confirm('Are you sure you want to delete this class?')" class="btn btn-danger"><span class=""><i class="fui-cross"></i></span></button></center></td>
-						</tr>
-						<tr>
-							<td><center>1</center></td>
-							<td><center>I-Opal</center></td>
-							<td><center>35</center></td>
-							<td><center><a href="teacher_editClass.php" class="btn btn-primary"><span class=""><i class="fui-new"></i></span></a></center></td>
-							<td><center><button onclick="return confirm('Are you sure you want to delete this class?')" class="btn btn-danger"><span class=""><i class="fui-cross"></i></span></button></center></td>
-						</tr>
-						<tr>
-							<td><center>2</center></td>
-							<td><center>II-Constantine</center></td>
-							<td><center>33</center></td>
-							<td><center><a href="teacher_editClass.php" class="btn btn-primary"><span class=""><i class="fui-new"></i></span></a></center></td>
-							<td><center><button onclick="return confirm('Are you sure you want to delete this class?')" class="btn btn-danger"><span class=""><i class="fui-cross"></i></span></button></center></td>
-						</tr>
-						<tr>
-							<td><center>3</center></td>
-							<td><center>II-Zeus</center></td>
-							<td><center>42</center></td>
-							<td><center><a href="teacher_editClass.php" class="btn btn-primary"><span class=""><i class="fui-new"></i></span></a></center></td>
-							<td><center><button onclick="return confirm('Are you sure you want to delete this class?')" class="btn btn-danger"><span class=""><i class="fui-cross"></i></span></button></center></td>
-						</tr>
-						<tr>
-							<td><center>4</center></td>
-							<td><center>III-Wisdom</center></td>
-							<td><center>44</center></td>
-							<td><center><a href="teacher_editClass.php" class="btn btn-primary"><span class=""><i class="fui-new"></i></span></a></center></td>
-							<td><center><button onclick="return confirm('Are you sure you want to delete this class?')" class="btn btn-danger"><span class=""><i class="fui-cross"></i></span></button></center></td>
-						</tr>
-						<tr>
-							<td><center>3</center></td>
-							<td><center>III-Hope</center></td>
-							<td><center>39</center></td>
-							<td><center><a href="teacher_editClass.php" class="btn btn-primary"><span class=""><i class="fui-new"></i></span></a></center></td>
-							<td><center><button onclick="return confirm('Are you sure you want to delete this class?')" class="btn btn-danger"><span class=""><i class="fui-cross"></i></span></button></center></td>
-						</tr>
-						<tr>
-							<td><center>3</center></td>
-							<td><center>III-Love</center></td>
-							<td><center>48</center></td>
-							<td><center><a href="teacher_editClass.php" class="btn btn-primary"><span class=""><i class="fui-new"></i></span></a></center></td>
-							<td><center><button onclick="return confirm('Are you sure you want to delete this class?')" class="btn btn-danger"><span class=""><i class="fui-cross"></i></span></button></center></td>
-						</tr>
-						<tr>
-							<td><center>3</center></td>
-							<td><center>IV-St. Mary</center></td>
-							<td><center>40</center></td>
-							<td><center><a href="teacher_editClass.php" class="btn btn-primary"><span class=""><i class="fui-new"></i></span></a></center></td>
-							<td><center><button onclick="return confirm('Are you sure you want to delete this class?')" class="btn btn-danger"><span class=""><i class="fui-cross"></i></span></button></center></td>
-						</tr>
+						{% for section in sections %}
+							<tr>
+								<td><center>{{section.id}}</center></td>
+								<td><center>{{section.school.short_name}}</center></td>
+								<td><center>{{section.year_level}}-{{section.section_name}}</center></td>
+								<td><center>{{section.number_of_entries}}</center></td>
+								<td><center><a href="teacher_editClass.php" class="btn btn-primary"><span class=""><i class="fui-new"></i></span></a></center></td>
+								<td><center><button onclick="return confirm('Are you sure you want to delete this class?')" class="btn btn-danger"><span class=""><i class="fui-cross"></i></span></button></center></td>
+							</tr>
+						{% endfor %}
 					</tbody>
 				</table>
 			</div>
