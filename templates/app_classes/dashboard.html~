@@ -1,0 +1,10 @@
+{% extends "base/base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+TECS: Test Essay Checking Software | Home
+{% endblock %}
+
+{% block content %}
+Hello
+{% endblock %}

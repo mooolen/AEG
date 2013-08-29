@@ -1,0 +1,33 @@
+{% extends "base/base_login.html" %}
+{% load staticfiles %}
+
+{% block title %}
+TECS: Test Essay Checking Software | Login
+{% endblock %}
+
+{% block custom_style %}
+<link href="{% static 'app_auth/css/signin.css' %}" rel="stylesheet" media="screen">
+{% endblock %}
+
+{% block login %}
+<div class="container">
+	<form class="form-signin well" method="post">
+		{% csrf_token %}		
+		<h2 class="form-signin-heading">Sign in</h2>
+		{% if errors %}		
+			<p class="text-danger">Your username and password didn't match. Please try again.</p>
+		{% endif %}
+		{{ form.username }}
+		{{ form.password }}
+		<label class="checkbox">
+			<input type="checkbox" value="remember-me"> Remember me
+		</label>
+		
+		<label class="checkbox" for="checkbox1">
+			<input type="checkbox" value="" id="checkbox1" data-toggle="checkbox">
+			Unchecked
+		</label>
+		<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+  	</form>
+</div>
+{% endblock %}
