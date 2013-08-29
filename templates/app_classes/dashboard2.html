@@ -1,7 +1,12 @@
+{% extends "base/base.html" %}
+
 {% load staticfiles %}
 
-{% include "app_classes/dashboard.html" %}
-{% include "app_classes/teacher_sidebar.html" %}
+{% block title %}
+TECS: Test Essay Checking Software | Home
+{% endblock %}
+
+{% block content %}
 	<div class="page-content">
 		<div class="span8">
 			<div class="row-fluid">
@@ -133,3 +138,5 @@
 		</div><!--/span-->
 	</div><!--/row-->
 </div>
+
+{% endblock content %}

@@ -1,7 +1,11 @@
+{% extends "base/base.html" %}
 {% load staticfiles %}
 
-{% include "app_classes/dashboard.html" %}
-{% include "app_classes/teacher_sidebar.html" %}
+{% block title %}
+TECS: Test Essay Checking Software | Teacher Classes
+{% endblock %}
+
+{% block content %}
 	<div class="page-content">
 	<div class="span8">
 		<div class="row-fluid">
@@ -12,7 +16,7 @@
 						<h3 class="title">My Classes</h3>
 					</div>
 					<div class="span1">
-						<a href="/teacher_addNewClass/" data-toggle="tooltip" data-trigger="hover" data-placement="left" title data-original-title="Add New Class" class="btn btn-warning"><i class="fui-plus"></i></a>
+						<a href="add/" data-toggle="tooltip" data-trigger="hover" data-placement="left" title data-original-title="Add New Class" class="btn btn-warning"><i class="fui-plus"></i></a>
 					</div>
 				<table class="table table-bordered table-hover">
 					<thead>
@@ -87,3 +91,4 @@
 		</div>
 	</div>
 </div>
+{% endblock content %}

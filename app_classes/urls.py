@@ -3,7 +3,7 @@ from app_classes import views
 
 urlpatterns = patterns('',
 	url(r'^dashboard/$', views.dashboard),
-	url(r'^class_teacher/$', views.class_teacher),
-	url(r'^teacher_addNewClass/$', views.teacher_addNewClass),
-	url(r'^submit/$', views.submit),
+	url(r'^classes/$', views.class_teacher),
+	url(r'^classes/add/$', views.teacher_addNewClass),
+	url(r'^classes/submit/$', views.submit),
 )

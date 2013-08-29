@@ -1,4 +1,4 @@
-{% extends "base/base.html" %}
+{% extends "base/base_login.html" %}
 {% load staticfiles %}
 
 {% block title %}
@@ -17,13 +17,12 @@ TECS: Test Essay Checking Software | Login
 		{% if errors %}		
 			<p class="text-danger">Your username and password didn't match. Please try again.</p>
 		{% endif %}
-		<!--input type="text" class="form-control" placeholder="Username" autofocus-->
-		<!--input type="password" class="form-control" placeholder="Password"-->
 		{{ form.username }}
 		{{ form.password }}
 		<label class="checkbox">
-			<input type="checkbox" value="remember-me"> Remember me
+			<input type="checkbox" value="remember-me" data-toggle="checkbox"> Remember me
 		</label>
+		
 		<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
   	</form>
 </div>
