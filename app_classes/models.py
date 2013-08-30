@@ -32,8 +32,6 @@ class SectionForm(ModelForm):
 		self.fields['school'].widget.attrs.update({'class' : 'dropdown'})
 		self.fields['year_level'].widget.attrs.update({'type':'number', 'class': 'span4', 'placeholder': 'Year Level', 'min': 1,})
 		self.fields['section_name'].widget.attrs.update({'type':'text', 'class': 'span4', 'placeholder': 'Class Name',})
-		self.fields['emails'].widget.attrs.update({'type':'textarea', 'class': 'input-xlarge span4', 'placeholder': 'Each emails are separeted by comma. Example: cheryleighverano@gmail.com, emsia@upd.edu.ph, molen.fenando@gmail.com', 'row': 8})
-
 
 class ClassList(models.Model):
 	subject = models.ForeignKey(Subject)
