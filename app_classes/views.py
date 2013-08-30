@@ -14,7 +14,7 @@ from app_classes.forms import addClassForm
 @login_required(redirect_field_name='', login_url='/')
 def dashboard(request):
 	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
-	return render(request, 'app_classes/dashboard.html', {'avatar':avatar, 'active_nav':'DASHBOARD'})
+	return render(request, 'app_classes/dashboard2.html', {'avatar':avatar, 'active_nav':'DASHBOARD'})
 	
 def add_class(request):
 	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
