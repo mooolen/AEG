@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-=======
+
 try:
     from urllib.parse import urlparse
 except ImportError:
@@ -8,7 +7,6 @@ except ImportError:
 except ImportError:     # Python 2
     from urlparse import urlparse
     
->>>>>>> master
 from django.shortcuts import render_to_response
 from django.conf import settings
 from django.http import HttpResponse
