@@ -1,12 +1,12 @@
 from django.db import models
 from django.forms import ModelForm
+from django.contrib.auth.models import User
 from app_auth.models import School, Student, Teacher
 
 class Section(models.Model):
 	school = models.ForeignKey(School)
 	year_level = models.CharField(max_length=2)
 	section_name = models.CharField(max_length=30)
-	emails = models.EmailField(max_length=30)
 
 	def __str__(self):
 		return self.section_name
@@ -41,6 +41,6 @@ class ClassList(models.Model):
 	status = models.IntegerField(max_length=1)
 
 	def __str__(self):
-		return u'%s, %s' % (self.subject.user_profile.user.last_name, self.subject.user_profile.user.first_name)
+		return u'%s, %s' % (self.student.user_profile.user.last_name, self.student.user_profile.user.first_name)
 
 
