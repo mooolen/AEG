@@ -1,4 +1,6 @@
 from django.db import models
+from django.forms import ModelForm
+from django.contrib.auth.models import User
 from app_auth.models import School, Student, Teacher
 
 class Section(models.Model):
@@ -8,6 +10,8 @@ class Section(models.Model):
 
 	def __str__(self):
 		return self.section_name
+	class Meta:
+		ordering = ['school']
 
 class Subject(models.Model):
 	section = models.ForeignKey(Section)
@@ -19,12 +23,22 @@ class Subject(models.Model):
 	def __str__(self):
 		return self.subject_name
 
+class SectionForm(ModelForm):
+	class Meta:
+		model = Section
+		
+	def __init__(self, *args, **kwargs):
+		super(SectionForm, self).__init__(*args, **kwargs)
+		self.fields['school'].widget.attrs.update({'class' : 'dropdown'})
+		self.fields['year_level'].widget.attrs.update({'type':'number', 'class': 'span4', 'placeholder': 'Year Level', 'min': 1,})
+		self.fields['section_name'].widget.attrs.update({'type':'text', 'class': 'span4', 'placeholder': 'Class Name',})
+
 class ClassList(models.Model):
 	subject = models.ForeignKey(Subject)
 	student = models.ForeignKey(Student)
 	status = models.IntegerField(max_length=1)
 
 	def __str__(self):
-		return u'%s, %s' % (self.subject.user_profile.user.last_name, self.subject.user_profile.user.first_name)
+		return u'%s, %s' % (self.student.user_profile.user.last_name, self.student.user_profile.user.first_name)
 
 

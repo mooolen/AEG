@@ -4,8 +4,10 @@ from django.contrib.auth.models import User
 
 class UserProfile(models.Model):
 	user = models.OneToOneField(User)
-	#avatar = models.ImageField(upload_to='static/app_auth/images/avatars/')
-	home_address = models.TextField()
+	avatar = models.ImageField(upload_to='static/app_auth/images/avatars/')
+	street = models.TextField()
+	province = models.TextField()
+	municipality = models.TextField()
 	phone_number = models.TextField(max_length=7)
 	
 
@@ -43,5 +45,5 @@ class Note(models.Model):
     title = models.CharField(max_length=200)
     body = models.TextField()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
