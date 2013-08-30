@@ -1,0 +1,5 @@
+<ul class="nav nav-pills nav-stacked">
+	<li class="active"><a href="#"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+	<li><a href="#"><span class="glyphicon glyphicon-th"></span> Classes</a></li>
+	<li><a href="#"><span class="glyphicon glyphicon-pencil"></span> Exams</a></li>
+</ul>
