@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from app_classes.models import SectionForm, Section
 from django.shortcuts import render
 from app_auth.models import UserProfile
-from django.db.models import Count
+from django.db.models import Count, F
 from django.contrib.auth.decorators import login_required
 
 from app_classes.forms import addClassForm
@@ -47,3 +47,8 @@ def submit(request):
 			return redirect(success_url)
 		else:
 			return teacher_addNewClass(request, form_class)
+
+@login_required(redirect_field_name='', login_url='/')
+def edit(request):
+	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
+	return render(request, 'app_classes/teacher_editClass.html', {'avatar':avatar, 'active_nav':'CLASSES'})

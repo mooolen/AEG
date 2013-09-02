@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from app_auth.models import School, Student, Teacher
 
 class Section(models.Model):
-	school = models.ForeignKey(School)
+	school = models.ForeignKey(School, related_name='schools')
 	year_level = models.CharField(max_length=2)
 	section_name = models.CharField(max_length=30)
 
