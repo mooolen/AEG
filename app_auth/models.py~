@@ -5,10 +5,10 @@ from django.contrib.auth.models import User
 class UserProfile(models.Model):
 	user = models.OneToOneField(User)
 	avatar = models.ImageField(upload_to='images/avatars/')
-	street = models.TextField(blank=True)
-	province = models.TextField(blank=True)
-	municipality = models.TextField(blank=True)
-	phone_number = models.TextField(max_length=7, blank=True)
+	street = models.TextField()
+	province = models.TextField()
+	municipality = models.TextField()
+	phone_number = models.TextField(max_length=7)
 	
 
 	def __str__(self):

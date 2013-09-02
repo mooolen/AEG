@@ -25,7 +25,7 @@ class LoginView(FormView):
 	form_class = LoginForm
 	redirect_field_name = REDIRECT_FIELD_NAME
 	template_name = 'app_auth/login.html'
-	success_url = '/dashboard'
+	success_url = '/dashboarda'
 	
 	def dispatch(self, request, *args, **kwargs):
 		if request.user.is_authenticated():
