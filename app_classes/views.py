@@ -2,7 +2,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from .forms import addClassForm
 from app_classes.models import SectionForm, Section
 from django.shortcuts import render
 from app_auth.models import UserProfile
@@ -14,7 +13,7 @@ from app_classes.forms import addClassForm
 @login_required(redirect_field_name='', login_url='/')
 def dashboard(request):
 	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
-	return render(request, 'app_classes/dashboard.html', {'avatar':avatar, 'active_nav':'DASHBOARD'})
+	return render(request, 'app_classes/dashboard.html', {'avatar':avatar, 'active_nav':'DASHBOARD', 'staff':request.user.is_staff})
 	
 def add_class(request):
 	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
@@ -26,7 +25,7 @@ def class_list(request):
 
 @login_required(redirect_field_name='', login_url='/')
 def class_teacher(request):
-	sections = Section.objects.annotate(number_of_entries=Count('section_name')).select_related('school__short_name','section_name')
+	sections = Section.objects.select_related('school__short_name','section_name')
 	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
 	return render(request, 'app_classes/class_teacher.html', {'avatar':avatar, 'active_nav':'CLASSES', 'sections':sections})
 
