@@ -47,8 +47,17 @@ def submit(request):
 			return redirect(success_url)
 		else:
 			return teacher_addNewClass(request, form_class)
+<<<<<<< HEAD
 
 @login_required(redirect_field_name='', login_url='/')
 def edit(request):
 	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
 	return render(request, 'app_classes/teacher_editClass.html', {'avatar':avatar, 'active_nav':'CLASSES'})
+=======
+			
+@login_required(redirect_field_name='', login_url='/')
+def manualChecking(request):
+	sections = Section.objects.annotate(number_of_entries=Count('section_name')).select_related('school__short_name','section_name')
+	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
+	return render(request, 'app_classes/manualChecking.html', {'avatar':avatar, 'active_nav':'CLASSES', 'sections':sections})
+>>>>>>> 3a24bf539ec1dc2d9c265f68db25d37a552a8c22
