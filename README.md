@@ -3,7 +3,7 @@ AEG
 
 Automated Essay Grader
 
-Built-in top of:
+Built on top of:
 	
 	Django
 	Boostrap
