@@ -23,7 +23,6 @@ DATABASES = {
 	}
 }
 
-
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = []
@@ -53,7 +52,7 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
-MEDIA_ROOT = './media'
+MEDIA_ROOT = '/home/molen/Desktop/AEG/media'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -76,6 +75,7 @@ STATICFILES_DIRS = (
 	# Always use forward slashes, even on Windows.
 	# Don't forget to use absolute paths, not relative paths.
 	#'C:/Documents and Settings/Admin/Desktop/AEG/static',
+	'/home/molen/Desktop/AEG/static',
 	'./static',
 )
 
@@ -117,6 +117,7 @@ TEMPLATE_DIRS = (
 	# Always use forward slashes, even on Windows.
 	# Don't forget to use absolute paths, not relative paths.
 	#'C:/Documents and Settings/Admin/Desktop/AEG/templates',
+	'/home/molen/Desktop/AEG/templates',
 	'./templates',
 )
 
@@ -132,6 +133,7 @@ INSTALLED_APPS = (
 	# 'django.contrib.admindocs',
 	'app_auth',
 	'app_classes',
+	'app_essays'
 )
 
 # A sample logging configuration. The only tangible logging
