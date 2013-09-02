@@ -1,0 +1,38 @@
+{% extends "base/base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+TECS: Test Essay Checking Software | Home
+{% endblock %}
+
+{% block content %}
+
+<div class="row-fluid">
+	<div class="content">
+		<img class="title-icons" src="{% static 'base/img/icons/Pensils@2x.png' %}">
+		<h3>On-going Exams</h3>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th width="20%">Class</th>
+					<th width="30%">Essay</th>
+					<th width="15%">Start</th>
+					<th width="15%">Deadline</th>
+					<th width="10%"></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for essay in essays %}
+				<tr>
+					<td>I - Amethyst</td>
+					<td>My Summer Vacation</td>
+					<td>July 15, 2013</td>
+					<td>July 19, 2013</td>
+					<td><center><a href="#">View</a></center></td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+{% endblock %}
