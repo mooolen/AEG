@@ -10,19 +10,19 @@ TECS: Test Essay Checking Software | Home
     <meta charset="utf-8">
     <title>Answer Exam</title>
 
-    <link href="bootstrap/css/prettify.css" rel="stylesheet">
-    <link href="bootstrap/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
-    <link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="{% static 'base/css/prettify.css' %}" rel="stylesheet">
+    <link href="{% static 'base/css/bootstrap-combined.no-icons.min.css' %}" rel="stylesheet">
+    <link href="{% static 'base/css/bootstrap-responsive.css' %}" rel="stylesheet">
 	<link href="http://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css" rel="stylesheet">
-    <script src="bootstrap/js/jquery.min.js"></script>
-	<script src="bootstrap/js/jquery.hotkeys.js"></script>
-    <script src="bootstrap/js/bootstrap.min.js"></script>
-    <script src="bootstrap/js/prettify.js"></script>
-	<link rel="stylesheet" href="css/jquery.countdown.css">	
-    <link href="css/flat-ui.css" rel="stylesheet">
-    <script src="bootstrap/js/bootstrap-wysiwyg.js"></script>
-    <script src="bootstrap/js/ckeditor.js"></script>
-	<script type="text/javascript" src="js/jquery.countdown.js"></script>
+    <script src="{% static 'base/js/jquery.min.js' %}"></script>
+	<script src="{% static 'base/js/jquery.hotkeys.js' %}"></script>
+    <script src="{% static 'base/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'base/js/prettify.js' %}"></script>
+	<link rel="stylesheet" href="{% static 'base/css/jquery.countdown.css' %}">	
+    <script src="{% static 'base/js/bootstrap-wysiwyg.js' %}"></script>
+    <link href="{% static 'base/css/flat-ui.css' %}" rel="stylesheet">
+    <script src="{% static 'base/js/ckeditor.js' %}"></script>
+	<script type="text/javascript" src="{% static 'base/js/jquery.countdown.js' %}"></script>
 	
 
     <style>
@@ -31,7 +31,7 @@ TECS: Test Essay Checking Software | Home
 			height: 45px; 			
 			position: absolute;
 			top: 5em;
-			right: 1.3em;
+			right: 17.3em;
 			z-index: 9999;
 			}
 		#editor {
@@ -84,7 +84,7 @@ TECS: Test Essay Checking Software | Home
 		              <label class="login-field-icon fui-lock" for="login-pass"></label>
 		            </div>
 
-		            <a class="btn btn-inverse btn-large btn-block" href="student_takeExam.php">Login</a>
+		            <a class="btn btn-inverse btn-large btn-block" data-dismiss="modal" aria-hidden="true" >Login</a>
 		            <a class="login-link" href="#">Forgot your password?</a>
 		          </div>
 		  </div>
@@ -297,7 +297,7 @@ function wordcount(inputwords) {
 	});
 </script>
 
-<script src="bootstrap/js/bootstrap-transition.js"></script>
+<script src="{% static 'base/js/}bootstrap-transition.js' %}"></script>
 
 <div id="fb-root"></div>
 
