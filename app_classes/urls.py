@@ -6,4 +6,5 @@ urlpatterns = patterns('',
 	url(r'^classes/$', views.class_teacher),
 	url(r'^classes/add/$', views.teacher_addNewClass),
 	url(r'^classes/submit/$', views.submit),
+	url(r'^classes/edit/$', views.edit),
 )
