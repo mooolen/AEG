@@ -7,25 +7,27 @@ TECS: Test Essay Checking Software | Teacher Classes
 
 {% block content %}
 <div class="page-content">
-	<div class="span12">
+	<div class="span11">
 		<div class="row-fluid">
 			<div class="span12 content">
 				<img class="title-icons" src="{% static 'base/img/icons/user.png' %}">
 				<h3 class="title">Edit Class Information</h3>
-				<form class="form-horizontal span8"> 
+				<form class="form-horizontal span11"> 
 					<fieldset>	
 						<div class="control-group">
 							<label class="control-label" for="level">Year Level</label>
+							{% for class in class_info %}
 							<div class="controls">
-								<input type="text" placeholder="Required" class="span3" name="level" id="level" required value="1" />
+								<input type="text" placeholder="Required" class="span3" name="level" id="level" required value="{{ class.section.year_level }}" />
 							</div>	
 						</div> 					
 						<div class="control-group">
 							<label class="control-label" for="className">Section</label>
 							<div class="controls">
-								<input type="text" placeholder="Required" class="span3" name="className" id="className" value="Amethyst" required />
+								<input type="text" placeholder="Required" class="span3" name="className" id="className" value="{{ class.section.section_name }}" required />
 							</div>
 						</div> 
+						{% endfor %}
 					 	<div class="control-group">  
 							<label class="control-label" for="classKey">Student Name</label>  
 							<div class="controls">
