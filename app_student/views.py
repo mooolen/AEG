@@ -16,12 +16,12 @@ def home(request):
 @login_required(redirect_field_name='', login_url='/')
 def answerExam(request):
 	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
-	return render(request, 'app_student/answerExam.html', {'avatar':avatar})
+	return render(request, 'app_student/answerExam.html', {'avatar':avatar, 'active_nav':'ESSAYS' })
 	
 @login_required(redirect_field_name='', login_url='/')
 def viewClasses(request):
 	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
-	return render(request, 'app_student/viewClasses.html', {'avatar':avatar})
+	return render(request, 'app_student/viewClasses.html', {'avatar':avatar, 'active_nav':'CLASSES'})
 		
 @login_required(redirect_field_name='', login_url='/')
 def editProfile(request):
@@ -36,10 +36,10 @@ def viewProfile(request):
 @login_required(redirect_field_name='', login_url='/')
 def viewEssays(request):
 	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
-	return render(request, 'app_student/viewEssays.html', {'avatar':avatar})
+	return render(request, 'app_student/viewEssays.html', {'avatar':avatar, 'active_nav':'ESSAYS'})
 	
 @login_required(redirect_field_name='', login_url='/')
 def viewEssay(request):
 	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
-	return render(request, 'app_student/viewEssay.html', {'avatar':avatar})
+	return render(request, 'app_student/viewEssay.html', {'avatar':avatar, 'active_nav':'ESSAYS'})
 	
