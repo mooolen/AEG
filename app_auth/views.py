@@ -6,7 +6,7 @@ except ImportError:
 except ImportError:     # Python 2
     from urlparse import urlparse
     
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, render
 from django.conf import settings
 from django.http import HttpResponse
 from django.template import RequestContext
@@ -18,6 +18,8 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.views.generic.edit import FormView
 from django.core.context_processors import csrf
+from app_auth.models import UserProfile
+from django.contrib.auth.decorators import login_required
 
 from .forms import LoginForm
 
@@ -79,3 +81,15 @@ class LoginView(FormView):
 
 def user_logout(request):
     return logout_then_login(request,login_url='/')
+
+@login_required(redirect_field_name='', login_url='/')
+def profile_edit(request):
+	user_info = UserProfile.objects.get(user_id = request.user.id)
+	avatar = user_info.avatar
+	return render(request, 'app_auth/profile.html', {'avatar': avatar, 'user_info':user_info,})
+
+@login_required(redirect_field_name='', login_url='/')
+def password_edit(request):
+	user_info = UserProfile.objects.get(user_id = request.user.id)
+	avatar = user_info.avatar
+	return render(request, 'app_auth/changePassword.html', {'avatar': avatar, 'user_info':user_info,})
