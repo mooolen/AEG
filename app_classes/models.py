@@ -45,7 +45,10 @@ class Classes(models.Model):
 	teacher = models.ForeignKey(Teacher)
 
 	def __str__(self):
-		return u'%s, %s' % (self.subject.subject_name, self.teacher.user_profile.user.last_name)
+		return u'%s-%s-%s' % (self.school.short_name, self.subject.subject_name, self.teacher.user_profile.user.last_name)
+
+	class Meta:
+		ordering = ['school', 'section', 'subject']
 
 class ClassesForm(ModelForm):
 	class Meta:
@@ -61,9 +64,9 @@ class ClassesForm(ModelForm):
 
 class ClassList(models.Model):
 	classes = models.ForeignKey(Classes)
-	student = models.ForeignKey(Student)
+	student = models.ManyToManyField(Student)
 	status = models.IntegerField(max_length=1)
 	section_id = models.ForeignKey(Section)
 
 	def __str__(self):
-		return u'%s, %s' % (self.student.user_profile.user.last_name, self.student.user_profile.user.first_name)
+		return u'%s, %s' % (self.classes.section, self.classes.subject)
