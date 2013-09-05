@@ -21,7 +21,7 @@
 							<b class="caret"></b>
 						</a>
 						<ul>
-							<li><a href="student_profile.php">My Profile</a></li>
+							<li><a href="{% url 'auth:profile' %}">My Profile</a></li>
 							<li><a href="#">My Account</a></li>
 							<li><a href="{% url 'auth:user_logout' %}">Logout</a></li>
 						</ul>
