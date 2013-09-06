@@ -30,7 +30,7 @@ TECS: Test Essay Checking Software | Teacher Add Classes
 	  <div class="modal-footer">
 	    <button class="btn btn-success" onClick="redirect()" >Send Invitation <i class="fui-check"></i></button>
 	    <button type="button" class="btn btn-warning" data-dismiss="modal" aria-hidden="true">Edit <i class="fui-new"></i></button>
-	    <a class="btn btn-danger" href="{% url 'classes' %}" >Cancel <i class="fui-cross"></i></a>
+	    <a class="btn btn-danger" href="{% url 'classes:classes' %}" >Cancel <i class="fui-cross"></i></a>
 	  </div>
 	</div>
 
@@ -43,12 +43,13 @@ TECS: Test Essay Checking Software | Teacher Add Classes
 								<label class="control-label" for="level">{{ form.label_tag }}</label>
 								<div class="controls">
 										<div class="span7">
-											<div {% if form.errors %}class="control-group error"{% endif %} >
 											{{ form }}
+											{% for error in form.errors %}
+											<p class="text-error">{{ error }}</p>
+											{% endfor %}
 											{% if 'School' not in form.label_tag  %}
 											<button type="button" data-toggle="tooltip" data-placement="right" title data-original-title="This is a link." onclick="add_more_text_box('add_more_div','add_more[]',child());" class="btn btn-primary mtm" ><i class="fui-plus"></i></button>	
 											{% endif %}
-										</div>
 									</div>
 								</div>		
 							</div> 	
@@ -57,7 +58,7 @@ TECS: Test Essay Checking Software | Teacher Add Classes
 								<input type="hidden" value="{{ next_url }}" name="next_url" />
 								<button type="submit" class="btn btn-primary"><b>Save</b><i class="fui-check"></i></button> 
 								<button type="reset" class="btn btn-warning"><b>Reset</b><i class="fui-play"></i></button> 
-								<a href="{% url 'classes' %}" type="button" class="btn btn-danger"><b>Cancel</b><i class="fui-cross"></i></a>
+								<a href="{% url 'classes:classes' %}" type="button" class="btn btn-danger"><b>Cancel</b><i class="fui-cross"></i></a>
 								<a href="#myModal" role="button" data-toggle="modal" data-trigger="hover" data-placement="left" title data-original-title="Add New Class" class="btn btn-danger"><b>Lock</b><i class="fui-lock"></i></a>
 							</div>		
 				</form>

@@ -9,16 +9,15 @@ TECS: Test Essay Checking Software | Home
 
 <div class="row-fluid">
 	<div class="span12 content">
-		<img class="title-icons" src="images/icons/Watches@2x.png">
+		<img class="title-icons" src="{% static 'base/img/icons/Watches@2x.png' %}">
 		<h3 class="title">New Exam</h3>
 		<div class="span11">
 			{% if errors %}
-			<p class="text-error">{{ form.errors }}</p>
 			{% endif %}
 			<form class="form-horizontal" action="" method="post">{% csrf_token %}
 				<fieldset>
 					<div class="control-group">
-						<label class="control-label" for="inputgradingsys">Class</label>
+						<label class="control-label" for="inputgradingsys">Subject</label>
 						<div class="controls" id= "inputgradingsys" >
 							{{ form.class_subject }}										
 						</div>								  

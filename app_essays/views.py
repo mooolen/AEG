@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 
 from app_auth.models import UserProfile, Teacher
 from app_essays.models import Essay, GradingSystem, EssayForm
-from app_classes.models import Subject
+from app_classes.models import Subject, Classes
 
 @login_required(redirect_field_name='', login_url='/')
 def new_essay(request):
@@ -16,7 +16,7 @@ def new_essay(request):
 		if form.is_valid():
 			cd = form.cleaned_data
 			data = form.save(commit=False)
-			data.instructor = Teacher.objects.get(user_id = request.user.id)
+			data.instructor = Teacher.objects.get(user_id = request.user.id) # gumagana naman
 			data.status = 1
 			data.save()
 			return HttpResponseRedirect('/dashboard')
@@ -25,9 +25,9 @@ def new_essay(request):
 		
 	else:
 		form = EssayForm()
-		form.fields['class_subject'].queryset = Subject.objects.filter(teacher_id = Teacher.objects.get(user_id = request.user.id).id)
+		form.fields['class_subject'].queryset = Subject.objects.filter(teacher = Teacher.objects.get(user_id = request.user.id))
 	
-	return render(request, 'app_essays/new_essay.html', {'avatar':avatar, 'errors':errors, 'form': form}, context_instance=RequestContext(request))
+	return render(request, 'app_essays/new_essay.html', {'avatar':avatar, 'errors':errors, 'form': form})
 
 @login_required(redirect_field_name='', login_url='/')	
 def list_essay(request):

@@ -10,7 +10,10 @@ from django.contrib.auth.decorators import login_required
 
 @login_required(redirect_field_name='', login_url='/')
 def dashboard(request):
-	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
+	try:
+		avatar = UserProfile.objects.get(user_id = request.user.id).avatar
+	except UserProfile.DoesNotExist:
+		avatar = 'images/avatars/users.png'
 	return render(request, 'app_classes/dashboard2.html', {'avatar':avatar, 'active_nav':'DASHBOARD'})
 	
 def add_class(request):
@@ -22,12 +25,12 @@ def class_list(request):
 	return render(request, 'app_classes/dashboard2.html', {'avatar': avatar})
 
 @login_required(redirect_field_name='', login_url='/')
-def class_teacher(request, num=None, perm=None, repeat=None):
+def class_teacher(request, err=None, success=None):
 	User_Profile = UserProfile.objects.get(user_id = request.user.id)
-	teacher = Teacher.objects.filter(user_profile=User_Profile)
+	teacher = Teacher.objects.filter(user=request.user)
 	sections = Classes.objects.filter(teacher=teacher)
 	avatar = User_Profile.avatar
-	return render(request, 'app_classes/class_teacher.html', {'avatar':avatar, 'active_nav':'CLASSES', 'sections':sections, 'delete': num, 'perm':perm, 'repeat':repeat})
+	return render(request, 'app_classes/class_teacher.html', {'avatar':avatar, 'active_nav':'CLASSES', 'sections':sections, 'error': err, 'success':success})
 
 @login_required(redirect_field_name='', login_url='/')
 def teacher_addNewClass(request, add_form=None):
@@ -48,13 +51,13 @@ def submit(request):
 			subject_info = Subject.objects.get(pk=request.POST['subject'])
 
 			try:
-				teacher = Teacher.objects.get(user_profile=User_Profile)
+				teacher = Teacher.objects.get(user=request.user)
 			except Teacher.DoesNotExist:
-				return class_teacher(request, 0, 1)
+				return class_teacher(request, 'You don\'t have permission to add Classes.')
 
 			class_info = Classes.objects.filter(school=school_info).filter(section=section_info).filter(subject=subject_info).filter(teacher=teacher)
 			if class_info.exists():
-				return class_teacher(request, 0, 0, 1)
+				return class_teacher(request, 'That Class already exists.')
 
 			form = form_class.save(commit=False)
 			form.teacher = teacher
@@ -80,4 +83,4 @@ def delete(request, class_id):
 	class_info = get_object_or_404(Classes, pk=class_id)
 	class_info.delete()
 	success_url = '/classes/'
-	return class_teacher(request, 1)
+	return class_teacher(request, 0, 'You successfully deleted a class.')

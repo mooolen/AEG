@@ -10,6 +10,12 @@ TECS: Test Essay Checking Software | Teacher Classes
 	<div class="span11">
 		<div class="row-fluid">
 			<div class="span12 content">
+				{% if success %}
+					<div class="alert alert-success">
+			          <strong>Success!</strong> {{ success }}
+			        </div>
+				{% endif %}
+
 				<img class="title-icons" src="{% static 'base/img/icons/user.png' %}">
 				<h3 class="title">My Profile</h3>
 				<form class="form-horizontal">
@@ -45,7 +51,7 @@ TECS: Test Essay Checking Software | Teacher Classes
 							</div>	
 						</div>
 						<div class="form-actions">	
-							<a href="#" type="button" class="btn btn-warning"><b>Edit Profile</b> <i class="fui-user"></i></a> 
+							<a href="#" type="button" class="btn btn-primary"><b>Save Changes</b> <i class="fui-user"></i></a> 
 							<a href="{% url 'auth:edit_password' %}" type="button" class="btn btn-warning"><b>Change Password</b> <i class="fui-lock"></i></a>	
 						</div>	
 					</fieldset>
