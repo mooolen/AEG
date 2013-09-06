@@ -10,6 +10,5 @@ urlpatterns = patterns('',
 	url(r'^classes/checkManually/$', views.manualChecking),
 	# ex: /polls/5/vote/
     url(r'^classes/(?P<class_id>\d+)/delete/$', views.delete, name='delete'),
-    url(r'^classes/changePassword/$', views.changePassword),
 
 )
