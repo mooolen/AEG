@@ -43,3 +43,8 @@ def viewEssay(request):
 	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
 	return render(request, 'app_student/viewEssay.html', {'avatar':avatar, 'active_nav':'ESSAYS'})
 	
+@login_required(redirect_field_name='', login_url='/')
+def changePassword(request):
+	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
+	return render(request, 'app_student/changePassword.html', {'avatar':avatar, 'active_nav':'ESSAYS'})
+	
