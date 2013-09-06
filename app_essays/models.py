@@ -4,7 +4,7 @@ from django.forms import ModelForm, DateTimeInput, TextInput, Textarea
 
 from django.contrib.auth.models import User
 from app_auth.models import Student, Teacher
-from app_classes.models import Subject
+from app_classes.models import Subject, Classes
 
 class GradingSystem(models.Model):
 	name = models.CharField(max_length=50)

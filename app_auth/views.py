@@ -14,14 +14,14 @@ from django.contrib.auth import (
 	REDIRECT_FIELD_NAME, login, logout, authenticate
 )
 from  django.contrib.auth.views import logout_then_login
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, check_password
 from django.http import HttpResponseRedirect
 from django.views.generic.edit import FormView
 from django.core.context_processors import csrf
-from app_auth.models import UserProfile
+from app_auth.models import UserProfile, passwordForm
 from django.contrib.auth.decorators import login_required
 
-from .forms import LoginForm
+from .forms import LoginForm, PasswordForm
 
 class LoginView(FormView):
 	form_class = LoginForm
@@ -83,13 +83,32 @@ def user_logout(request):
     return logout_then_login(request,login_url='/')
 
 @login_required(redirect_field_name='', login_url='/')
-def profile_edit(request):
+def profile_edit(request, success=None):
 	user_info = UserProfile.objects.get(user_id = request.user.id)
 	avatar = user_info.avatar
-	return render(request, 'app_auth/profile.html', {'avatar': avatar, 'user_info':user_info,})
+	return render(request, 'app_auth/profile.html', {'avatar': avatar, 'user_info':user_info, 'success':success})
 
 @login_required(redirect_field_name='', login_url='/')
-def password_edit(request):
+def password_edit(request, err=None):
 	user_info = UserProfile.objects.get(user_id = request.user.id)
 	avatar = user_info.avatar
-	return render(request, 'app_auth/changePassword.html', {'avatar': avatar, 'user_info':user_info,})
+	form = PasswordForm()
+	return render(request, 'app_auth/changePassword.html', {'avatar': avatar, 'user_info':user_info, 'form':form, 'error': err})
+
+@login_required(redirect_field_name='', login_url='/')
+def reset(request):
+	form_class = PasswordForm(data=request.POST)
+	if form_class.is_valid():
+		forms = form_class.cleaned_data
+		password = forms['password']
+		newPassword = forms['ConfPassword']
+		oldPassword = forms['OldPassword']
+		u = User.objects.get(id=request.user.id)
+
+	if u.check_password(oldPassword) and password == newPassword:
+		u.set_password(newPassword)
+		u.save()
+		return profile_edit(request, 'You have changed your password.')
+	else:
+		return password_edit(request, 'Passwords did not matched.')
+

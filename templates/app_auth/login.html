@@ -15,7 +15,7 @@ TECS: Test Essay Checking Software | Login
 		{% csrf_token %}		
 		<h2 class="form-signin-heading">Sign in</h2>
 		{% if errors %}		
-			<p class="text-danger">Your username and password didn't match. Please try again.</p>
+			<p class="text-error">Your username and password didn't match. Please try again.</p>
 		{% endif %}
 		{{ form.username }}
 		{{ form.password }}

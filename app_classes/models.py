@@ -22,6 +22,7 @@ class Section(models.Model):
 class Subject(models.Model):
 	subject_name = models.CharField(max_length=30)
 	academic_year = models.CharField(max_length=4)
+	teacher = models.ForeignKey(Teacher)
 	key = models.CharField(max_length=32, unique=True)
 
 	def __str__(self):

@@ -1,4 +1,5 @@
 from django.db import models
+from django.forms import ModelForm, PasswordInput
 from django.conf import settings
 from django.contrib.auth.models import User
 
@@ -39,11 +40,11 @@ class Student(models.Model):
 	def __str__(self):
 		return u'%s, %s' % (self.user.last_name, self.user.first_name)
 
-class Note(models.Model):
-    user = models.ForeignKey(User)
-    pub_date = models.DateTimeField()
-    title = models.CharField(max_length=200)
-    body = models.TextField()
-
-    def __str__(self):
-        return self.title
+class passwordForm(ModelForm):
+	class Meta:
+		model = User
+		exclude = ('last_login', 'is_superuser', 'username', 'first_name', 'last_name', 'email', 'is_staff', 'is_active', 'date_joined')
+		widgets = {
+			'password': PasswordInput(attrs={'class':'span3', 'name':'newPassword', 'placeholder':'Required'}),
+			'confirm_password': PasswordInput(attrs={'class':'span3', 'name':'newPassword', 'placeholder':'Required'}),
+		}
