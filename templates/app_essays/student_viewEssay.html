@@ -14,20 +14,23 @@ TECS: Test Essay Checking Software | Home
 		<table class="table table-striped">
 			<thead>
 				<tr>
-					<th width="20%">Class</th>
-					<th width="30%">Essay</th>
-					<th width="15%">Start</th>
+					<th width="15%">Class</th>
+					<th width="20%">Teacher</th>
+					<th width="20%">Essay</th>
 					<th width="15%">Deadline</th>
+					<th width="10%">Duration</th>
+					<th width="20%">Status</th>
 					<th width="10%"></th>
 				</tr>
 			</thead>
 			<tbody>
 				{% for essay in essays %}
 				<tr>
-					<td>I - Amethyst</td>
-					<td>My Summer Vacation</td>
-					<td>July 15, 2013</td>
-					<td>July 19, 2013</td>
+					<td>{{ essay.class_subject.subject_name }}</td>
+					<td>{{ essay.instructor }}</td>
+					<td>{{ essay.title }}</td>
+					<td>{{ essay.deadline }}</td>
+					<td>{{ essay.duration_hours }} hour(s) {% if essay.duration_minutes != 0 %}{{ essay.duration_minutes }} minute(s) {% endif %} </td>
 					<td><center><a href="#">View</a></center></td>
 				</tr>
 				{% endfor %}

@@ -1,0 +1,51 @@
+{% extends "base/base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+TECS: Test Essay Checking Software | Essay
+{% endblock %}
+
+{% block content %}
+
+<div class="row-fluid">
+	<div class="content">
+		<p class="pull-right">
+			<a href="{% url 'essays:new' %}" class="btn btn-large btn-primary"><i class="icon-white icon-plus"></i> New Exam</a>
+		</p>
+		<img class="title-icons" src="{% static 'base/img/icons/Pensils@2x.png' %}">
+		<h3>On-going Exams</h3>
+		
+		{% if no_essay %}
+		<br><br>
+		<div class="alert alert-block alert-error">
+			<h4>Oops!</h4>
+			You have no on-going exams.
+		</div>
+		
+		{% else %}
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th width="20%">Class</th>
+					<th width="30%">Essay</th>
+					<th width="15%">Start</th>
+					<th width="15%">Deadline</th>
+					<th width="10%"></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for essay in essays %}
+				<tr>
+					<td>{{ essay.class_subject.subject_name }}</td>
+					<td>{{ essay.title }}</td>
+					<td>{{ essay.start_date }}</td>
+					<td>{{ essay.deadline }}</td>
+					<td><center><a href="{% url 'essays:details' essay.id %}">View</a></center></td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		{% endif %}
+	</div>
+</div>
+{% endblock %}

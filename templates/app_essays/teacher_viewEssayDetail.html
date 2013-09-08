@@ -1,0 +1,47 @@
+{% extends "base/base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+TECS: Test Essay Checking Software | Essay
+{% endblock %}
+
+{% block content %}
+
+<div class="row-fluid">
+	<div class="content">
+		<div class="row-fluid">
+			<img class="title-icons" src="{% static 'base/img/icons/Clipboard@2x.png' %}">
+			<h3>Essay Submissions</h3>
+		</div>
+		<hr>
+		<div class="row-fluid">
+			<dl class="dl-horizontal">
+				<dt>Essay Title</dt>
+				<dd>{{ essay.title }}</dd>
+
+				<dt>Class</dt>
+				<dd>{{ essay.class_subject }}</dd>
+
+				<dt>Instructions</dt>
+				<dd>{{ essay.instructions }}</dd>
+
+				<dt>Min no. of words</dt>
+				<dd>{{ essay.min_words }}</dd>		
+
+				<dt>Start Date</dt>
+				<dd>{{ essay.start_date }}</dd>
+
+				<dt>Deadline</dt>
+				<dd>{{ essay.deadline }}</dd>
+
+				<dt>Duration</dt>
+				<dd>{{ essay.duration_hour }} hour(s) {{ essay.duration_minutes }} minute(s) </dd>
+				
+			</dl>
+		</div>
+		<p class="pull-left">
+			<a href="{% url 'essays:list' %}" class="btn btn-inverse"><span class="fui-arrow-left"></span> Back</a>
+		</p>
+	</div>
+</div>
+{% endblock %}
