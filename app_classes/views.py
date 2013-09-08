@@ -2,7 +2,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from app_classes.models import SectionForm, Section, ClassesForm, Classes, Subject
+from app_classes.models import Class, ClassForm
 from django.shortcuts import render, get_object_or_404
 from app_auth.models import UserProfile, Teacher, School
 from django.db.models import Count
@@ -28,14 +28,14 @@ def class_list(request):
 def class_teacher(request, err=None, success=None):
 	User_Profile = UserProfile.objects.get(user_id = request.user.id)
 	teacher = Teacher.objects.filter(user=request.user)
-	sections = Classes.objects.filter(teacher=teacher)
+	sections = Class.objects.filter(teacher=teacher)
 	avatar = User_Profile.avatar
 	return render(request, 'app_classes/class_teacher.html', {'avatar':avatar, 'active_nav':'CLASSES', 'sections':sections, 'error': err, 'success':success})
 
 @login_required(redirect_field_name='', login_url='/')
-def teacher_addNewClass(request, add_form=None):
+def teacher_addNewClass(request):
 	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
-	addClass_form = add_form or ClassesForm()
+	addClass_form = ClassForm()
 	return render(request, 'app_classes/teacher_addNewClass.html', 
 			{'addClassForm' : addClass_form, 'next_url': '/classes', 'avatar':avatar, 'active_nav':'CLASSES'})
 
@@ -55,7 +55,7 @@ def submit(request):
 			except Teacher.DoesNotExist:
 				return class_teacher(request, 'You don\'t have permission to add Classes.')
 
-			class_info = Classes.objects.filter(school=school_info).filter(section=section_info).filter(subject=subject_info).filter(teacher=teacher)
+			class_info = Class.objects.filter(school=school_info).filter(section=section_info).filter(subject=subject_info).filter(teacher=teacher)
 			if class_info.exists():
 				return class_teacher(request, 'That Class already exists.')
 
@@ -68,7 +68,7 @@ def submit(request):
 
 @login_required(redirect_field_name='', login_url='/')
 def edit(request, class_id):
-	class_info = Classes.objects.filter(pk=class_id)
+	class_info = Class.objects.filter(pk=class_id)
 	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
 	return render(request, 'app_classes/teacher_editClass.html', {'avatar':avatar, 'active_nav':'CLASSES', 'class_info':class_info})
 			
@@ -80,7 +80,7 @@ def manualChecking(request):
 
 @login_required(redirect_field_name='', login_url='/')
 def delete(request, class_id):
-	class_info = get_object_or_404(Classes, pk=class_id)
+	class_info = get_object_or_404(Class, pk=class_id)
 	class_info.delete()
 	success_url = '/classes/'
 	return class_teacher(request, 0, 'You successfully deleted a class.')
