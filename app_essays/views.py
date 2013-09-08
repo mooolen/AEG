@@ -3,9 +3,9 @@ from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
 
-from app_auth.models import UserProfile, Student, , ClassList
+from app_auth.models import UserProfile, Student
 from app_essays.models import Essay, GradingSystem, EssayForm
-from app_classes.models import Subject, Classes
+from app_classes.models import Class
 
 @login_required(redirect_field_name='', login_url='/')
 def new_essay(request):
@@ -25,7 +25,7 @@ def new_essay(request):
 		
 	else:
 		form = EssayForm()
-		form.fields['class_subject'].queryset = Subject.objects.filter(teacher = Teacher.objects.get(user_id = request.user.id))
+		form.fields['class_name'].queryset = Class.objects.filter(teacher = Teacher.objects.get(user_id = request.user.id))
 	
 	return render(request, 'app_essays/teacher_newEssay.html', {'avatar':avatar, 'active_nav':'EXAMS', 'errors':errors, 'form': form})
 
@@ -51,8 +51,7 @@ def list_essay(request):
 def essay_details(request, essay_id):
 	active_nav = "EXAMS"
 	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
-	essay = Essay.objects.get(pk=1)
-	classlist = 
+	essay = Essay.objects.get(pk=1) 
 	return render(request, 'app_essays/teacher_viewEssayDetail.html', {'avatar':avatar, 'active_nav':'EXAMS', 'essay':essay})
 	
 	

@@ -3,10 +3,9 @@ from django import forms
 from django.forms import ModelForm, DateTimeInput, TextInput, Textarea
 from django.utils import timezone
 from datetime import datetime
-
 from django.contrib.auth.models import User
 from app_auth.models import Student, Teacher
-from app_classes.models import Subject, Classes
+from app_classes.models import Class
 
 class GradingSystem(models.Model):
 	name = models.CharField(max_length=50)
@@ -27,7 +26,7 @@ class Grade(models.Model):
 class Essay(models.Model):
 	title = models.CharField(max_length=100)
 	instructor = models.ForeignKey(Teacher)
-	class_subject = models.ForeignKey(Subject)
+	class_name = models.ForeignKey(Class)
 	instructions = models.TextField()
 	grading_system = models.ForeignKey(GradingSystem)	
 	start_date = models.DateTimeField()
