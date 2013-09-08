@@ -5,25 +5,30 @@
 TECS: Test Essay Checking Software | Login
 {% endblock %}
 
-{% block custom_style %}
-<link href="{% static 'app_auth/css/signin.css' %}" rel="stylesheet" media="screen">
-{% endblock %}
-
 {% block login %}
-<div class="container">
-	<form class="form-signin well" method="post">
-		{% csrf_token %}		
-		<h2 class="form-signin-heading">Sign in</h2>
-		{% if errors %}		
-			<p class="text-error">Your username and password didn't match. Please try again.</p>
-		{% endif %}
-		{{ form.username }}
-		{{ form.password }}
-		<label class="checkbox">
-			<input type="checkbox" value="remember-me" data-toggle="checkbox"> Remember me
-		</label>
-		
-		<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-  	</form>
+<div class="login">
+		<div class="login-screen">
+			<h3>TECS: Test Essay Checking Software</h3>
+			<div class="login-form">
+		     	{% if errors %}		
+				<p class="text-error">Your username and password didn't match. Please try again.</p>
+				{% endif %}
+				<form action="" method="post">
+					{% csrf_token %}
+					<div class="control-group">
+						{{ form.username }}
+						<label class="login-field-icon fui-user"></label>
+					</div>
+					<div class="control-group">
+						{{ form.password }}
+                			<label class="login-field-icon fui-lock"></label>
+              			</div>
+              			<button class="btn btn-inverse btn-large btn-block" type="submit">Login</button>
+					<a class="login-link" href="#">Forgot your password?</a>
+					<a class="login-link" href="#">Not yet a member? Sign up here.</a>
+				</form>
+          	</div>
+		</div>
+	</div>
 </div>
 {% endblock %}
