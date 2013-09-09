@@ -8,6 +8,9 @@ from app_classes.models import Class, ClassForm
 from django.shortcuts import render, get_object_or_404
 from app_auth.models import UserProfile, Teacher, School
 from django.db.models import Count
+from django.db.models import Count
+from django import forms
+from django.forms.widgets import Textarea
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 
@@ -46,8 +49,11 @@ def class_teacher(request, err=None, success=None):
 def teacher_addNewClass(request, add_form=None):
 	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
 	addClass_form = add_form or ClassForm()
+	teacher = Teacher.objects.filter(user=request.user)
+	name = Class.objects.filter(teacher=teacher)
+	addClass_form.fields['Emails'] = forms.CharField(widget=Textarea)
 	return render(request, 'app_classes/teacher_addNewClass.html', 
-			{'addClassForm' : addClass_form, 'next_url': '/classes', 'avatar':avatar, 'active_nav':'CLASSES'})
+			{'addClassForm' : addClass_form, 'next_url': '/classes', 'avatar':avatar, 'active_nav':'CLASSES', 'name':name})
 
 @login_required(redirect_field_name='', login_url='/')
 def submit(request):
@@ -61,7 +67,8 @@ def submit(request):
 			yearType_info = forms['year_level']
 			section_info = forms['section']
 			academicYear_info = forms['academic_year']
-
+			emails = request.POST['Emails']
+			print(emails)
 			try:
 				teacher = Teacher.objects.get(user=request.user)
 			except Teacher.DoesNotExist:
@@ -84,6 +91,7 @@ def submit(request):
 			return redirect(success_url)
 		else:
 			return teacher_addNewClass(request, form_class)
+
 
 @login_required(redirect_field_name='', login_url='/')
 def edit(request, class_id):

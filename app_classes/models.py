@@ -2,7 +2,7 @@ from django.db import models
 from django.forms import ModelForm
 from django.contrib.auth.models import User
 from app_auth.models import School, Student, Teacher
-from django.forms.widgets import TextInput, Select, SelectMultiple
+from django.forms.widgets import TextInput, Select, SelectMultiple, Textarea
 from datetime import datetime
 
 class Class(models.Model):
@@ -23,14 +23,18 @@ class Class(models.Model):
 class ClassForm(ModelForm):
 	class Meta:
 		model = Class
-		exclude = ('teacher', 'student', 'key', 'date_created', 'is_active')
+		exclude = ('teacher', 'key', 'date_created', 'is_active', 'student')
 		widgets = {
-          'school': Select(attrs={'class':'selectpicker span4', 'data-width':"auto"}),
-          'year_level': TextInput(attrs={'class':'input-xlarge span4'}),
-          'section': TextInput(attrs={'class':'input-xlarge span4'}),
+          'school': Select(attrs={'class':'selectpicker span4', 'data-width':"auto", }),
+          'year_level': TextInput(attrs={'class':'input-xlarge span4', 'data-name':'year_level' }),
+          'section': TextInput(attrs={'class':'input-xlarge span4', 'data-name':'section'}),
           'subject': TextInput(attrs={'class':'input-xlarge span4'}),
-          'academic_year': TextInput(attrs={'class':'input-xlarge span4'}),
+          'academic_year': TextInput(attrs={'class':'input-xlarge span4', 'data-name':'academic_year'}),
         }
+
+        def cleaned_Emails(self):
+        	data = self.cleaned_data.get('Emails', [])
+        	return data.split(',')
 
 class EditForm(ModelForm):
 	class Meta:
