@@ -6,8 +6,6 @@ from app_auth.models import UserProfile
 from django.db.models import Count
 from django.contrib.auth.decorators import login_required
 
-from app_classes.forms import addClassForm
-
 @login_required(redirect_field_name='', login_url='/')
 def home(request):
 	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
