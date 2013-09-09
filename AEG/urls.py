@@ -9,6 +9,8 @@ urlpatterns = patterns('',
 	url(r'^admin/', include(admin.site.urls)),
 	url(r'^', include('app_auth.urls', namespace='auth')),
 	url(r'^', include('app_classes.urls', namespace='classes')),
-	url(r'^', include('app_essays.urls', namespace='essays')),
+	url(r'^', include('app_essays.urls', namespace='essays')),	
+	url(r'^', include('app_student.urls', namespace='student')),
+	url(r'^', include('app_registration.urls', namespace='register')),
 )
 
