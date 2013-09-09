@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
 
-from app_auth.models import UserProfile, Student
+from app_auth.models import UserProfile, Student, Teacher
 from app_essays.models import Essay, GradingSystem, EssayForm
 from app_classes.models import Class
 
@@ -51,7 +51,7 @@ def list_essay(request):
 def essay_details(request, essay_id):
 	active_nav = "EXAMS"
 	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
-	essay = Essay.objects.get(pk=1) 
+	essay = Essay.objects.get(pk=essay_id) 
 	return render(request, 'app_essays/teacher_viewEssayDetail.html', {'avatar':avatar, 'active_nav':'EXAMS', 'essay':essay})
 	
 	

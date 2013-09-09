@@ -18,16 +18,15 @@ TECS: Test Essay Checking Software | Teacher Classes
 							<label class="control-label" for="level">Year Level</label>
 							{% for class in class_info %}
 							<div class="controls">
-								<input type="text" placeholder="Required" class="span3" name="level" id="level" required value="{{ class.section.year_level }}" />
+								<input type="text" placeholder="Required" class="span3" name="level" id="level" required value="{{ class.year_level }}" />
 							</div>	
 						</div> 					
 						<div class="control-group">
 							<label class="control-label" for="className">Section</label>
 							<div class="controls">
-								<input type="text" placeholder="Required" class="span3" name="className" id="className" value="{{ class.section.section_name }}" required />
+								<input type="text" placeholder="Required" class="span3" name="className" id="className" value="{{ class.section }}" required />
 							</div>
 						</div> 
-						{% endfor %}
 					 	<div class="control-group">  
 							<label class="control-label" for="classKey">Student Name</label>  
 							<div class="controls">
@@ -35,17 +34,16 @@ TECS: Test Essay Checking Software | Teacher Classes
 								<div>
 									<br>
 									<ul class="unstyled">
-										<li>Cruz, Juana O.</li>
-										<li>De Leon, Juana R.</li>
-										<li>Mapalo, Danica C.</li>
-										<li>Sia, Efren Ver M.</li>
-										<li>Tolentino, Pedro K.</li>
+										{% for student in class.student.all %}
+										<li>{{ student }}</li>
+										{% endfor %}
 									</ul>
-									<input class="span3" name="add_more[]" type="text" id="part0" placeholder="Required" value="" required />		
-									<button type="button" data-toggle="tooltip" data-placement="right" title="Add Student" onclick="add_more_text_box('add_more_div','add_more[]',child());" class="btn btn-primary mtm" ><i class="fui-plus"></i></button>	
+									<input class="span2" name="add_more[]" type="text" id="part0" placeholder="Required" value="" required />		
+									<button type="button" data-toggle="tooltip" data-placement="right" title="Add Student" onclick="add_more_text_box('add_more_div','add_more[]',child());" class="btn btn-primary" ><i class="fui-plus"></i></button>	
 								</div>
 							</div>
 					  	</div>
+						{% endfor %}
 						<div class="form-actions">  
 							<button type="submit" class="btn btn-primary"><b>Save</b> <i class="fui-check"></i></button> 
 							<button type="reset" class="btn btn-warning"><b>Reset</b> <i class="fui-play"></i></button> 

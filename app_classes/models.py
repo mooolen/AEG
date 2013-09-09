@@ -2,7 +2,7 @@ from django.db import models
 from django.forms import ModelForm
 from django.contrib.auth.models import User
 from app_auth.models import School, Student, Teacher
-from django.forms.widgets import TextInput, Select
+from django.forms.widgets import TextInput, Select, SelectMultiple
 from datetime import datetime
 
 class Class(models.Model):
@@ -25,8 +25,17 @@ class ClassForm(ModelForm):
 		model = Class
 		exclude = ('teacher', 'student', 'key', 'date_created', 'is_active')
 		widgets = {
-          'school': Select(attrs={'class' : 'select-block span3'}),
-          'year_level': Select(attrs={'class' : 'select-block span3'}),
-          'section': Select(attrs={'class' : 'select-block span3'}),
-          'academic_year': Select(attrs={'class' : 'select-block span3'}),
+          'school': Select(attrs={'class':'selectpicker span4', 'data-width':"auto"}),
+          'year_level': TextInput(attrs={'class':'input-xlarge span4'}),
+          'section': TextInput(attrs={'class':'input-xlarge span4'}),
+          'subject': TextInput(attrs={'class':'input-xlarge span4'}),
+          'academic_year': TextInput(attrs={'class':'input-xlarge span4'}),
         }
+
+class EditForm(ModelForm):
+	class Meta:
+		model = Class
+		exclude = ('teacher', 'key', 'date_created', 'is_active', 'school')
+		widgets = {
+			'student': SelectMultiple(attrs={'class':'selectpicker span4', 'data-width':"auto"}),
+		}

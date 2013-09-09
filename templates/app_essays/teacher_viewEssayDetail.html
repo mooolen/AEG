@@ -20,7 +20,10 @@ TECS: Test Essay Checking Software | Essay
 				<dd>{{ essay.title }}</dd>
 
 				<dt>Class</dt>
-				<dd>{{ essay.class_subject }}</dd>
+				<dd>{{ essay.class_name.year_level }} - {{ essay.class_name.section }}</dd>
+
+				<dt>Subject</dt>
+				<dd>{{ essay.class_name.subject }}</dd>
 
 				<dt>Instructions</dt>
 				<dd>{{ essay.instructions }}</dd>

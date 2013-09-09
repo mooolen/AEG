@@ -7,6 +7,24 @@ TECS: Test Essay Checking Software | Teacher Add Classes
 
 
 {% block content %}
+<head>
+	<link href="{% static 'base/css/bootstrap-select.css' %}" rel="stylesheet" media="screen">
+
+	<script type="text/javascript">
+	    $(window).on('load', function () {
+	     $('.selectpicker').selectpicker('show');
+	    });
+	</script>
+
+	<style>
+		#myModal {    
+		    width: 50%;
+		    margin-left: -30%;
+		    left: 55%;
+		}
+	</style>
+
+</head>
 <div class="page-content">
 	<div id="myModal" data-backdrop="static" data-keyboard="false" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	  <div class="modal-header">
@@ -35,10 +53,7 @@ TECS: Test Essay Checking Software | Teacher Add Classes
 								{{ form }}
 								{% for error in form.errors %}
 								<p class="text-error">{{ error }}</p>
-								{% endfor %}
-								{% if 'School' not in form.label_tag  %}
-								<button type="button" data-toggle="tooltip" data-placement="right" title data-original-title="This is a link." onclick="add_more_text_box('add_more_div','add_more[]',child());" class="btn btn-primary mtm" ><i class="fui-plus"></i></button>	
-								{% endif %}
+								{% endfor %}								
 						</div>
 					</div>		
 				</div> 	

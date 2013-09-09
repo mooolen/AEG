@@ -26,17 +26,19 @@ TECS: Test Essay Checking Software | Essay
 		<table class="table table-striped">
 			<thead>
 				<tr>
-					<th width="20%">Class</th>
-					<th width="30%">Essay</th>
-					<th width="15%">Start</th>
-					<th width="15%">Deadline</th>
-					<th width="10%"></th>
+					<th width="15%">Class</th>
+					<th width="11%">Subject</th>
+					<th width="25%">Essay</th>
+					<th width="12%">Start</th>
+					<th width="12%">Deadline</th>
+					<th width="11%"></th>
 				</tr>
 			</thead>
 			<tbody>
 				{% for essay in essays %}
 				<tr>
-					<td>{{ essay.class_subject.subject_name }}</td>
+					<td>{{ essay.class_name.year_level }} - {{ essay.class_name.section }}</td>
+					<td>{{ essay.class_name.subject }}</td>
 					<td>{{ essay.title }}</td>
 					<td>{{ essay.start_date }}</td>
 					<td>{{ essay.deadline }}</td>
