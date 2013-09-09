@@ -1,0 +1,60 @@
+{% extends "base/base_register.html" %}
+{% load staticfiles %}
+
+{% block title %}
+TECS: Test Essay Checking Software | Register
+{% endblock %}
+
+{% block register %}
+<div class="login">
+	<div class="login-screen">		
+		<h3>TECS: Test Essay Checking Software</h3>
+		<div class="login-form">
+		{% csrf_token %}
+		<form class="form-horizontal">	
+			<div class="control-group">
+				<label class="control-label" for="fName">Name</label>
+				<div class = "controls">
+					<p>{{ RegistrationForm.first_name }}</p>
+					<p>{{ RegistrationForm.last_name }}</p>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="fName">Password</label>
+				<div class = "controls">
+					{{ RegistrationForm.password }}
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="fName">Retype Password</label>
+				<div class = "controls">
+					{{ RegistrationForm.repassword }}
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="fName">Address</label>
+				<div class = "controls">
+					<p>{{ RegistrationForm.street }}</p>
+					<p>{{ RegistrationForm.province }}</p>		
+					<p>{{ RegistrationForm.municipality }}</p>
+				</div>
+			</div>			
+			<div class="control-group">
+				<label class="control-label" for="fName">Phone Number</label>
+				<div class = "controls">
+					{{ RegistrationForm.phone_number }}
+				</div>
+			</div>	
+			<div class="control-group">
+				<label class="control-label" for="fName">Email</label>
+				<div class = "controls">
+					{{ RegistrationForm.email }}
+				</div>
+			</div>
+		</form>
+		<button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+		<a href="/" class="btn btn-lg btn-danger btn-block" type="button">Cancel</a>
+  	</div>
+  </div>
+</div>
+{% endblock %}
