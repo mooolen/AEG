@@ -2,10 +2,11 @@ from django.db import models
 from django import forms
 from django.forms import ModelForm, DateTimeInput, TextInput, Textarea
 from django.utils import timezone
-from datetime import datetime
+from django.utils.timezone import utc
 from django.contrib.auth.models import User
 from app_auth.models import Student, Teacher
 from app_classes.models import Class
+import datetime
 
 class GradingSystem(models.Model):
 	name = models.CharField(max_length=50)
@@ -43,14 +44,32 @@ class Essay(models.Model):
 class EssayResponse(models.Model):
 	essay = models.ForeignKey(Essay)
 	student = models.ForeignKey(Student)
-	response = models.TextField()
-	time_started = models.DateTimeField()
-	status = models.IntegerField()
-	grade = models.ForeignKey(Grade)
+	response = models.TextField(blank=True, default="")
+	time_started = models.DateTimeField(blank=True, null=True)
+	status = models.IntegerField(default=0)
+	grade = models.ForeignKey(Grade, null=True, blank=True)
 
 	def __str__(self):
 		return self.essay.title
-		
+
+	@property
+	def time_remaining(self):
+		essay_duration_sec = self.essay.duration_hours*60*60 + self.essay.duration_minutes*60
+		if self.status != 0:
+			delta = timezone.now() - self.time_started
+			return essay_duration_sec - delta.seconds
+		else:
+			return essay_duration_sec
+
+	@property
+	def time_remaining_str(self):
+		t = self.time_remaining
+		hours = t/3600
+		minutes = (t/60)%60
+		time_str = str(hours) + ( ' hours' if hours > 1 else ' hour' ) if hours > 0 else ''
+		time_str +=  str(minutes) + ( ' minutes' if minutes > 1 else ' minute' ) if minutes > 0 else ''
+		return time_str
+
 class EssayForm(ModelForm):
 	class Meta:
 		model = Essay
@@ -89,8 +108,11 @@ class EssayForm(ModelForm):
 			raise forms.ValidationError("Date for deadline must be later than the start date.")
 		return deadline
 
-class EssayReponse(ModelForm):
+class EssayResponseForm(ModelForm):
 	class Meta:
 		model = EssayResponse
-		
-
+		fields = ['response']
+		initial = {'response': 'aa' }
+		widgets = {
+			'response': Textarea(attrs={'class':'input-xlarge span4', 'rows':'10'}),
+		}

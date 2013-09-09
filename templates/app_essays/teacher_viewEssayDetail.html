@@ -20,7 +20,7 @@ TECS: Test Essay Checking Software | Essay
 				<dd>{{ essay.title }}</dd>
 
 				<dt>Class</dt>
-				<dd>{{ essay.class_subject }}</dd>
+				<dd>{{ essay.class_name }}</dd>
 
 				<dt>Instructions</dt>
 				<dd>{{ essay.instructions }}</dd>
@@ -35,9 +35,33 @@ TECS: Test Essay Checking Software | Essay
 				<dd>{{ essay.deadline }}</dd>
 
 				<dt>Duration</dt>
-				<dd>{{ essay.duration_hour }} hour(s) {{ essay.duration_minutes }} minute(s) </dd>
+				<dd>{{ essay.duration_hours }} hour(s) {{ essay.duration_minutes }} minute(s) </dd>
 				
 			</dl>
+		</div>
+		<div class="row-fluid">
+			<div class="span8">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th width="20%">Student</th>
+							<th width="20%">Status</th>
+							<th width="10%">Grade</th>
+							<th width="15%">Submisson</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for essay_response in essay_responses %}
+						<tr>
+							<td>{{ essay_response.student }}</td>
+							<td>{% if essay_response.status != 2 %} No response yet {% endif %}</td>
+							<td>{% if essay_response.grade == null %} -- {% endif %}</td>
+							<td><a href="" class="btn btn-info {% if essay_response.status == 0 %} disabled {% endif %} ">View</a></td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
 		</div>
 		<p class="pull-left">
 			<a href="{% url 'essays:list' %}" class="btn btn-inverse"><span class="fui-arrow-left"></span> Back</a>
