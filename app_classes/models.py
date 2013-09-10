@@ -25,11 +25,11 @@ class ClassForm(ModelForm):
 		model = Class
 		exclude = ('teacher', 'key', 'date_created', 'is_active', 'student')
 		widgets = {
-          'school': Select(attrs={'class':'selectpicker span4', 'data-width':"auto", }),
-          'year_level': TextInput(attrs={'class':'input-xlarge span4', 'data-name':'year_level' }),
-          'section': TextInput(attrs={'class':'input-xlarge span4', 'data-name':'section'}),
-          'subject': TextInput(attrs={'class':'input-xlarge span4'}),
-          'academic_year': TextInput(attrs={'class':'input-xlarge span4', 'data-name':'academic_year'}),
+          'school': Select(attrs={'class':'selectpicker span9', 'data-width':"auto", }),
+          'year_level': TextInput(attrs={'class':'input-xlarge span11', 'data-name':'year_level' }),
+          'section': TextInput(attrs={'class':'input-xlarge span11', 'data-name':'section'}),
+          'subject': TextInput(attrs={'class':'input-xlarge span11'}),
+          'academic_year': TextInput(attrs={'class':'input-xlarge span11', 'data-name':'academic_year'}),
         }
 
         def cleaned_Emails(self):
@@ -39,7 +39,12 @@ class ClassForm(ModelForm):
 class EditForm(ModelForm):
 	class Meta:
 		model = Class
-		exclude = ('teacher', 'key', 'date_created', 'is_active', 'school')
+		exclude = ('teacher', 'key', 'date_created', 'is_active', 'student')
 		widgets = {
-			'student': SelectMultiple(attrs={'class':'selectpicker span4', 'data-width':"auto"}),
+			'school': Select(attrs={'class':'selectpicker span12' }),
+			'year_level': TextInput(attrs={'class':'input-xlarge span4', 'data-name':'year_level' }),
+			'section': TextInput(attrs={'class':'input-xlarge span4', 'data-name':'section'}),
+			'student': TextInput(attrs={'class':'input-xlarge span4', 'data-name':'section'}),
+			'subject': TextInput(attrs={'class':'input-xlarge span4', 'data-name':'section'}),
+			'academic_year': TextInput(attrs={'class':'input-xlarge span4', 'data-name':'academic_year'}),
 		}

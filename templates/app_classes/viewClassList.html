@@ -15,6 +15,7 @@ TECS: Test Essay Checking Software | Home
 			<img class="title-icons" src={% static 'base/img/icons/Pocket@2x.png' %}>
 			<h3 class="title">{{ studentList.year_level }}-{{ studentList.section }}: {{ studentList.subject }} for (S.Y. {{ studentList.academic_year }})</h3>
 			<table class="table table-striped">
+				{% if studentList.student.all.count %}
 			<thead>
 				<tr>
 					<th><center>#</center></th>
@@ -34,10 +35,16 @@ TECS: Test Essay Checking Software | Home
 					<td><center>{{student.user.email}}</center></td>
 					<td>{% if student.user.is_active %}<center style="color:#1abc9c">Active</center>
 					{% else %}<center style="color:red">Inactive</center></td>{% endif %}
-					<td><center><a href="{% url 'classes:delete' studentList.id %}" onclick="return confirm('Are you sure you want to delete this class?')" class="btn btn-danger"><span class=""><i class="fui-cross"></i></span></a></center></td>
+					<td><center><a href="{% url 'classes:delete' studentList.id %}" onclick="return confirm('Are you sure you want to remove this student from this class?')" class="btn btn-danger"><span class=""><i class="fui-cross"></i></span></a></center></td>
 				</tr>	
 				{% endfor %}			
 			</tbody>
+			{% else %}
+				<div class="alert alert-block alert-error">
+		          <h4><strong>Oops!</strong></h4>
+		          	You haven't added students yet.
+		        </div>
+			{% endif %}
 		</table>
 	</div>
 </div>

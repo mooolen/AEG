@@ -8,24 +8,22 @@ TECS: Test Essay Checking Software | Teacher Add Classes
 
 {% block content %}
 <head>
+	<script src="{% static 'base/js/jquery.min.js' %}"></script>
+	<script src="{% static 'base/js/bootstrap-select.js' %}"></script>
 	<link href="{% static 'base/css/bootstrap-select.css' %}" rel="stylesheet" media="screen">
+	<script src="{% static 'base/js/bootstrap.js' %}"></script>
 
-	<script type="text/javascript">
-	    $(window).on('load', function () {
-	     $('.selectpicker').selectpicker('show');
-	    });
-	</script>
+    <script type="text/javascript">
+        $(window).on('load', function () {
 
-	<style>
-		#myModal {    
-		    width: 70%;
-		    margin-left: -30%;
-		    left: 45%;
-		}
-	</style>
+            $('.selectpicker').selectpicker();
 
-</head>
+            // $('.selectpicker').selectpicker('hide');
+        });
+    </script>
+</head>	
 <div class="page-content">
+	<div class="row-fluid">
 	<div id="myModal" data-backdrop="static" data-keyboard="false" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	  <div class="modal-header">
 	    <h3 id="myModalLabel">Send Invitation</h3>
@@ -58,17 +56,15 @@ TECS: Test Essay Checking Software | Teacher Add Classes
 	<div class="content">
 		<img class="title-icons" src="{% static 'base/img/icons/plus.png' %}">
 		<h3 class="title">Add New Class</h3>
-		<form class="form-horizontal" action="{% url 'classes:submitClass' %}" method="post">{% csrf_token %}
+		<form class="form-horizontal span11" action="{% url 'classes:submitClass' %}" method="post">{% csrf_token %}
 			{% for form in addClassForm %}
 				<div class="control-group">
 					<label class="control-label" for="level">{{ form.label_tag }}</label>
 					<div class="controls">
-							<div class="span7">
 								{{ form }}
 								{% for error in form.errors %}
 								<p class="text-error">{{ error }}</p>
-								{% endfor %}								
-						</div>
+								{% endfor %}
 					</div>		
 				</div> 	
 			{% endfor %}	
@@ -81,6 +77,7 @@ TECS: Test Essay Checking Software | Teacher Add Classes
 			</div>
 		</form>
 	</div>
+</div>
 </div>
 
 <script>
