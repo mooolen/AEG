@@ -6,15 +6,23 @@ TECS: Test Essay Checking Software | Teacher Classes
 {% endblock %}
 
 {% block content %}
-
+<head>
+	<script src="{% static 'base/js/jquery.min.js' %}"></script>
+	<script>
+	    $(function() {
+		    var tooltips = $( "[title]" ).tooltip();
+		    $(document)(function() {
+		    	tooltips.tooltip( "open" );
+		    })
+	    });
+	</script>
+</head>
 <div class="page-content">
 	<div class="row-fluid">
 		<div class="content">
-			{% if not power %}
 			<p class="pull-right">
 				<a href="{% url 'classes:add' %}" data-toggle="tooltip" data-trigger="hover" data-placement="left" title data-original-title="Add New Class" class="btn btn-warning"><i class="fui-plus"></i></a>
 			</p>
-			{% endif %}
 			<img class="title-icons" src="{% static 'base/img/icons/Clipboard@2x.png' %}">
 			<h3 class="title">My Classes</h3>
 			

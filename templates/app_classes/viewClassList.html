@@ -6,11 +6,22 @@ TECS: Test Essay Checking Software | Home
 {% endblock %}
 
 {% block content %}
+<head>
+	<script src="{% static 'base/js/jquery.min.js' %}"></script>
+	<script>
+	    $(function() {
+		    var tooltips = $( "[title]" ).tooltip();
+		    $(document)(function() {
+		    	tooltips.tooltip( "open" );
+		    })
+	    });
+	</script>
+</head>
 <div class="page-content">
 	<div class="row-fluid">
 		<div class="content">
 			<p class="pull-right">
-				<a href="{% url 'classes:edit' studentList.id %}" data-toggle="tooltip" data-trigger="hover" data-placement="left" title data-original-title="Add New Class" class="btn btn-warning"><i class="fui-new"></i></a>
+				<a href="{% url 'classes:edit' studentList.id %}" data-toggle="tooltip" data-trigger="hover" data-placement="left" title data-original-title="Edit Class Info" class="btn btn-warning"><i class="fui-new"></i></a>
 			</p>
 			<img class="title-icons" src={% static 'base/img/icons/Pocket@2x.png' %}>
 			<h3 class="title">{{ studentList.year_level }}-{{ studentList.section }}: {{ studentList.subject }} for (S.Y. {{ studentList.academic_year }})</h3>

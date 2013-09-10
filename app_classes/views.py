@@ -34,22 +34,21 @@ def class_list(request):
 def class_teacher(request, err=None, success=None):
 	User_Profile = UserProfile.objects.get(user_id = request.user.id)
 	teacher = Teacher.objects.filter(user=request.user)
-	sections = Class.objects.filter(teacher=teacher)
 	hasClasses = None
-	power = 0
 	link = 'app_classes/class_teacher.html'
-	if not sections.exists() and teacher.exists():
-		hasClasses = 'You have no Classes made.'
-	elif not teacher.exists():
+	if teacher.exists():
+		sections = Class.objects.filter(teacher=teacher)
+	else:
 		student = Student.objects.filter(user=request.user)
 		if student.exists():
 			link = 'app_classes/viewClasses.html'
 			sections = Class.objects.filter(student=student)
 		else:	
 			hasClasses = 'You have no permission to add Classes.'
-		power = 1
+	if not sections.exists():
+		hasClasses = 'You don\'t have Classes yet'
 	avatar = User_Profile.avatar
-	return render(request, link, {'avatar':avatar, 'active_nav':'CLASSES', 'sections':sections, 'error': err, 'success':success, 'hasClasses':hasClasses, 'power':power})
+	return render(request, link, {'avatar':avatar, 'active_nav':'CLASSES', 'sections':sections, 'error': err, 'success':success, 'hasClasses':hasClasses})
 
 @login_required(redirect_field_name='', login_url='/')
 def teacher_addNewClass(request, add_form=None):

@@ -25,7 +25,7 @@ class ClassForm(ModelForm):
 		model = Class
 		exclude = ('teacher', 'key', 'date_created', 'is_active', 'student')
 		widgets = {
-          'school': Select(attrs={'class':'selectpicker span9', 'data-width':"auto", }),
+          'school': Select(attrs={'class':'selectpicker span6 show-tick', 'data-size':10, 'data-container':"body", 'data-options':"is_hover" }),
           'year_level': TextInput(attrs={'class':'input-xlarge span11', 'data-name':'year_level' }),
           'section': TextInput(attrs={'class':'input-xlarge span11', 'data-name':'section'}),
           'subject': TextInput(attrs={'class':'input-xlarge span11'}),
@@ -41,7 +41,7 @@ class EditForm(ModelForm):
 		model = Class
 		exclude = ('teacher', 'key', 'date_created', 'is_active', 'student')
 		widgets = {
-			'school': Select(attrs={'class':'selectpicker span12' }),
+			'school': Select(attrs={'class':'selectpicker span6 show-tick', 'data-size':10, 'data-container':"body" }),
 			'year_level': TextInput(attrs={'class':'input-xlarge span4', 'data-name':'year_level' }),
 			'section': TextInput(attrs={'class':'input-xlarge span4', 'data-name':'section'}),
 			'student': TextInput(attrs={'class':'input-xlarge span4', 'data-name':'section'}),
