@@ -58,7 +58,7 @@ TECS: Test Essay Checking Software | Teacher Add Classes
 	<div class="content">
 		<img class="title-icons" src="{% static 'base/img/icons/plus.png' %}">
 		<h3 class="title">Add New Class</h3>
-		<form class="form-horizontal" action="/classes/submit/" method="post">{% csrf_token %}
+		<form class="form-horizontal" action="{% url 'classes:submitClass' %}" method="post">{% csrf_token %}
 			{% for form in addClassForm %}
 				<div class="control-group">
 					<label class="control-label" for="level">{{ form.label_tag }}</label>

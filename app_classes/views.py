@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from app_classes.models import Class, ClassForm
 from django.shortcuts import render, get_object_or_404
-from app_auth.models import UserProfile, Teacher, School
+from app_auth.models import UserProfile, Teacher, School, Student
 from django.db.models import Count
 from django.db.models import Count
 from django import forms
@@ -37,13 +37,19 @@ def class_teacher(request, err=None, success=None):
 	sections = Class.objects.filter(teacher=teacher)
 	hasClasses = None
 	power = 0
+	link = 'app_classes/class_teacher.html'
 	if not sections.exists() and teacher.exists():
 		hasClasses = 'You have no Classes made.'
 	elif not teacher.exists():
-		hasClasses = 'You have no permission to add Classes.'
+		student = Student.objects.filter(user=request.user)
+		if student.exists():
+			link = 'app_classes/viewClasses.html'
+			sections = Class.objects.filter(student=student)
+		else:	
+			hasClasses = 'You have no permission to add Classes.'
 		power = 1
 	avatar = User_Profile.avatar
-	return render(request, 'app_classes/class_teacher.html', {'avatar':avatar, 'active_nav':'CLASSES', 'sections':sections, 'error': err, 'success':success, 'hasClasses':hasClasses, 'power':power})
+	return render(request, link, {'avatar':avatar, 'active_nav':'CLASSES', 'sections':sections, 'error': err, 'success':success, 'hasClasses':hasClasses, 'power':power})
 
 @login_required(redirect_field_name='', login_url='/')
 def teacher_addNewClass(request, add_form=None):
@@ -112,3 +118,9 @@ def delete(request, class_id):
 	class_info.delete()
 	success_url = '/classes/'
 	return class_teacher(request, 0, 'You successfully deleted a class.')
+
+@login_required(redirect_field_name='', login_url='/')
+def viewClassList(request, class_id):
+	class_info = Class.objects.get(pk=class_id)
+	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
+	return render(request, 'app_classes/viewClassList.html', {'studentList':class_info, 'active_nav':'CLASSES', 'avatar':avatar})
