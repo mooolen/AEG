@@ -4,7 +4,7 @@ import hashlib
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from app_classes.models import Class, ClassForm, EditForm, EnrollForm
+from app_classes.models import Class, ClassForm, EditForm
 from django.shortcuts import render, get_object_or_404
 from app_auth.models import UserProfile, Teacher, School, Student
 from django.db.models import Count
@@ -108,13 +108,6 @@ def edit(request, class_id):
 	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
 	return render(request, 'app_classes/teacher_editClass.html', {'avatar':avatar, 'active_nav':'CLASSES', 'class_info':class_info, 'formEdit':formEdit})
 			
-@login_required(redirect_field_name='', login_url='/')
-def manualChecking(request):
-	#sections = Section.objects.annotate(number_of_entries=Count('section_name')).select_related('school__short_name','section_name')
-	#avatar = UserProfile.objects.get(user_id = request.user.id).avatar
-	#return render(request, 'app_classes/manualChecking.html', {'avatar':avatar, 'active_nav':'CLASSES', 'sections':sections})
-	return render(request, 'app_classes/manualChecking.html')
-
 @login_required(redirect_field_name='', login_url='/')
 def delete(request, class_id):
 	class_info = get_object_or_404(Class, pk=class_id)

@@ -108,3 +108,36 @@ def essay_submission(request, essay_response_id):
 	essay_response = EssayResponse.objects.get(pk=int(essay_response_id))
 
 	return render(request, 'app_essays/teacher_viewEssaySubmission.html', {'avatar':avatar, 'active_nav':'EXAMS', 'essay_response':essay_response})
+
+@login_required(redirect_field_name='', login_url='/')
+def manualChecking(request):
+	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
+	'''
+	errors = 0;
+
+	if request.method == 'POST':
+		form = ManualCheckingForm(request.POST, request)
+		if form.is_valid():
+			cd = form.cleaned_data
+			data = form.save(commit=False)
+			data.instructor = Teacher.objects.get(user_id = request.user.id)
+			data.status = 1
+			data.save()
+
+			students = Class.objects.get(pk=Essay.objects.get(pk=data.pk).class_name.pk).student.all()
+
+			for student in students:
+				response = EssayResponse(essay=data, student=student)
+				response.save()
+
+			return HttpResponseRedirect('/essays/')
+		else :
+			errors = 1
+		
+	else:
+		form = ManualCheckingForm()
+		form.fields['class_name'].queryset = Class.objects.filter(teacher = Teacher.objects.get(user_id = request.user.id))
+	'''
+	return render(request, 'app_essays/teacher_manualChecking.html', {'avatar':avatar, 'active_nav':'EXAMS', 
+		#'errors':errors, 'form': form
+		})
