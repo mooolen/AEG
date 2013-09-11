@@ -18,10 +18,10 @@ from django.contrib.auth.models import User, check_password
 from django.http import HttpResponseRedirect
 from django.views.generic.edit import FormView
 from django.core.context_processors import csrf
-from app_auth.models import UserProfile, passwordForm
+from app_auth.models import UserProfile, passwordForm, UserProfile
 from django.contrib.auth.decorators import login_required
 
-from .forms import LoginForm, PasswordForm
+from .forms import LoginForm, PasswordForm, ProfileForm
 
 class LoginView(FormView):
 	form_class = LoginForm
@@ -86,7 +86,12 @@ def user_logout(request):
 def profile_edit(request, success=None):
 	user_info = UserProfile.objects.get(user_id = request.user.id)
 	avatar = user_info.avatar
-	return render(request, 'app_auth/profile.html', {'avatar': avatar, 'user_info':user_info, 'success':success})
+	formProfile = ProfileForm(initial={
+		'last_name':request.user.last_name, 'first_name':request.user.first_name, 'email':request.user.email, 'avatar':user_info.avatar,
+		'username': request.user.username, 'street':user_info.street, 'municipality':user_info.municipality,
+		'province': user_info.province, 'phone_number': user_info.phone_number
+	})
+	return render(request, 'app_auth/profile.html', {'avatar': avatar, 'success':success, 'formProfile':formProfile})
 
 @login_required(redirect_field_name='', login_url='/')
 def password_edit(request):
