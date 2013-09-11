@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 class UserProfile(models.Model):
 	user = models.OneToOneField(User)
-	avatar = models.ImageField(upload_to='images/avatars/')
+	avatar = models.ImageField(upload_to='images/avatars/', default='images/avatars/user.png', blank=True)
 	street = models.TextField(blank=True)
 	province = models.TextField(blank=True)
 	municipality = models.TextField(blank=True)

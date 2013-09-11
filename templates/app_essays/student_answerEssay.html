@@ -132,8 +132,8 @@ TECS: Test Essay Checking Software | Home
 						</div>
 
 					  <div class="form-actions">  
-						<button type="submit" class="btn btn-primary"><b>Save Draft</b> <i class="fui-new"></i></button> 
-						<button type="button" onClick="confirmation()" class="btn btn-warning"><b>Submit</b> <i class="fui-check"></i></button> 
+						<button name="draft" type="submit" class="btn btn-primary"><b>Save Draft</b> <i class="fui-new"></i></button> 
+						<button name="final" type="submit" class="btn btn-warning"><b>Submit</b> <i class="fui-check"></i></button> 
 						<a href="#myModal" role="button" data-toggle="modal" class="btn btn-danger"><b>Lock</b><i class="fui-lock"></i></a>
 					  </div>   
 					</fieldset>
@@ -211,7 +211,7 @@ var count =0;
 function wordcount(inputwords) {
 	console.log(('#id_response').value);
 	inputwords = ('#id_response').value;
-	var essay = inputwords.split(/\s/);
+	var essay = inputwords.split(/\s+/);
 	count = essay.length;
 	alert(count);
 };

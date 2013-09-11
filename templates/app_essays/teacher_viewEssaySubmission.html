@@ -1,0 +1,22 @@
+{% extends "base/base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+TECS: Test Essay Checking Software | Essay
+{% endblock %}
+
+{% block content %}
+<div class="span10">
+	<div class="row-fluid">
+		<div class="span12 content">
+				<div class="demo-text-box prl">
+					  	<h4><center><strong> {{ essay_response.essay.title }} </strong></center> </h4>
+						{{ essay_response.response }}
+				  </div>
+				  <br>
+			</div>
+		</div>
+	</div><!--/span-->
+</div><!--/row-->
+
+{% endblock %}
