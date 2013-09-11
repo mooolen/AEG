@@ -89,26 +89,26 @@ def profile_edit(request, success=None):
 	return render(request, 'app_auth/profile.html', {'avatar': avatar, 'user_info':user_info, 'success':success})
 
 @login_required(redirect_field_name='', login_url='/')
-def password_edit(request, err=None):
+def password_edit(request):
 	user_info = UserProfile.objects.get(user_id = request.user.id)
 	avatar = user_info.avatar
-	form = PasswordForm()
-	return render(request, 'app_auth/changePassword.html', {'avatar': avatar, 'user_info':user_info, 'form':form, 'error': err})
+	err = None
+	success = None
+	if request.method == "POST":
+		form_class = PasswordForm(data=request.POST)
+		if form_class.is_valid():
+			forms = form_class.cleaned_data
+			password = forms['password']
+			newPassword = forms['ConfPassword']
+			oldPassword = forms['OldPassword']
+			u = User.objects.get(id=request.user.id)
 
-@login_required(redirect_field_name='', login_url='/')
-def reset(request):
-	form_class = PasswordForm(data=request.POST)
-	if form_class.is_valid():
-		forms = form_class.cleaned_data
-		password = forms['password']
-		newPassword = forms['ConfPassword']
-		oldPassword = forms['OldPassword']
-		u = User.objects.get(id=request.user.id)
-
-	if u.check_password(oldPassword) and password == newPassword:
-		u.set_password(newPassword)
-		u.save()
-		return profile_edit(request, 'You have changed your password.')
-	else:
-		return password_edit(request, 'Passwords did not matched.')
-
+			if u.check_password(oldPassword) and password == newPassword:
+				u.set_password(newPassword)
+				u.save()
+				success = 'You have changed your password.'
+			else:
+				err = 'Passwords did not matched.'
+	else:	
+		form_class = PasswordForm()
+	return render(request, 'app_auth/changePassword.html', {'avatar': avatar, 'user_info':user_info, 'form':form_class, 'error': err, 'success':success})

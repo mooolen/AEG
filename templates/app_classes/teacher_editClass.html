@@ -34,6 +34,9 @@ TECS: Test Essay Checking Software | Teacher Classes
 							
 							<div class="controls">
 								{{ form }}
+								{% for error in form.errors %}
+								<p class="text-error">{{ error }}</p>
+								{% endfor %}
 							</div>	
 						</div> 		
 						{% endfor %}
@@ -54,9 +57,9 @@ TECS: Test Essay Checking Software | Teacher Classes
 							</div>
 					  	</div>
 						<div class="form-actions">  
-							<button type="submit" class="btn btn-primary btn-large"><b>Save</b> <i class="fui-check"></i></button> 
+							<button type="submit" class="btn btn-primary"><b>Save</b> <i class="fui-check"></i></button> 
 							<button type="reset" class="btn btn-warning"><b>Reset</b> <i class="fui-play"></i></button> 
-							<a href="/classes/" type="button" class="btn btn-danger"><b>Cancel</b>  <i class="fui-cross"></i></a>  
+							<a href="{% url 'classes:classes' %}" type="button" class="btn btn-danger"><b>Cancel</b>  <i class="fui-cross"></i></a>  
 						</div>   
 		  			</fieldset>
 				</form>

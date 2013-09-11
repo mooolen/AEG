@@ -96,7 +96,7 @@ class EssayForm(ModelForm):
 	def clean_start_date(self):
 		startdate = self.cleaned_data['start_date']
 		
-		if datetime.date(startdate) < datetime.date(timezone.now()):
+		if datetime.datetime.date(startdate) < datetime.datetime.date(timezone.now()):
 			raise forms.ValidationError("This date has already passed.")
 		return startdate
 	

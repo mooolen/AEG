@@ -13,7 +13,7 @@ class Class(models.Model):
 	academic_year = models.CharField(max_length=20)
 	teacher = models.ForeignKey(Teacher)
 	student = models.ManyToManyField(Student)
-	key = models.CharField(max_length=32, unique=True)
+	key = models.CharField(max_length=32)
 	date_created = models.DateTimeField(default=datetime.now)
 	is_active = models.IntegerField(default=0)
 
@@ -44,7 +44,16 @@ class EditForm(ModelForm):
 			'school': Select(attrs={'class':'selectpicker span6 show-tick', 'data-size':10, 'data-container':"body" }),
 			'year_level': TextInput(attrs={'class':'input-xlarge span4', 'data-name':'year_level' }),
 			'section': TextInput(attrs={'class':'input-xlarge span4', 'data-name':'section'}),
-			'student': TextInput(attrs={'class':'input-xlarge span4', 'data-name':'section'}),
-			'subject': TextInput(attrs={'class':'input-xlarge span4', 'data-name':'section'}),
+			'student': TextInput(attrs={'class':'input-xlarge span4', 'data-name':'student'}),
+			'subject': TextInput(attrs={'class':'input-xlarge span4', 'data-name':'subject'}),
 			'academic_year': TextInput(attrs={'class':'input-xlarge span4', 'data-name':'academic_year'}),
+		}
+
+class EnrollForm(ModelForm):
+	class Meta:
+		model = Class
+		exclude = ('teacher', 'date_created', 'is_active', 'student', 'year_level', 'section', 'subject', 'academic_year')
+		widgets = {
+			'school': Select(attrs={'class':'selectpicker span6 show-tick', 'data-size':10, 'data-container':"body", 'data-options':"is_hover" }),
+			'key': TextInput(attrs={'class':'input-xlarge span2', 'data-name':'key'}),
 		}
