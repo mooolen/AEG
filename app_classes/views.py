@@ -4,9 +4,9 @@ import hashlib
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from app_classes.models import Class, ClassForm
+from app_classes.models import Class, ClassForm, EditForm, EnrollForm
 from django.shortcuts import render, get_object_or_404
-from app_auth.models import UserProfile, Teacher, School
+from app_auth.models import UserProfile, Teacher, School, Student
 from django.db.models import Count
 from django.db.models import Count
 from django import forms
@@ -34,16 +34,24 @@ def class_list(request):
 def class_teacher(request, err=None, success=None):
 	User_Profile = UserProfile.objects.get(user_id = request.user.id)
 	teacher = Teacher.objects.filter(user=request.user)
-	sections = Class.objects.filter(teacher=teacher)
 	hasClasses = None
-	power = 0
-	if not sections.exists() and teacher.exists():
-		hasClasses = 'You have no Classes made.'
-	elif not teacher.exists():
-		hasClasses = 'You have no permission to add Classes.'
-		power = 1
+	power = True
+	link = 'app_classes/class_teacher.html'
+	if teacher.exists():
+		sections = Class.objects.filter(teacher=teacher)
+	else:
+		student = Student.objects.filter(user=request.user)
+		if student.exists():
+			link = 'app_classes/viewClasses.html'
+			sections = Class.objects.filter(student=student)
+		else:
+			sections = None
+			power = False
+			hasClasses = 'You have no permission to add Classes.'
+	if power and (sections is None or not sections.exists()):
+		hasClasses = 'You don\'t have Classes yet'
 	avatar = User_Profile.avatar
-	return render(request, 'app_classes/class_teacher.html', {'avatar':avatar, 'active_nav':'CLASSES', 'sections':sections, 'error': err, 'success':success, 'hasClasses':hasClasses, 'power':power})
+	return render(request, link, {'avatar':avatar, 'active_nav':'CLASSES', 'sections':sections, 'error': err, 'success':success, 'hasClasses':hasClasses, 'power':power})
 
 @login_required(redirect_field_name='', login_url='/')
 def teacher_addNewClass(request, add_form=None):
@@ -95,9 +103,10 @@ def submit(request):
 
 @login_required(redirect_field_name='', login_url='/')
 def edit(request, class_id):
-	class_info = Class.objects.filter(pk=class_id)
+	class_info = Class.objects.get(pk=class_id)
+	formEdit = EditForm(initial={'school':class_info.school, 'year_level':class_info.year_level, 'section':class_info.section, 'academic_year':class_info.academic_year, 'subject':class_info.subject})
 	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
-	return render(request, 'app_classes/teacher_editClass.html', {'avatar':avatar, 'active_nav':'CLASSES', 'class_info':class_info})
+	return render(request, 'app_classes/teacher_editClass.html', {'avatar':avatar, 'active_nav':'CLASSES', 'class_info':class_info, 'formEdit':formEdit})
 			
 @login_required(redirect_field_name='', login_url='/')
 def manualChecking(request):
@@ -112,3 +121,37 @@ def delete(request, class_id):
 	class_info.delete()
 	success_url = '/classes/'
 	return class_teacher(request, 0, 'You successfully deleted a class.')
+
+@login_required(redirect_field_name='', login_url='/')
+def viewClassList(request, class_id, message=None):
+	class_info = Class.objects.get(pk=class_id)
+	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
+	return render(request, 'app_classes/viewClassList.html', {'studentList':class_info, 'active_nav':'CLASSES', 'avatar':avatar, 'success':message})
+
+@login_required(redirect_field_name='', login_url='/')
+def enroll(request):
+	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
+	err = None
+	if request.method == "POST":
+		formEnroll = EnrollForm(data=request.POST)
+		if formEnroll.is_valid():
+			temp = formEnroll.cleaned_data
+			key = temp['key']
+			school = School.objects.filter(name=temp['school'])
+			class_info = Class.objects.filter(school=school).filter(key=key)
+			if class_info.exists():
+				student = Student.objects.get(user=request.user)
+				class_info = class_info.get(key=key)
+				class_info.student.add(student)
+				return class_teacher(request, 0, 'You are added to the class.')
+			err = 'Invalid Key Combination.'
+	else:
+		formEnroll = EnrollForm()
+	return render(request, 'app_classes/enrollClass.html', {'active_nav':'CLASSES','avatar':avatar, 'formEnroll':formEnroll, 'error':err})
+
+@login_required(redirect_field_name='', login_url='/')
+def removeStudent(request, class_id, student_id):
+	class_info = Class.objects.get(pk=class_id)
+	student = Student.objects.get(pk=student_id)
+	class_info.student.remove(student)
+	return viewClassList(request, class_id, 'You successfully removed a student.')
