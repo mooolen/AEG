@@ -4,7 +4,7 @@ import hashlib
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from app_classes.models import Class, ClassForm, EditForm, EnrollForm
+from app_classes.models import Class, ClassForm, EditForm#, EnrollForm
 from django.shortcuts import render, get_object_or_404
 from app_auth.models import UserProfile, Teacher, School, Student
 from django.db.models import Count

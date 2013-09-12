@@ -35,7 +35,7 @@ class Essay(models.Model):
 	duration_hours = models.IntegerField()
 	duration_minutes = models.IntegerField()
 	min_words = models.IntegerField()
-	status = models.IntegerField()
+	status = models.IntegerField()	#-1 - cancelled		0 - scheduled / not yet released	1 - on going	2 done/deadline
 	date_created = models.DateTimeField(default=timezone.now())
 
 	def __str__(self):
@@ -46,7 +46,7 @@ class EssayResponse(models.Model):
 	student = models.ForeignKey(Student)
 	response = models.TextField(blank=True, default="")
 	time_started = models.DateTimeField(blank=True, null=True)
-	status = models.IntegerField(default=0)
+	status = models.IntegerField(default=0)	#0 - not yet started ; 1 - started / draft ; 2 - submitted
 	grade = models.ForeignKey(Grade, null=True, blank=True)
 
 	def __str__(self):
@@ -69,6 +69,13 @@ class EssayResponse(models.Model):
 		time_str = str(hours) + ( ' hours' if hours > 1 else ' hour' ) if hours > 0 else ''
 		time_str +=  str(minutes) + ( ' minutes' if minutes > 1 else ' minute' ) if minutes > 0 else ''
 		return time_str
+
+	@property
+	def is_ongoing(self):
+		if timezone.now() > self.essay.deadline():
+			return False
+		else:
+			return True
 
 class EssayForm(ModelForm):
 	class Meta:

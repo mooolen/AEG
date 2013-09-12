@@ -30,7 +30,8 @@ def new_essay(request):
 				response = EssayResponse(essay=data, student=student)
 				response.save()
 
-			return HttpResponseRedirect('/essays/')
+			#return HttpResponseRedirect('/essays/')
+			return list_essay(request, None, 'New exam has been added.')
 		else :
 			errors = 1
 		
@@ -41,7 +42,7 @@ def new_essay(request):
 	return render(request, 'app_essays/teacher_newExam.html', {'avatar':avatar, 'active_nav':'EXAMS', 'errors':errors, 'form': form})
 
 @login_required(redirect_field_name='', login_url='/')	
-def list_essay(request):
+def list_essay(request, errors=None, success=None):
 	active_nav = "EXAMS"
 	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
 	no_essay = 0
@@ -50,13 +51,13 @@ def list_essay(request):
 		essays = Essay.objects.filter(instructor_id = Teacher.objects.get(user_id = request.user.id).id)
 		if (len(essays) == 0 ):
 			no_essay = 1	
-		return render(request, 'app_essays/teacher_viewExam.html',	{'avatar':avatar, 'active_nav':'EXAMS', 'no_essay':no_essay, 'essays':essays})
+		return render(request, 'app_essays/teacher_viewExam.html',	{'avatar':avatar, 'active_nav':'EXAMS', 'no_essay':no_essay, 'essays':essays, 'errors':errors, 'success':success})
 
 	#IF USER IS A STUDENT
 	elif len(Student.objects.filter(user_id = request.user.id)) > 0:
 		#essays = Essay.objects.filter(instructor_id = Teacher.objects.get(user_id = request.user.id).id)
-		essay_responses = EssayResponse.objects.filter(~Q(status=2), student_id=Student.objects.get(user_id = request.user.id).id)
-		return render(request, 'app_essays/student_viewEssay.html', {'avatar':avatar, 'active_nav':'EXAMS', 'essay_responses':essay_responses})
+		essay_responses = EssayResponse.objects.filter(~Q(status=2), student_id=Student.objects.get(user_id = request.user.id).id).filter(is_ongoing())
+		return render(request, 'app_essays/student_viewEssay.html', {'avatar':avatar, 'active_nav':'EXAMS', 'essay_responses':essay_responses, 'errors':errors, 'success':success})
 		
 @login_required(redirect_field_name='', login_url='/')
 def essay_details(request, essay_id):
