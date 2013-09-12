@@ -136,7 +136,7 @@
 
         htmlInput: function () {
             if (this.options.input) {
-                return '<input type="text" class="'+this.options.classInput+'" disabled> ';
+                return '<input type="text" class="'+this.options.classInput+'" style="margin-bottom: 13px" disabled> ';
             } else {
                 return '';
             }
