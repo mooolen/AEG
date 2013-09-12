@@ -18,42 +18,42 @@ from django.contrib.auth.models import User, check_password
 from django.http import HttpResponseRedirect
 from django.views.generic.edit import FormView
 from django.core.context_processors import csrf
-from app_auth.models import UserProfile, passwordForm
+from app_auth.models import UserProfile, passwordForm, UserProfile
 from django.contrib.auth.decorators import login_required
 
-from .forms import LoginForm, PasswordForm
+from .forms import LoginForm, PasswordForm, ProfileForm
 
 class LoginView(FormView):
 	form_class = LoginForm
 	redirect_field_name = REDIRECT_FIELD_NAME
 	template_name = 'app_auth/login.html'
 	success_url = '/dashboard'
-
+	
 	def dispatch(self, request, *args, **kwargs):
 		if request.user.is_authenticated():
 			return HttpResponseRedirect(self.get_success_url())
 		else:
 			return super(LoginView, self).dispatch(request, *args, **kwargs)
-
+	
 	def form_valid(self, form, request):
 		username = form.cleaned_data['username']
 		password = form.cleaned_data['password']
-
+			
 		user = authenticate(username=username, password=password)
-
+			
 		if user is not None:
 			if user.is_active:
 				login(self.request, user)
 				return HttpResponseRedirect(self.get_success_url())			
 		else:		
 			return self.form_invalid(form, request)
-
+	
 	def form_invalid(self, form, request):
 		return render_to_response( self.template_name , {
 			'errors': 1,
 			'form' : form, 
 		},  RequestContext(request))
-
+	
 	def get_success_url(self):
 		if self.success_url:
 			redirect_to = self.success_url
@@ -61,19 +61,19 @@ class LoginView(FormView):
 			redirect_to = self.request.REQUEST.get(self.redirect_field_name, '')
 
 		netloc = urlparse(redirect_to)[1]
-
+		
 		if not redirect_to:
 			redirect_to = settings.LOGIN_REDIRECT_URL
 		elif netloc and netloc != self.request.get_host():
 			redirect_to = settings.LOGIN_REDIRECT_URL
 		return redirect_to
-
+	  
 	def post(self, request, *args, **kwargs):
 		c = {}
 		c.update(csrf(request))
 		form_class = self.get_form_class()
 		form = self.get_form(form_class)
-
+		
 		if form.is_valid():
 			return self.form_valid(form, request)
 		else:				
@@ -84,9 +84,20 @@ def user_logout(request):
 
 @login_required(redirect_field_name='', login_url='/')
 def profile_edit(request, success=None):
-	user_info = UserProfile.objects.get(user_id = request.user.id)
-	avatar = user_info.avatar
-	return render(request, 'app_auth/profile.html', {'avatar': avatar, 'user_info':user_info, 'success':success})
+	user_info = UserProfile.objects.filter(user_id = request.user.id)
+	if user_info.exists():
+		user_info = user_info.get(user_id=request.user.id)
+		avatar = user_info.avatar
+		formProfile = ProfileForm(initial={
+			'last_name':request.user.last_name, 'first_name':request.user.first_name, 'email':request.user.email, 'avatar':user_info.avatar,
+			'username': request.user.username, 'street':user_info.street, 'municipality':user_info.municipality,
+			'province': user_info.province, 'phone_number': user_info.phone_number
+		})
+	else:
+		avatar = 'images/avatars/users.png'
+		formProfile = ProfileForm(initial={'last_name':request.user.last_name, 'first_name':request.user.first_name, 'email':request.user.email,
+			'username': request.user.username,})
+	return render(request, 'app_auth/profile.html', {'avatar': avatar, 'success':success, 'formProfile':formProfile})
 
 @login_required(redirect_field_name='', login_url='/')
 def password_edit(request):

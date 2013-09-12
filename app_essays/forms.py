@@ -23,7 +23,10 @@ class NewEssayForm(forms.Form):
 		if not duration_minutes.isdigit():
 			raise forms.ValidationError("Please enter a number.")
 		return duration_minutes
+
+class ManualCheckingForm(forms.Form):
 	
+
 	#def __init__(self, *args, **kwargs):
 	#	userid = kwargs.pop('accountid', None)
 	#	super(NewEssayForm, self).__init__(*args, **kwargs)

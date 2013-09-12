@@ -24,21 +24,22 @@ TECS: Test Essay Checking Software | Teacher Add Classes
 	<div class="span8">
 		<div class="row-fluid">
 			<div class="span12 content">
+
+			<img class="title-icons" src={% static 'base/img/icons/Retina-Ready@2x.png' %}>
+				<h3 class="title">Review Essay Score</h3>
+
+				<div class="palette-turquoise">
+	            <a href="javascript:check()" type="button" class="btn btn-primary"><b>Check for Spelling and Grammatical Errors</b> <i class="fui-cross"></i></a>
+	         	</div>
+
+	          <div id="preview" class="demo-text-box prl">
+	           <h4><center><strong> My Summer Vacaytion </strong></center> </h4>
+	            <p>One day, while I'm on my way to my gran-gran's house, I saw an litle bird. It cry. I don't knpw why so I picked it up and notised blood in its left wing. I brought it with me and showed it to my gran-gran. We bandaged the little bird's wing and gave it food food.  </p>
+	          </div>
+			</div>
+
 			<form class="form-horizontal"> 
 				<fieldset>	
-					<img class="title-icons" src={% static 'base/img/icons/Retina-Ready@2x.png' %}>
-					<h3 class="title">Review Essay Score</h3>
-
-					<div class="palette-turquoise">
-		            <button onclick="check()" type="submit" class="btn btn-primary"><b>Check for Spelling and Grammatical Errors</b> <i class="fui-cross"></i></button>
-		         	</div>
-
-		          <div id="preview" class="demo-text-box prl">
-		           <h4><center><strong> My Summer Vacation </strong></center> </h4>
-		            <p>One day, while I'm on my way to my gran-gran's house, I saw an litle bird. It cry. I don't knpw why so I picked it up and notised blood in its left wing. I brought it with me and showed it to my gran-gran. We bandaged the little bird's wing and gave it food food.  </p>
-		          </div>
-				</div>
-
 				  <div class="control-group">
 					  <label class="control-label" for="inputfeedback">Rating</label>
 					  <div class="controls" id= "inputfeedback">
@@ -92,9 +93,9 @@ TECS: Test Essay Checking Software | Teacher Add Classes
 				  </div>
 				  
 				  <div class="form-actions">  
-					<button onclick = "check()" type="submit" class="btn btn-primary"><b>Save</b> <i class="fui-check"></i></button> 
+					<button type="submit" class="btn btn-primary"><b>Save</b> <i class="fui-check"></i></button> 
 					<button type="reset" class="btn btn-warning"><b>Reset</b> <i class="fui-play"></i></button> 
-					<button class="btn btn-danger"><b>Cancel</b>  <i class="fui-cross"></i></button>  
+					<a href="/essays/" class="btn btn-danger"><b>Cancel</b>  <i class="fui-cross"></i></a>  
 				  </div>   
 				</fieldset>
 			</form> 
@@ -103,10 +104,9 @@ TECS: Test Essay Checking Software | Teacher Add Classes
 	</div>
 </div>
 
-<script>
+<script language="javascript">
 	 function check()
 	 {
-	 	alert("Hello");
 	    AtD.checkCrossAJAX('preview', 
 	    {
 	       success : function(errorCount) 
@@ -123,6 +123,7 @@ TECS: Test Essay Checking Software | Teacher Add Classes
 	       }
 	    });
 	 }
+
 	function add_more_text_box(parent_id, child_name, child_id, num)
 	{
 	  var myTable = document.getElementById(parent_id);
@@ -221,10 +222,10 @@ TECS: Test Essay Checking Software | Teacher Add Classes
 
 </script>
 
-<script src="{% static 'app_classes/js/bootstrap-button.js' %}"></script> 
+<script src="{% static 'app_essays/js/bootstrap-button.js' %}"></script> 
 <script>$('.btn-group').button()</script>
  <script src="http://code.jquery.com/jquery-1.4.2.js"></script>
-<script src="{% static 'app_classes/atd/scripts/jquery.atd.js' %}"></script>
-<script src="{% static 'app_classes/atd/scripts/csshttprequest.js' %}"></script>
- <link rel="stylesheet" type="text/css" media="screen" href="{% static 'app_classes/atd/css/atd.css' %}" />
+<script src="{% static 'app_essays/atd/scripts/jquery.atd.js' %}"></script>
+<script src="{% static 'app_essays/atd/scripts/csshttprequest.js' %}"></script>
+ <link rel="stylesheet" type="text/css" media="screen" href="{% static 'app_essays/atd/css/atd.css' %}" />
 {% endblock content %}
