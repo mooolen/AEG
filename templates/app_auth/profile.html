@@ -28,7 +28,7 @@ TECS: Test Essay Checking Software | Teacher Classes
 
 			<img class="title-icons" src="{% static 'base/img/icons/user.png' %}">
 			<h3 class="title">My Profile</h3>
-			<form class="form-horizontal">
+			<form enctype="multipart/form-data" class="form-horizontal" action="{% url 'auth:profile' %}" method="post">{% csrf_token %}
 				<fieldset>
 					{% for form in formProfile %}
 					<div class="control-group">
@@ -39,7 +39,7 @@ TECS: Test Essay Checking Software | Teacher Classes
 					</div>
 					{% endfor %}
 					<div class="form-actions">	
-						<a href="#" type="button" class="btn btn-primary"><b>Save Changes</b> <i class="fui-user"></i></a> 	
+						<button type="submit" class="btn btn-primary"><b>Save Changes</b> <i class="fui-user"></i></button> 	
 					</div>	
 				</fieldset>
 			</form>
