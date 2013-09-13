@@ -8,6 +8,19 @@ TECS: Test Essay Checking Software | Teacher Add Classes
 
 {% block content %}
 <head>
+	<script src="{% static 'base/js/jquery.min.js' %}"></script>
+	<link href="{% static 'base/css/bootstrap-select.css' %}" rel="stylesheet" media="screen">
+	<script src="{% static 'base/js/bootstrap.js' %}"></script>
+
+    <script type="text/javascript">
+        $(window).on('load', function () {
+
+            $('.selectpicker').selectpicker();
+
+            // $('.selectpicker').selectpicker('hide');
+        });
+    </script>
+
     <style>
 		#myModal {    
 		    width: 70%;
@@ -43,7 +56,7 @@ TECS: Test Essay Checking Software | Teacher Add Classes
 	  </div>
 	  <div class="modal-footer">
 	    <button type="button" class="btn btn-warning" data-dismiss="modal" aria-hidden="true">Back <i class="fui-new"></i></button>
-	    <input type="hidden" name="course_id" id="course_id" value="" />
+	    <input type="text" name="course_id" id="course_id" value="" />
 	  </div>
 	</div>
 
@@ -93,14 +106,4 @@ TECS: Test Essay Checking Software | Teacher Add Classes
 	    $(".modal-footer #CourseName2").val( CourseName );
 	});
 </script>
-
-<script src="{% static 'base/js/jquery.min.js' %}"></script>
-	<script src="{% static 'base/js/bootstrap.js' %}"></script>
-	<link href="{% static 'base/css/bootstrap-select.css' %}" rel="stylesheet" />
-
-    <script type="text/javascript">
-        $(window).on('load', function () {
-            $('.selectpicker').selectpicker('render');
-        });
-    </script>
 {% endblock content %}

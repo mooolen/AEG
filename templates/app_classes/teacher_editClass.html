@@ -40,22 +40,6 @@ TECS: Test Essay Checking Software | Teacher Classes
 							</div>	
 						</div> 		
 						{% endfor %}
-					 	<div class="control-group">  
-							<label class="control-label" for="classKey">Student Name</label>  
-							<div class="controls">
-								<div id="add_more_div"></div>
-								<div>
-									<br>
-									<ul class="unstyled">
-										{% for student in class.student.all %}
-										<li>{{ student }}</li>
-										{% endfor %}
-									</ul>
-									<input class="span2" name="add_more[]" type="text" id="part0" placeholder="Required" value="" required />		
-									<button type="button" data-toggle="tooltip" data-placement="right" title="Add Student" onclick="add_more_text_box('add_more_div','add_more[]',child());" class="btn btn-primary" ><i class="fui-plus"></i></button>	
-								</div>
-							</div>
-					  	</div>
 						<div class="form-actions">  
 							<button type="submit" class="btn btn-primary"><b>Save</b> <i class="fui-check"></i></button> 
 							<button type="reset" class="btn btn-warning"><b>Reset</b> <i class="fui-play"></i></button> 

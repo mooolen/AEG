@@ -15,6 +15,7 @@ from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+from .forms import MailForm
 
 @login_required(redirect_field_name='', login_url='/')
 def dashboard(request):
@@ -125,7 +126,8 @@ def delete(request, class_id):
 def viewClassList(request, class_id, message=None):
 	class_info = Class.objects.get(pk=class_id)
 	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
-	return render(request, 'app_classes/viewClassList.html', {'studentList':class_info, 'active_nav':'CLASSES', 'avatar':avatar, 'success':message})
+	formMails = MailForm()
+	return render(request, 'app_classes/viewClassList.html', {'studentList':class_info, 'active_nav':'CLASSES', 'avatar':avatar, 'success':message, 'formMails': formMails})
 
 @login_required(redirect_field_name='', login_url='/')
 def enroll(request):
