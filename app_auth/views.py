@@ -86,15 +86,17 @@ def user_logout(request):
 @login_required(redirect_field_name='', login_url='/')
 def profile_edit(request, success=None):
 	user_info = UserProfile.objects.filter(user_id = request.user.id)
+	power = False
 	if request.method == "POST":
 		formProfile = ProfileForm(request.POST, request.FILES)
+		power = True
 		if formProfile.is_valid():
 			temp = formProfile.cleaned_data
 			if user_info.exists():
 				#userProfile update
 				userProfile_info = user_info.get(user_id=request.user.id)
 				userProfile_info.avatar = userProfile_info.avatar
-				
+
 				if temp['avatar'] is not None:
 					userProfile_info.avatar = temp['avatar']
 				userProfile_info.street = temp['street']
@@ -114,19 +116,20 @@ def profile_edit(request, success=None):
 			USER_info.username = temp['username']
 			USER_info.save()
 			return redirect("/dashboard")
-	else:	
-		if user_info.exists():
-			user_info = user_info.get(user_id=request.user.id)
-			avatar = user_info.avatar
+	
+	if user_info.exists():
+		user_info = user_info.get(user_id=request.user.id)
+		avatar = user_info.avatar
+		if not power:
 			formProfile = ProfileForm(initial={
 				'last_name':request.user.last_name, 'first_name':request.user.first_name, 'email':request.user.email, 'avatar':user_info.avatar,
 				'username': request.user.username, 'street':user_info.street, 'municipality':user_info.municipality,
 				'province': user_info.province, 'phone_number': user_info.phone_number
 			})
-		else:
-			avatar = 'images/avatars/users.png'
-			formProfile = ProfileForm(initial={'last_name':request.user.last_name, 'first_name':request.user.first_name, 'email':request.user.email,
-				'username': request.user.username,})
+	else:
+		avatar = 'images/avatars/users.png'
+		formProfile = ProfileForm(initial={'last_name':request.user.last_name, 'first_name':request.user.first_name, 'email':request.user.email,
+			'username': request.user.username,})
 	return render(request, 'app_auth/profile.html', {'avatar': avatar, 'success':success, 'formProfile':formProfile})
 
 @login_required(redirect_field_name='', login_url='/')

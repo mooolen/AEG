@@ -35,6 +35,9 @@ TECS: Test Essay Checking Software | Teacher Classes
 						<label class="control-label" for="email">{{ form.label_tag }}</label>
 						<div class="controls">
 							{{form}}
+							{% for error in form.errors %}
+							<p class="text-error">{{ error }}</p>
+							{% endfor %}
 						</div>
 					</div>
 					{% endfor %}

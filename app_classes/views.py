@@ -1,10 +1,10 @@
 
-import os
+import os, re
 import hashlib
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from app_classes.models import Class, ClassForm, EditForm#, EnrollForm
+from app_classes.models import Class, ClassForm, EditForm, EnrollForm
 from django.shortcuts import render, get_object_or_404
 from app_auth.models import UserProfile, Teacher, School, Student
 from django.db.models import Count
@@ -13,6 +13,8 @@ from django import forms
 from django.forms.widgets import Textarea
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 
 @login_required(redirect_field_name='', login_url='/')
 def dashboard(request):
@@ -59,7 +61,7 @@ def teacher_addNewClass(request, add_form=None):
 	addClass_form = add_form or ClassForm()
 	teacher = Teacher.objects.filter(user=request.user)
 	name = Class.objects.filter(teacher=teacher)
-	addClass_form.fields['Emails'] = forms.CharField(widget=Textarea)
+	addClass_form.fields['Emails'] = forms.CharField(widget=Textarea(attrs={'class':'span3'}))
 	return render(request, 'app_classes/teacher_addNewClass.html', 
 			{'addClassForm' : addClass_form, 'next_url': '/classes', 'avatar':avatar, 'active_nav':'CLASSES', 'name':name})
 
@@ -76,7 +78,11 @@ def submit(request):
 			section_info = forms['section']
 			academicYear_info = forms['academic_year']
 			emails = request.POST['Emails']
-			print(emails)
+			mail = []
+			mail = re.split(',\s+', emails)
+			print(mail)
+			#rendered = render_to_string("users/emails/data.txt", {'data': data})
+			send_mail('Subject', 'Message.', 'fsvaeg@gmail.com', mail)
 			try:
 				teacher = Teacher.objects.get(user=request.user)
 			except Teacher.DoesNotExist:
