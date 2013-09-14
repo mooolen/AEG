@@ -6,7 +6,7 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-	# ('Your Name', 'your_email@example.com'),
+	('Your Name', 'fsvaeg@gmail.com'),
 )
 
 MANAGERS = ADMINS
@@ -22,6 +22,17 @@ DATABASES = {
 		'PORT': '',					  # Set to empty string for default.
 	}
 }
+
+# for Local Host Only
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+#EMAIL_USE_TLS = True
+#EMAIL_HOST = 'smtp.gmail.com'
+#EMAIL_PORT = 587
+#EMAIL_HOST_USER = 'fsvaeg@gmail.com'
+#EMAIL_HOST_PASSWORD = 'Waterbury'
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts

@@ -6,8 +6,9 @@ except ImportError:
 except ImportError:     # Python 2
     from urlparse import urlparse
     
-from django.shortcuts import render_to_response, render
+from django.shortcuts import render_to_response, render, redirect
 from django.conf import settings
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.contrib.auth import (
@@ -85,14 +86,46 @@ def user_logout(request):
 @login_required(redirect_field_name='', login_url='/')
 def profile_edit(request, success=None):
 	user_info = UserProfile.objects.filter(user_id = request.user.id)
+	power = False
+	if request.method == "POST":
+		formProfile = ProfileForm(request.POST, request.FILES)
+		power = True
+		if formProfile.is_valid():
+			temp = formProfile.cleaned_data
+			if user_info.exists():
+				#userProfile update
+				userProfile_info = user_info.get(user_id=request.user.id)
+				userProfile_info.avatar = userProfile_info.avatar
+
+				if temp['avatar'] is not None:
+					userProfile_info.avatar = temp['avatar']
+				userProfile_info.street = temp['street']
+				userProfile_info.municipality = temp['municipality']
+				userProfile_info.province = temp['province']
+				userProfile_info.phone_number = temp['phone_number']
+				userProfile_info.save()
+
+			else:	
+				UserProfile.objects.create(avatar=temp['avatar'], user_id=request.user.id, street=temp['street'], municipality=temp['municipality'], province=temp['province'], phone_number=temp['phone_number'])
+				
+			#user update
+			USER_info = User.objects.get(id=request.user.id)
+			USER_info.last_name = temp['last_name']
+			USER_info.first_name = temp['first_name']
+			USER_info.email = temp['email']
+			USER_info.username = temp['username']
+			USER_info.save()
+			return redirect("/dashboard")
+	
 	if user_info.exists():
 		user_info = user_info.get(user_id=request.user.id)
 		avatar = user_info.avatar
-		formProfile = ProfileForm(initial={
-			'last_name':request.user.last_name, 'first_name':request.user.first_name, 'email':request.user.email, 'avatar':user_info.avatar,
-			'username': request.user.username, 'street':user_info.street, 'municipality':user_info.municipality,
-			'province': user_info.province, 'phone_number': user_info.phone_number
-		})
+		if not power:
+			formProfile = ProfileForm(initial={
+				'last_name':request.user.last_name, 'first_name':request.user.first_name, 'email':request.user.email, 'avatar':user_info.avatar,
+				'username': request.user.username, 'street':user_info.street, 'municipality':user_info.municipality,
+				'province': user_info.province, 'phone_number': user_info.phone_number
+			})
 	else:
 		avatar = 'images/avatars/users.png'
 		formProfile = ProfileForm(initial={'last_name':request.user.last_name, 'first_name':request.user.first_name, 'email':request.user.email,
