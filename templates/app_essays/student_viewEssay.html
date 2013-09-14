@@ -8,59 +8,85 @@ TECS: Test Essay Checking Software | Home
 {% block content %}
 
 <div class="page-content">
-<div class="row-fluid">
-	<div class="content">
-		<img class="title-icons" src="{% static 'base/img/icons/Pensils@2x.png' %}">
-		<h3>On-going Exams</h3>
-		<table class="table table-striped">
-			<thead>
-				<tr>
-					<th width="15%">Class</th>
-					<th width="20%">Teacher</th>
-					<th width="18%">Essay</th>
-					<th width="15%">Deadline</th>
-					<th width="12%">Duration</th>
-					<th width="18%">Status</th>
-					<th width="12%">Action</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for essay_response in essay_responses %}
-				<tr>
-					<td>{{ essay_response.essay.class_name.subject }}</td>
-					<td>{{ essay_response.essay.instructor }}</td>
-					<td>{{ essay_response.essay.title }}</td>
-					<td>{{ essay_response.essay.deadline }}</td>
-					<td>
-						{% if essay_response.essay.duration_hours != 0 %}
-							{{ essay_response.essay.duration_hours }} hour(s) 
-						{% endif %}
-						
-						{% if essay_response.essay.duration_minutes != 0 %}
-							<br>{{ essay_response.essay.duration_minutes }} minute(s)
-						{% endif %} 
+	<div class="row-fluid">
+		<div class="content">
+			<img class="title-icons" src="{% static 'base/img/icons/Pensils@2x.png' %}">
+			<h3>On-going Exams</h3>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th width="15%">Class</th>
+						<th width="20%">Teacher</th>
+						<th width="18%">Essay</th>
+						<th width="15%">Deadline</th>
+						<th width="12%">Duration</th>
+						<th width="18%">Status</th>
+						<th width="12%">Action</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for essay_response in essay_responses %}
+					<tr>
+						<td>{{ essay_response.essay.class_name.subject }}</td>
+						<td>{{ essay_response.essay.instructor }}</td>
+						<td>{{ essay_response.essay.title }}</td>
+						<td>{{ essay_response.essay.deadline }}</td>
+						<td>
+							{% if essay_response.essay.duration_hours != 0 %}
+								{{ essay_response.essay.duration_hours }} hour(s) 
+							{% endif %}
+							
+							{% if essay_response.essay.duration_minutes != 0 %}
+								<br>{{ essay_response.essay.duration_minutes }} minute(s)
+							{% endif %} 
 
-					</td>
-					<td>
-						{% if essay_response.status == 0 %} 
-							Not yet started 
-						{% else %}
-							[Started]<br>
-							<p class="text-error">{{ essay_response.time_remaining_str }} remaining</p>
-						{% endif %}
-					</td>
-					<td><a href="{% url 'essays:answer' essay_response.id %}">
-						{% if essay_response.status == 0 %} 
-							Start
-						{% else %}
-							Continue
-						{% endif %}
-					</a></td>
-				</tr>
-				{% endfor %}
-			</tbody>
-		</table>
+						</td>
+						<td>
+							{% if essay_response.status == 0 %} 
+								Not yet started 
+							{% else %}
+								[Started]<br><div id="countdown_{{ essay_response.pk }}" class="text-error"></div>
+								
+							{% endif %}
+						</td>
+						<td><a href="{% url 'essays:answer' essay_response.id %}">
+							{% if essay_response.status == 0 %} 
+								Start
+							{% else %}
+								Continue
+							{% endif %}
+						</a></td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
 	</div>
 </div>
-</div>
+
+<script>
+	var time_loaded = new Date().getTime() / 1000;
+
+	function showRemaining() {
+		{% for essay_response in essay_responses %}
+			var now = new Date().getTime() / 1000;
+			var diff = now - time_loaded;
+			var time_left = {{ essay_response.time_remaining }} - diff;
+
+
+
+			var hours = Math.floor( time_left / (60*60) );
+			var minutes = Math.floor( (time_left / 60) % 60 );
+			var seconds = Math.floor(time_left%60);
+
+		 	document.getElementById('countdown_{{ essay_response.pk }}').innerHTML = hours+ ' hour(s) <br />';
+			document.getElementById('countdown_{{ essay_response.pk }}').innerHTML += minutes+ ' minute(s) left<br />';
+			//document.getElementById('countdown_{{ essay_response.pk }}').innerHTML += 'Seconds: ' + seconds+ '<br />';		
+		{% endfor %}
+	}
+	timer = setInterval(showRemaining, 1000);
+</script>
+
+
 {% endblock %}
+

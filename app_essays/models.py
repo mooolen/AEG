@@ -70,13 +70,6 @@ class EssayResponse(models.Model):
 		time_str +=  str(minutes) + ( ' minutes' if minutes > 1 else ' minute' ) if minutes > 0 else ''
 		return time_str
 
-	@property
-	def is_ongoing(self):
-		if timezone.now() > self.essay.deadline():
-			return False
-		else:
-			return True
-
 class EssayForm(ModelForm):
 	class Meta:
 		model = Essay

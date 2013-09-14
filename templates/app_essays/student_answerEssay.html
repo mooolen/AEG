@@ -5,66 +5,57 @@
 TECS: Test Essay Checking Software | Home
 {% endblock %}
 
-{% block content %}
- <head>
-	<meta charset="utf-8">
-	<title>Answer Exam</title>
+{% block custom_style %}
+<script src="{% static 'base/js/jquery.min.js' %}"></script>
+<script src="{% static 'base/js/jquery.hotkeys.js' %}"></script>
+<script src="{% static 'base/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'base/js/prettify.js' %}"></script>
+<link rel="stylesheet" href="{% static 'base/css/jquery.countdown.css' %}">	
+<script src="{% static 'base/js/bootstrap-wysiwyg.js' %}"></script>
+<link href="{% static 'base/css/flat-ui.css' %}" rel="stylesheet">
+<script src="{% static 'base/js/ckeditor.js' %}"></script>
+<script type="text/javascript" src="{% static 'base/js/jquery.countdown.js' %}"></script>
 
-	<link href="{% static 'base/css/prettify.css' %}" rel="stylesheet">
-	<link href="{% static 'base/css/bootstrap-combined.no-icons.min.css' %}" rel="stylesheet">
-	<link href="{% static 'base/css/bootstrap-responsive.css' %}" rel="stylesheet">
-	<link href="http://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css" rel="stylesheet">
-	<script src="{% static 'base/js/jquery.min.js' %}"></script>
-	<script src="{% static 'base/js/jquery.hotkeys.js' %}"></script>
-	<script src="{% static 'base/js/bootstrap.min.js' %}"></script>
-	<script src="{% static 'base/js/prettify.js' %}"></script>
-	<link rel="stylesheet" href="{% static 'base/css/jquery.countdown.css' %}">	
-	<script src="{% static 'base/js/bootstrap-wysiwyg.js' %}"></script>
-	<link href="{% static 'base/css/flat-ui.css' %}" rel="stylesheet">
-	<script src="{% static 'base/js/ckeditor.js' %}"></script>
-	<script type="text/javascript" src="{% static 'base/js/jquery.countdown.js' %}"></script>
+
+<style>
+	.noDays { 		
+		width: 240px; 
+		height: 45px; 
+		}
+	#editor {
+		max-height: 250px;
+		height: 250px;
+		background-color: white;
+		border-collapse: separate; 
+		border: 1px solid rgb(204, 204, 204); 
+		padding: 4px; 
+		box-sizing: content-box; 
+		-webkit-box-shadow: rgba(0, 0, 0, 0.0745098) 0px 1px 1px 0px inset; 
+		box-shadow: rgba(0, 0, 0, 0.0745098) 0px 1px 1px 0px inset;
+		border-top-right-radius: 3px; border-bottom-right-radius: 3px;
+		border-bottom-left-radius: 3px; border-top-left-radius: 3px;
+		overflow: scroll;
+		outline: none;
+	}
+
+	#wcount{
+	  	color: #34495e;
+	  	font-family: "Lato", sans-serif;
+	  	font-size: 14px;
+		padding: 8px 5px;
+		height: 21px;
+		text-indent: 6px;
+	}
 	
+	#myModal {	
+		width: 50%;
+		margin-left: -30%;
+		left: 55%;
+	}
+</style>
+{% endblock %}
 
-	<style>
-		.noDays { 		
-			width: 240px; 
-			height: 45px; 
-			}
-		#editor {
-			max-height: 250px;
-			height: 250px;
-			background-color: white;
-			border-collapse: separate; 
-			border: 1px solid rgb(204, 204, 204); 
-			padding: 4px; 
-			box-sizing: content-box; 
-			-webkit-box-shadow: rgba(0, 0, 0, 0.0745098) 0px 1px 1px 0px inset; 
-			box-shadow: rgba(0, 0, 0, 0.0745098) 0px 1px 1px 0px inset;
-			border-top-right-radius: 3px; border-bottom-right-radius: 3px;
-			border-bottom-left-radius: 3px; border-top-left-radius: 3px;
-			overflow: scroll;
-			outline: none;
-		}
-
-		#wcount{
-		  	color: #34495e;
-		  	font-family: "Lato", sans-serif;
-		  	font-size: 14px;
-			padding: 8px 5px;
-			height: 21px;
-			text-indent: 6px;
-		}
-		
-		#myModal {	
-			width: 50%;
-			margin-left: -30%;
-			left: 55%;
-		}
-	</style>
-
-  </head>
-  <body>
-
+{% block content %}
 <div class="page-content">
 	<div id="myModal" data-backdrop="static" data-keyboard="false" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	  <div class="modal-body" style="background-color: rgb(241, 196, 15); ">
@@ -143,7 +134,6 @@ TECS: Test Essay Checking Software | Home
 	</div>
 </div>
 
-</body>
 <script>
 	function confirmation(){
 		var r=confirm("Are you sure you want to submit? You can no longer edit your essay if you click 'OK'.");
@@ -234,8 +224,5 @@ function wordcount(inputwords) {
 </script>
 
 <script src="{% static 'base/js/}bootstrap-transition.js' %}"></script>
-
-<div id="fb-root"></div>
-
 
 {% endblock %}

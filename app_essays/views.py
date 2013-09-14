@@ -1,8 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.template import RequestContext
-from django.http import HttpResponseRedirect
 from django.db.models import Q
+from django.utils import timezone
 
 from app_auth.models import UserProfile, Student, Teacher
 from app_essays.models import Essay, EssayResponse, GradingSystem, EssayForm, EssayResponseForm
@@ -45,18 +44,22 @@ def new_essay(request):
 def list_essay(request, errors=None, success=None):
 	active_nav = "EXAMS"
 	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
-	no_essay = 0
+	no_on_going_essays = 0
+	no_past_essays = 0
 	#IF USER IS A TEACHER
 	if len(Teacher.objects.filter(user_id = request.user.id)) > 0:
-		essays = Essay.objects.filter(instructor_id = Teacher.objects.get(user_id = request.user.id).id)
-		if (len(essays) == 0 ):
-			no_essay = 1	
-		return render(request, 'app_essays/teacher_viewExam.html',	{'avatar':avatar, 'active_nav':'EXAMS', 'no_essay':no_essay, 'essays':essays, 'errors':errors, 'success':success})
+		on_going_essays = Essay.objects.filter(instructor_id = Teacher.objects.get(user_id = request.user.id).id).filter(deadline__gte=timezone.now())
+		past_essays = Essay.objects.filter(instructor_id = Teacher.objects.get(user_id = request.user.id).id).filter(deadline__lt=timezone.now())
+		if (len(on_going_essays) == 0 ):
+			no_on_going_essays = 1	
+		if (len(past_essays) == 0):
+			no_past_essays = 1
+		return render(request, 'app_essays/teacher_viewExam.html',	{'avatar':avatar, 'active_nav':'EXAMS', 'no_on_going_essays':no_on_going_essays, 'no_past_essays':no_past_essays, 'on_going_essays':on_going_essays, 'past_essays':past_essays,'errors':errors, 'success':success})
 
 	#IF USER IS A STUDENT
 	elif len(Student.objects.filter(user_id = request.user.id)) > 0:
 		#essays = Essay.objects.filter(instructor_id = Teacher.objects.get(user_id = request.user.id).id)
-		essay_responses = EssayResponse.objects.filter(~Q(status=2), student_id=Student.objects.get(user_id = request.user.id).id).filter(is_ongoing())
+		essay_responses = EssayResponse.objects.filter(~Q(status=2), student_id=Student.objects.get(user_id = request.user.id).id)
 		return render(request, 'app_essays/student_viewEssay.html', {'avatar':avatar, 'active_nav':'EXAMS', 'essay_responses':essay_responses, 'errors':errors, 'success':success})
 		
 @login_required(redirect_field_name='', login_url='/')
