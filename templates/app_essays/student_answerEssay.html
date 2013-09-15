@@ -6,9 +6,9 @@ TECS: Test Essay Checking Software | Home
 {% endblock %}
 
 {% block custom_style %}
+<head>
 <script src="{% static 'base/js/jquery.min.js' %}"></script>
 <script src="{% static 'base/js/jquery.hotkeys.js' %}"></script>
-<script src="{% static 'base/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'base/js/prettify.js' %}"></script>
 <link rel="stylesheet" href="{% static 'base/css/jquery.countdown.css' %}">	
 <script src="{% static 'base/js/bootstrap-wysiwyg.js' %}"></script>
@@ -53,6 +53,7 @@ TECS: Test Essay Checking Software | Home
 		left: 55%;
 	}
 </style>
+</head>
 {% endblock %}
 
 {% block content %}
@@ -222,7 +223,4 @@ function wordcount(inputwords) {
 		count();
 	});
 </script>
-
-<script src="{% static 'base/js/}bootstrap-transition.js' %}"></script>
-
 {% endblock %}

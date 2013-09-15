@@ -68,14 +68,6 @@ TECS: Test Essay Checking Software | Teacher Add Classes
 				<div class="control-group">
 					<label class="control-label" for="level">{{ form.label_tag }}</label>
 					<div class="controls">
-						{% if "Emails" in form.label_tag %}
-						<div><br/>
-							<p>Please seperate each person by comma. For example:</p>
-							<div style="padding-left: 25px">
-								<i>cheryleighverano@gmail.com, master@yahoo.com</i>
-							</div>
-						</div><br/>
-						{% endif %}
 						{{ form }}
 						{% for error in form.errors %}
 						<p class="text-error">{{ error }}</p>
@@ -85,6 +77,24 @@ TECS: Test Essay Checking Software | Teacher Add Classes
 				</div> 
 			{% endfor %}
 
+			{% for emailForm in formMails %}
+				<div class="control-group">
+					<label class="control-label" for="level">{{ emailForm.label_tag }}</label>
+					<div class="controls">
+						<div><br/>
+							<p>Please seperate each person by comma. For example:</p>
+							<div style="padding-left: 25px">
+								<i>cheryleighverano@gmail.com, master@yahoo.com</i>
+							</div>
+						</div><br/>
+						{{ emailForm }}
+						{% for error in emailForm.errors %}
+						<p class="text-error">{{ error }}</p>
+						{% endfor %}
+						
+					</div>		
+				</div> 
+			{% endfor %}
 			<div class="form-actions">
 				<input type="hidden" value="{{ next_url }}" name="next_url" />
 				<button type="submit" class="btn btn-primary"><b>Save</b><i class="fui-check"></i></button> 

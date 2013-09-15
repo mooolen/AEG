@@ -13,7 +13,7 @@ TECS: Test Essay Checking Software | Register
 		{% csrf_token %}
 
 		{% if form.errors %}
-		    <p class="error">Invalid input. Please try again.</p>
+		    <p class="text-error">Invalid input. Please try again.</p>
 		{% endif %}
 		<form action = "" method = "post" class="form-horizontal">
 			{% csrf_token %}
@@ -42,8 +42,8 @@ TECS: Test Essay Checking Software | Register
 					{{ form.password2 }}
 				</div>
 			</div>	
-			<button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
-			<a href="/" class="btn btn-lg btn-danger btn-block" type="button">Cancel</a>
+			<button class="btn btn-lg btn-inverse btn-block" type="submit">Submit</button>
+			<a href="/" class="btn btn-lg btn-primary btn-block" type="button">Cancel</a>
 		</form>
   	</div>
   </div>
