@@ -127,7 +127,7 @@ def profile_edit(request, success=None):
 				'province': user_info.province, 'phone_number': user_info.phone_number
 			})
 	else:
-		avatar = 'images/avatars/users.png'
+		avatar = 'images/avatars/user.png'
 		formProfile = ProfileForm(initial={'last_name':request.user.last_name, 'first_name':request.user.first_name, 'email':request.user.email,
 			'username': request.user.username,})
 	return render(request, 'app_auth/profile.html', {'avatar': avatar, 'success':success, 'formProfile':formProfile})

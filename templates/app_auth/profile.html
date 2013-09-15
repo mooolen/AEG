@@ -7,13 +7,13 @@ TECS: Test Essay Checking Software | Teacher Classes
 
 {% block content %}
 <head>
-	<script src="{% static 'base/js/jquery.min.js' %}"></script>
+	<script src="{% static 'base/js/jquery.js' %}"></script>
+	<script src="{% static 'base/js/bootstrap.js' %}"></script>
 	<script src="{% static 'base/js/bootstrap-filestyle.js' %}"></script>
 
     <script type="text/javascript">
         $(window).on('load', function () {
         	$(":file").filestyle({'classInput': "span3",'style':"margin-top: 10px"});
-        	$(":disable").style.margin-top = "10px"
         });
     </script>
 </head>
@@ -49,4 +49,5 @@ TECS: Test Essay Checking Software | Teacher Classes
 		</div>
 	</div>
 </div>
+	<script src="{% static 'base/js/bootstrap.min.js' %}"></script>
 {% endblock content %}
