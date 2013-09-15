@@ -11,9 +11,9 @@ TECS: Test Essay Checking Software | Essay
 	<div class="row-fluid">
 		<div class="content">
 			<p class="pull-right">
-				<a href="{% url 'essays:new' %}" class="btn btn-large btn-primary"><i class="icon-white icon-plus"></i> New Exam</a>
+				<a href="{% url 'essays:new' %}" class="btn btn-large btn-primary"><i class="fui-plus"></i> New Exam</a>
 			</p>
-			<img class="title-icons" src="{% static 'base/img/icons/Pensils@2x.png' %}">
+			<img class="title-icons" src="{% static 'base/images/icons/Pensils@2x.png' %}">
 			<h3>On-going Exams</h3>
 			
 			{% if no_on_going_essays %}
@@ -27,6 +27,7 @@ TECS: Test Essay Checking Software | Essay
 			{% if success %}
 			<br><br>
 			<div class="alert alert-block alert-success">
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
 				<h4>Success!</h4>
 					{{ success }}
 			</div>
@@ -57,7 +58,7 @@ TECS: Test Essay Checking Software | Essay
 			</table>
 			{% endif %}
 
-			<img class="title-icons" src="{% static 'base/img/icons/Pocket@2x.png' %}">
+			<img class="title-icons" src="{% static 'base/images/icons/documents.png' %}">
 			<h3>Past Exams</h3>
 			
 			{% if no_past_essays %}
