@@ -3822,11 +3822,11 @@ a.thumbnail:hover {
   background-clip: padding-box;
 }
 .modal.fade {
-  -webkit-transition: opacity .3s linear, top .3s ease-out;
-  -moz-transition: opacity .3s linear, top .3s ease-out;
-  -ms-transition: opacity .3s linear, top .3s ease-out;
-  -o-transition: opacity .3s linear, top .3s ease-out;
-  transition: opacity .3s linear, top .3s ease-out;
+  -webkit-transition: opacity .3s linear, none;
+  -moz-transition: opacity .3s linear, none;
+  -ms-transition: opacity .3s linear, none;
+  -o-transition: opacity .3s linear, none;
+  transition: opacity .3s linear, none;
   top: -25%;
 }
 .modal.fade.in {

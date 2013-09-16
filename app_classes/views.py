@@ -1,5 +1,5 @@
 
-import os, re
+import os
 import hashlib
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
@@ -22,7 +22,7 @@ def dashboard(request):
 	try:
 		avatar = UserProfile.objects.get(user_id = request.user.id).avatar
 	except UserProfile.DoesNotExist:
-		avatar = 'images/avatars/users.png'
+		avatar = 'images/avatars/user.png'
 	return render(request, 'app_classes/dashboard2.html', {'avatar':avatar, 'active_nav':'DASHBOARD'})
 	
 def add_class(request):
@@ -35,7 +35,11 @@ def class_list(request):
 
 @login_required(redirect_field_name='', login_url='/')
 def class_teacher(request, err=None, success=None):
-	User_Profile = UserProfile.objects.get(user_id = request.user.id)
+	User_Profile = UserProfile.objects.filter(user_id = request.user.id)
+	if not User_Profile.exists():
+		return redirect("/profile")
+
+	User_Profile = User_Profile.get(user_id=request.user.id)
 	teacher = Teacher.objects.filter(user=request.user)
 	hasClasses = None
 	power = True
@@ -57,33 +61,36 @@ def class_teacher(request, err=None, success=None):
 	return render(request, link, {'avatar':avatar, 'active_nav':'CLASSES', 'sections':sections, 'error': err, 'success':success, 'hasClasses':hasClasses, 'power':power})
 
 @login_required(redirect_field_name='', login_url='/')
-def teacher_addNewClass(request, add_form=None):
+def teacher_addNewClass(request, add_form=None, email_form=None):
 	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
 	addClass_form = add_form or ClassForm()
 	teacher = Teacher.objects.filter(user=request.user)
 	name = Class.objects.filter(teacher=teacher)
-	addClass_form.fields['Emails'] = forms.CharField(widget=Textarea(attrs={'class':'span3'}))
+	formMails = email_form or MailForm()
 	return render(request, 'app_classes/teacher_addNewClass.html', 
-			{'addClassForm' : addClass_form, 'next_url': '/classes', 'avatar':avatar, 'active_nav':'CLASSES', 'name':name})
+			{'addClassForm' : addClass_form, 'formMails':formMails,'next_url': '/classes', 'avatar':avatar, 'active_nav':'CLASSES', 'name':name})
 
 @login_required(redirect_field_name='', login_url='/')
 def submit(request):
 	if request.method == "POST":
 		form_class = ClassForm(data=request.POST)
+		formMails = MailForm(data=request.POST)
 		success_url = request.POST.get("next_url", "/")
-		if form_class.is_valid():
+
+		if form_class.is_valid() and formMails.is_valid():
 			forms = form_class.cleaned_data
 			school_info = forms['school']
 			subject_info = forms['subject']
 			yearType_info = forms['year_level']
 			section_info = forms['section']
 			academicYear_info = forms['academic_year']
-			emails = request.POST['Emails']
+
+			emails = formMails.cleaned_data
 			mail = []
-			mail = re.split(',\s+', emails)
+			for email in emails.values():
+				mail = email
 			print(mail)
 			#rendered = render_to_string("users/emails/data.txt", {'data': data})
-			send_mail('Subject', 'Message.', 'fsvaeg@gmail.com', mail)
 			try:
 				teacher = Teacher.objects.get(user=request.user)
 			except Teacher.DoesNotExist:
@@ -100,18 +107,33 @@ def submit(request):
 
 			random_data = os.urandom(128)
 			random_data = hashlib.md5(random_data).hexdigest()[:16]
-
+			send_mail('Subject', 'You are invited to class '+ yearType_info + '-' + section_info + ' ' + subject_info + '. The key class is: ' + random_data, 'fsvaeg@gmail.com', mail)
 			form.key = random_data
 			form.save()
 			return redirect(success_url)
 		else:
-			return teacher_addNewClass(request, form_class)
+			return teacher_addNewClass(request, form_class, formMails)
 
 
 @login_required(redirect_field_name='', login_url='/')
 def edit(request, class_id):
 	class_info = Class.objects.get(pk=class_id)
-	formEdit = EditForm(initial={'school':class_info.school, 'year_level':class_info.year_level, 'section':class_info.section, 'academic_year':class_info.academic_year, 'subject':class_info.subject})
+	power = False
+	if request.method == "POST":
+		formEdit = EditForm(data=request.POST)
+		power = True
+		if formEdit.is_valid():
+			temp = formEdit.cleaned_data
+			class_info.school = temp['school']
+			class_info.year_level = temp['year_level']
+			class_info.section = temp['section']
+			class_info.subject = temp['subject']
+			class_info.academic_year = temp['academic_year']
+			class_info.save()
+			return viewClassList(request, class_id, 'Changes to class details were saved.')
+
+	if not power:
+		formEdit = EditForm(initial={'school':class_info.school, 'year_level':class_info.year_level, 'section':class_info.section, 'academic_year':class_info.academic_year, 'subject':class_info.subject})
 	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
 	return render(request, 'app_classes/teacher_editClass.html', {'avatar':avatar, 'active_nav':'CLASSES', 'class_info':class_info, 'formEdit':formEdit})
 			
@@ -123,11 +145,11 @@ def delete(request, class_id):
 	return class_teacher(request, 0, 'You successfully deleted a class.')
 
 @login_required(redirect_field_name='', login_url='/')
-def viewClassList(request, class_id, message=None):
+def viewClassList(request, class_id, message=None, success=True):
 	class_info = Class.objects.get(pk=class_id)
 	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
 	formMails = MailForm()
-	return render(request, 'app_classes/viewClassList.html', {'studentList':class_info, 'active_nav':'CLASSES', 'avatar':avatar, 'success':message, 'formMails': formMails})
+	return render(request, 'app_classes/viewClassList.html', {'studentList':class_info, 'active_nav':'CLASSES', 'avatar':avatar, 'succ': success,'success':message, 'formMails': formMails})
 
 @login_required(redirect_field_name='', login_url='/')
 def enroll(request):
@@ -156,3 +178,21 @@ def removeStudent(request, class_id, student_id):
 	student = Student.objects.get(pk=student_id)
 	class_info.student.remove(student)
 	return viewClassList(request, class_id, 'You successfully removed a student.')
+
+@login_required(redirect_field_name='', login_url='/')
+def inviteStudent(request, class_id):
+	class_info = Class.objects.get(pk=class_id)
+	formMails = MailForm(data=request.POST)
+	message = 'Invalid Email address(es)'
+	success = False
+	if formMails.is_valid():
+		emails = formMails.cleaned_data
+		mail = []
+		for email in emails.values():
+			mail = email
+
+		send_mail('Subject', 'You are invited to class '+ class_info.year_level + '-' + class_info.section + ' ' + class_info.subject + '. The key class is: ' + class_info.key, 'fsvaeg@gmail.com', mail )
+		message = 'Invitations are sent successfully.'
+		success = True
+
+	return viewClassList(request, class_id, message, success)

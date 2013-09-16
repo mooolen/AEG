@@ -44,7 +44,6 @@ class EditForm(ModelForm):
 			'school': Select(attrs={'class':'selectpicker span6 show-tick', 'data-size':10, 'data-container':"body" }),
 			'year_level': TextInput(attrs={'class':'input-xlarge span4', 'data-name':'year_level' }),
 			'section': TextInput(attrs={'class':'input-xlarge span4', 'data-name':'section'}),
-			'student': TextInput(attrs={'class':'input-xlarge span4', 'data-name':'student'}),
 			'subject': TextInput(attrs={'class':'input-xlarge span4', 'data-name':'subject'}),
 			'academic_year': TextInput(attrs={'class':'input-xlarge span4', 'data-name':'academic_year'}),
 		}

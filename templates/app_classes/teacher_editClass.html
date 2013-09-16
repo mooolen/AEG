@@ -14,10 +14,7 @@ TECS: Test Essay Checking Software | Teacher Classes
 
     <script type="text/javascript">
         $(window).on('load', function () {
-
             $('.selectpicker').selectpicker();
-
-            // $('.selectpicker').selectpicker('hide');
         });
     </script>
 </head>	
@@ -26,7 +23,7 @@ TECS: Test Essay Checking Software | Teacher Classes
 			<div class="content">
 				<img class="title-icons" src="{% static 'base/img/icons/user.png' %}">
 				<h3 class="title">Edit Class Information</h3>
-				<form class="form-horizontal span11"> 
+				<form class="form-horizontal" action="{% url 'classes:edit' class_info.id %}" method="POST"> {% csrf_token %}
 					<fieldset>
 						{% for form in formEdit %}
 						<div class="control-group">

@@ -1,6 +1,6 @@
 from django.db import models
 from django import forms
-from django.forms import ModelForm, DateTimeInput, TextInput, Textarea
+from django.forms import ModelForm, DateTimeInput, TextInput, Textarea, Select
 from django.utils import timezone
 from django.utils.timezone import utc
 from django.contrib.auth.models import User
@@ -48,6 +48,7 @@ class EssayResponse(models.Model):
 	time_started = models.DateTimeField(blank=True, null=True)
 	status = models.IntegerField(default=0)	#0 - not yet started ; 1 - started / draft ; 2 - submitted
 	grade = models.ForeignKey(Grade, null=True, blank=True)
+	general_feedback = models.TextField(blank=True, default="")
 
 	def __str__(self):
 		return self.essay.title
@@ -70,12 +71,14 @@ class EssayResponse(models.Model):
 		time_str +=  str(minutes) + ( ' minutes' if minutes > 1 else ' minute' ) if minutes > 0 else ''
 		return time_str
 
-	@property
-	def is_ongoing(self):
-		if timezone.now() > self.essay.deadline():
-			return False
-		else:
-			return True
+class EssayComment(models.Model):
+	essay = models.ForeignKey(EssayResponse)
+	start = models.IntegerField()
+	end = models.IntegerField(blank=True)
+	comment = models.CharField(max_length=250)
+
+	def __str__(self):
+		return self.comment
 
 class EssayForm(ModelForm):
 	class Meta:
@@ -119,7 +122,52 @@ class EssayResponseForm(ModelForm):
 	class Meta:
 		model = EssayResponse
 		fields = ['response']
-		initial = {'response': 'aa' }
 		widgets = {
 			'response': Textarea(attrs={'class':'input-xlarge span4', 'rows':'10'}),
 		}
+
+class EssayResponseGradeForm(ModelForm):
+	class Meta:
+		model = EssayResponse
+		fields = ['grade', 'general_feedback']
+		widgets = {
+			'general_feedback': Textarea(attrs={'class':'input-xlarge span4', 'rows':'4'}),
+		}
+
+
+class EssayCommentForm(ModelForm):
+	class Meta:
+		model = EssayComment
+		exclude = ['essay']
+		widgets = {
+			'start': TextInput(attrs={'class':'span1'}),
+			'end': TextInput(attrs={'class':'span1'}),
+			'comment': TextInput(attrs={'class':'span1'}),
+		}
+	'''
+	def clean_start(self):
+		end = self.data['end']
+		comment = self.data['comment']
+
+		if not end or not (comment.isspace() or  comment.strip() == ''):
+			raise forms.ValidationError("This is required.")
+
+		return self.cleaned_data['start']
+
+	def clean_end(self):
+		clean_end = self.cleaned_data['end']
+		clean_start = self.data['start']
+		if clean_start  > clean_end:
+			raise forms.ValidationError("This must be greater than the starting sentence no.")
+
+		return clean_end
+
+	def clean_end(self):
+		start = self.data['start']
+		comment = self.data['comment']
+
+		if not start or not (comment.isspace() or  comment.strip() == ''):
+			raise forms.ValidationError("This is required.")
+
+		return self.cleaned_data['end']
+	'''
