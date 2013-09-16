@@ -48,7 +48,10 @@ def new_essay(request):
 @login_required(redirect_field_name='', login_url='/')	
 def list_essay(request, errors=None, success=None):
 	active_nav = "EXAMS"
-	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
+	userProfile = UserProfile.objects.filter(user_id = request.user.id)
+	if not userProfile.exists():
+		return redirect("/profile")
+	avatar = userProfile.get(user_id = request.user.id).avatar
 	#IF USER IS A TEACHER
 	if len(Teacher.objects.filter(user_id = request.user.id)) > 0:
 		no_on_going_essays = 0

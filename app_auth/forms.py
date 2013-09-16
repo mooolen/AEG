@@ -1,5 +1,6 @@
 
 from django.contrib.auth.models import User
+from app_auth.models import School
 from django import forms
 
 class LoginForm(forms.Form):
@@ -21,3 +22,13 @@ class ProfileForm(forms.Form):
 	province = forms.CharField( label='Province', widget=forms.TextInput(attrs={'type':'text', 'class': 'span3', 'placeholder': 'Required'}))
 	phone_number = forms.CharField( label='Phone Number', widget=forms.TextInput(attrs={'type':'text', 'class': 'span3', 'placeholder': 'Required'}))
 	avatar = forms.ImageField(label='Avatar', widget=forms.ClearableFileInput(attrs={'type':'file', 'class':'filestyle span3'}))
+
+class schoolForStudent(forms.Form):
+	school = forms.ModelChoiceField(label='School', queryset=School.objects.all(), widget=forms.Select(attrs={'class':'selectpicker span6 show-tick', 'data-size':10, }))
+
+class schoolForTeacher(forms.Form):
+	school = forms.ModelMultipleChoiceField(label='School', queryset=School.objects.all(), widget=forms.SelectMultiple(attrs={'class':'selectpicker span7 show-tick', 'data-size':10, }))
+
+	def cleaned_school(self):
+		data = self.cleaned_data.get('school', [])
+		return data.split(',')

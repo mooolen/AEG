@@ -5,7 +5,8 @@ except ImportError:
 
 except ImportError:     # Python 2
     from urlparse import urlparse
-    
+   
+from registration import signals
 from django.shortcuts import render_to_response, render, redirect
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -19,10 +20,10 @@ from django.contrib.auth.models import User, check_password
 from django.http import HttpResponseRedirect
 from django.views.generic.edit import FormView
 from django.core.context_processors import csrf
-from app_auth.models import UserProfile, passwordForm, UserProfile
+from app_auth.models import UserProfile, passwordForm, UserProfile, Student, Teacher, School
 from django.contrib.auth.decorators import login_required
 
-from .forms import LoginForm, PasswordForm, ProfileForm
+from .forms import LoginForm, PasswordForm, ProfileForm, schoolForStudent, schoolForTeacher
 
 class LoginView(FormView):
 	form_class = LoginForm
@@ -87,9 +88,31 @@ def user_logout(request):
 def profile_edit(request, success=None):
 	user_info = UserProfile.objects.filter(user_id = request.user.id)
 	power = False
+
 	if request.method == "POST":
 		formProfile = ProfileForm(request.POST, request.FILES)
+		schoolForm = schoolForStudent(request.POST)
+		if request.user.is_staff:
+			schoolForm = schoolForTeacher(request.POST)
 		power = True
+
+		if schoolForm.is_valid():
+			if request.user.is_staff:
+				temp = schoolForm.cleaned_data['school']
+				teacher = Teacher.objects.filter(user=request.user)
+				if not teacher.exists():
+					teacher = Teacher.objects.create(user=request.user)
+					teacher.save()
+				else:
+					teacher = teacher.get(user=request.user)
+				for school in temp:
+					print(school)
+					teacher.school.add(school)
+			else:
+				temp = schoolForm.cleaned_data
+				student = Student.objects.filter(user=request.user)
+				if not student.exists():
+					student = Student.objects.create(user=request.user, school=temp['school'])
 		if formProfile.is_valid():
 			temp = formProfile.cleaned_data
 			if user_info.exists():
@@ -118,23 +141,38 @@ def profile_edit(request, success=None):
 			return redirect("/dashboard")
 	
 	if user_info.exists():
+		schoolForm = schoolForStudent()
+		if request.user.is_staff:
+			schoolForm = schoolForTeacher()
 		user_info = user_info.get(user_id=request.user.id)
 		avatar = user_info.avatar
 		if not power:
+			try:
+				schoolForm = schoolForStudent(initial={'school':Student.objects.get(user=request.user).school})
+			except:
+				pass
+			if request.user.is_staff:
+				schoolForm = schoolForTeacher()#(initial={'school':Teacher.objects.get(user=request.user).school})
 			formProfile = ProfileForm(initial={
 				'last_name':request.user.last_name, 'first_name':request.user.first_name, 'email':request.user.email, 'avatar':user_info.avatar,
 				'username': request.user.username, 'street':user_info.street, 'municipality':user_info.municipality,
 				'province': user_info.province, 'phone_number': user_info.phone_number
 			})
 	else:
+		schoolForm = schoolForStudent()
+		if request.user.is_staff:
+			schoolForm = schoolForTeacher()
 		avatar = 'images/avatars/user.png'
 		formProfile = ProfileForm(initial={'last_name':request.user.last_name, 'first_name':request.user.first_name, 'email':request.user.email,
 			'username': request.user.username,})
-	return render(request, 'app_auth/profile.html', {'avatar': avatar, 'success':success, 'formProfile':formProfile})
+	return render(request, 'app_auth/profile.html', {'avatar': avatar, 'success':success, 'formProfile':formProfile, 'schoolForm':schoolForm})
 
 @login_required(redirect_field_name='', login_url='/')
 def password_edit(request):
-	user_info = UserProfile.objects.get(user_id = request.user.id)
+	user_info = UserProfile.objects.filter(user_id = request.user.id)
+	if not user_info.exists():
+		return redirect("/profile")
+	user_info = user_info.get(user_id = request.user.id)
 	avatar = user_info.avatar
 	err = None
 	success = None
@@ -156,3 +194,8 @@ def password_edit(request):
 	else:	
 		form_class = PasswordForm()
 	return render(request, 'app_auth/changePassword.html', {'avatar': avatar, 'user_info':user_info, 'form':form_class, 'error': err, 'success':success})
+
+def login_on_activation(sender, user, request, **kwargs):
+    user.backend='django.contrib.auth.backends.ModelBackend' 
+    login(request,user)
+signals.user_activated.connect(login_on_activation)

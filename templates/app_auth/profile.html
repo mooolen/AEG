@@ -7,13 +7,15 @@ TECS: Test Essay Checking Software | Teacher Classes
 
 {% block content %}
 <head>
-	<script src="{% static 'base/js/jquery.js' %}"></script>
+	<script src="{% static 'base/js/jquery.min.js' %}"></script>
+	<link href="{% static 'base/css/bootstrap-select.css' %}" rel="stylesheet">
 	<script src="{% static 'base/js/bootstrap.js' %}"></script>
 	<script src="{% static 'base/js/bootstrap-filestyle.js' %}"></script>
 
     <script type="text/javascript">
         $(window).on('load', function () {
         	$(":file").filestyle({'classInput': "span3",'style':"margin-top: 10px"});
+        	$('.selectpicker').selectpicker();
         });
     </script>
 </head>
@@ -30,6 +32,18 @@ TECS: Test Essay Checking Software | Teacher Classes
 			<h3 class="title">My Profile</h3>
 			<form enctype="multipart/form-data" class="form-horizontal" action="{% url 'auth:profile' %}" method="post">{% csrf_token %}
 				<fieldset>
+					{%for formSchool in schoolForm %}
+					<div class="control-group">
+						<label class="control-label" for="email">{{ formSchool.label_tag }}</label>
+						<div class="controls">
+							{{formSchool}}
+							{% for error in formSchool.errors %}
+							<p class="text-error">{{ error }}</p>
+							{% endfor %}
+						</div>
+					</div>
+					{% endfor %}
+
 					{% for form in formProfile %}
 					<div class="control-group">
 						<label class="control-label" for="email">{{ form.label_tag }}</label>

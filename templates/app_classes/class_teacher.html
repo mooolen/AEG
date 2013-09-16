@@ -63,7 +63,7 @@ TECS: Test Essay Checking Software | Teacher Classes
 				<tbody>
 					{% for classes in sections %}
 						<tr>
-							<td><center>{{classes.id}}</center></td>
+							<td><center>{{forloop.counter}}</center></td>
 							<td><center>{{classes.school.name}}</center></td>
 							<td><center>{{classes.year_level}} - {{classes.section}}</center></td>
 							<td><center>{{classes.subject}}</center></td>
