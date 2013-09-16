@@ -46,7 +46,6 @@ TECS: Test Essay Checking Software | Home
 						<th><center>Teacher</center></th>
 						<th><center>Academic Year</center></th>
 						<th><center>Status</center></th>
-						<th><center>View</center></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -59,7 +58,6 @@ TECS: Test Essay Checking Software | Home
 						<td><center>{{section.academic_year}}</td>
 						{% if section.is_active %}<td style="color:#1abc9c"><center>Active</td>
 						{% else %}<td style="color:red" ><center>Inactive</td>{% endif %}
-						<td><center><a class="btn btn-success"><i class="fui-search"></i></a></center></td>
 					</tr>	
 					{% endfor %}			
 				</tbody>
