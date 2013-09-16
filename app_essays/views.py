@@ -12,7 +12,7 @@ from app_classes.models import Class
 
 from datetime import datetime
 import operator, pycurl, urllib
-import nltk.data
+import nltk
 
 @login_required(redirect_field_name='', login_url='/')
 def new_essay(request):
@@ -53,14 +53,19 @@ def list_essay(request, errors=None, success=None):
 	if len(Teacher.objects.filter(user_id = request.user.id)) > 0:
 		no_on_going_essays = 0
 		no_past_essays = 0
+		no_on_queue_essays = 0
 
-		on_going_essays = Essay.objects.filter(instructor_id = Teacher.objects.get(user_id = request.user.id).id, status=1).filter(deadline__gte=timezone.now())
+		on_queue_essays = Essay.objects.filter(instructor_id = Teacher.objects.get(user_id = request.user.id).id, status=1).filter(start_date__gt=timezone.now())
+		on_going_essays = Essay.objects.filter(instructor_id = Teacher.objects.get(user_id = request.user.id).id, status=1).filter(start_date__lte=timezone.now(), deadline__gte=timezone.now())
 		past_essays = Essay.objects.filter(instructor_id = Teacher.objects.get(user_id = request.user.id).id).filter(deadline__lt=timezone.now())
+		
+		if (len(on_queue_essays) == 0 ):
+			no_on_queue_essays = 1	
 		if (len(on_going_essays) == 0 ):
 			no_on_going_essays = 1	
 		if (len(past_essays) == 0):
 			no_past_essays = 1
-		return render(request, 'app_essays/teacher_viewExam.html',	{'avatar':avatar, 'active_nav':'EXAMS', 'no_on_going_essays':no_on_going_essays, 'no_past_essays':no_past_essays, 'on_going_essays':on_going_essays, 'past_essays':past_essays,'errors':errors, 'success':success})
+		return render(request, 'app_essays/teacher_viewExam.html',	{'avatar':avatar, 'active_nav':'EXAMS', 'no_on_queue_essays':no_on_queue_essays,'no_on_going_essays':no_on_going_essays, 'no_past_essays':no_past_essays, 'on_queue_essays':on_queue_essays,'on_going_essays':on_going_essays, 'past_essays':past_essays,'errors':errors, 'success':success})
 
 	#IF USER IS A STUDENT
 	elif len(Student.objects.filter(user_id = request.user.id)) > 0:
@@ -69,8 +74,8 @@ def list_essay(request, errors=None, success=None):
 		no_past_essay_responses = 0
 
 		#on_going_essay_responses = EssayResponse.objects.filter(~Q(status=2), student=Student.objects.get(user_id = request.user.id)).filter(essay__deadline__gte=timezone.now())
-		on_going_essay_responses = EssayResponse.objects.filter(student=Student.objects.get(user_id = request.user.id)).filter(essay__deadline__gte=timezone.now())
-		past_essay_responses = EssayResponse.objects.filter(student=Student.objects.get(user_id = request.user.id)).filter(essay__deadline__lt=timezone.now())
+		on_going_essay_responses = EssayResponse.objects.filter(~Q(essay__status=-1), student=Student.objects.get(user_id = request.user.id)).filter(essay__start_date__lte=timezone.now(), essay__deadline__gte=timezone.now())
+		past_essay_responses = EssayResponse.objects.filter(~Q(essay__status=-1), student=Student.objects.get(user_id = request.user.id)).filter(essay__deadline__lt=timezone.now())
 
 		if (len(on_going_essay_responses) == 0 ):
 			no_on_going_essay_responses = 1	
@@ -123,45 +128,13 @@ def answer_essay(request, essay_response_id):
 			if 'final' in request.POST:
 				essay_response.status = 2
 				essay_response.save()
-				return HttpResponseRedirect('/essays/')
+				return redirect('essays:submission', essay_response_id=essay_response.pk)
 		else :
 			errors = 1
 		
 	else:
 		form = EssayResponseForm(initial={'response':essay_response.response})
 		return render(request, 'app_essays/student_answerEssay.html', {'avatar':avatar, 'active_nav':'EXAMS', 'essay_response':essay_response, 'form':form})
-
-'''
-@login_required(redirect_field_name='', login_url='/')
-def essay_submission(request, essay_response_id):
-	active_nav = "EXAMS"
-	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
-	essay_response = EssayResponse.objects.get(pk=int(essay_response_id))
-
-	if essay_response.response.isspace() or essay_response.response.strip() == '':
-		has_submission = 0
-	else:
-		has_submission = 1
-
-	if request.method == 'POST':
-		er_form = EssayResponseGradeForm()
-		c_forms = [EssayCommentForm(request.POST, prefix=str(x), instance=EssayComment()) for x in range(0,3)]
-		if er_form.is_valid() and all([c_form.is_valid() for c_form in c_forms]):
-			data = er_form.cleaned_data
-			essay_response.grade = data['grade']
-			essay_responses.general_feedback = data['general_feedback']
-			essay_response.save()
-
-			for c_form in c_forms:
-				comment = c_form.save(commi=False)
-				comment.essay = essay_response
-				comment.save()
-	else:
-		er_form = EssayResponseGradeForm()
-		er_form.fields['grade'].queryset = Grade.objects.filter(grading_system = essay_response.essay.grading_system).order_by('value')
-		c_forms = [EssayCommentForm(prefix=str(x), initial={'end':''}) for x in range(0,3)]
-	return render(request, 'app_essays/teacher_viewEssaySubmission.html', {'avatar':avatar, 'active_nav':'EXAMS', 'essay_response':essay_response, 'has_submission':has_submission, 'er_form':er_form, 'c_forms':c_forms})
-'''
 
 @login_required(redirect_field_name='', login_url='/')
 def essay_submission(request, essay_response_id):
@@ -176,22 +149,25 @@ def essay_submission(request, essay_response_id):
 	else:
 		has_submission = 1
 		tokenizer = nltk.data.load('nltk:tokenizers/punkt/english.pickle')
-		sentences = tokenizer.tokenize(essay_response.response)
 
-		for i, sentence in enumerate(sentences):
-			sentences[i] = '<sup>'+ str(i+1) +'</sup> ' + sentence
-
-		numbered_response = ''.join(sentences)
+		index = 1
+		for paragraph in essay_response.response.split("\n"):
+			sentences = tokenizer.tokenize(paragraph.strip())		
+			numbered_response = numbered_response +"<p>"
+			for i, sentence in enumerate(sentences):
+				sentences[i] = '<sup>'+ str(index) +'</sup> ' + sentence
+				index+=1
+			numbered_response = numbered_response+''.join(sentences)+"</p>"
 
 	#IF USER IS A TEACHER
 	if len(Teacher.objects.filter(user_id = request.user.id)) > 0:
 
 		if essay_response.grade == None:
 			#SPELLING AND GRAMMAR CHECKER
-			c = pycurl.Curl()
-			url_param = "http://localhost:8081/?language=en-US&text="+urllib.quote_plus(essay_response.response)
-			c.setopt(c.URL, str(url_param))
-			c.perform()
+			#c = pycurl.Curl()
+			#url_param = "http://localhost:8081/?language=en-US&text="+urllib.quote_plus(essay_response.response)
+			#c.setopt(c.URL, str(url_param))
+			#c.perform()
 
 			class EvaluateEssayFormSet(BaseFormSet):
 				def __init__(self, *args, **kwargs):

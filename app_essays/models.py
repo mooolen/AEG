@@ -6,7 +6,7 @@ from django.utils.timezone import utc
 from django.contrib.auth.models import User
 from app_auth.models import Student, Teacher
 from app_classes.models import Class
-import datetime
+import datetime, nltk.data
 
 class GradingSystem(models.Model):
 	name = models.CharField(max_length=50)
@@ -40,7 +40,11 @@ class Essay(models.Model):
 
 	def __str__(self):
 		return self.title
-		
+
+	
+	def is_all_graded(self):
+		return not EssayResponse.objects.filter(essay_id=self.pk, grade=None).exists()
+
 class EssayResponse(models.Model):
 	essay = models.ForeignKey(Essay)
 	student = models.ForeignKey(Student)
@@ -70,6 +74,12 @@ class EssayResponse(models.Model):
 		time_str = str(hours) + ( ' hours' if hours > 1 else ' hour' ) if hours > 0 else ''
 		time_str +=  str(minutes) + ( ' minutes' if minutes > 1 else ' minute' ) if minutes > 0 else ''
 		return time_str
+
+	@property
+	def num_of_sentences(self):
+		tokenizer = nltk.data.load('nltk:tokenizers/punkt/english.pickle')
+		sentences = tokenizer.tokenize(essay_response.response)
+		return count(sentences)
 
 class EssayComment(models.Model):
 	essay = models.ForeignKey(EssayResponse)
@@ -144,30 +154,26 @@ class EssayCommentForm(ModelForm):
 			'end': TextInput(attrs={'class':'span1'}),
 			'comment': TextInput(attrs={'class':'span1'}),
 		}
-	'''
+	
 	def clean_start(self):
-		end = self.data['end']
-		comment = self.data['comment']
-
-		if not end or not (comment.isspace() or  comment.strip() == ''):
-			raise forms.ValidationError("This is required.")
-
-		return self.cleaned_data['start']
+		clean_start = self.cleaned_data.get('start', None)
+		
+		return clean_start
 
 	def clean_end(self):
-		clean_end = self.cleaned_data['end']
-		clean_start = self.data['start']
+		clean_end = self.cleaned_data.get('end', None)
+		clean_start = self.cleaned_data.get('start', None)
 		if clean_start  > clean_end:
 			raise forms.ValidationError("This must be greater than the starting sentence no.")
 
 		return clean_end
 
-	def clean_end(self):
-		start = self.data['start']
-		comment = self.data['comment']
+	def clean_comment(self):
+		start = self.cleaned_data.get('start', None)
+		comment = self.cleaned_data.get('comment', None)
 
-		if not start or not (comment.isspace() or  comment.strip() == ''):
-			raise forms.ValidationError("This is required.")
+		#if not start or not (comment.isspace() or  comment.strip() == ''):
+		#	raise forms.ValidationError("This is required.")
 
-		return self.cleaned_data['end']
-	'''
+		return comment
+	

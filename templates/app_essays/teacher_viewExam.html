@@ -51,11 +51,44 @@ TECS: Test Essay Checking Software | Essay
 						<td>{{ essay.title }}</td>
 						<td>{{ essay.start_date }}</td>
 						<td>{{ essay.deadline }}</td>
-						<td><center><a href="{% url 'essays:details' essay.id %}">View</a></center></td>
+						<td><center><a href="{% url 'essays:details' essay.id %}" class="btn btn-info">View</a></center></td>
 					</tr>
 					{% endfor %}
 				</tbody>
 			</table>
+			{% endif %}
+
+
+			{% if not no_on_queue_essays %}
+			<div class="row-fluidr">
+				<img class="title-icons" src="{% static 'base/images/icons/Watches@2x.png' %}">
+				<h3>Queued Exams</h3>
+			</div>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th width="10%">Class</th>
+						<th width="15%">Subject</th>
+						<th width="25%">Essay</th>
+						<th width="15%">Start</th>
+						<th width="15%">Deadline</th>
+						<th width="10%"></th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for essay in on_queue_essays %}
+					<tr>
+						<td>{{ essay.class_name.year_level }}-{{ essay.class_name.section }}</td>
+						<td>{{ essay.class_name.subject }}</td>
+						<td>{{ essay.title }}</td>
+						<td>{{ essay.start_date }}</td>
+						<td>{{ essay.deadline }}</td>
+						<td><center><a href="{% url 'essays:details' essay.id %}" class="btn btn-info">View</a></center></td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+
 			{% endif %}
 
 			<img class="title-icons" src="{% static 'base/images/icons/documents.png' %}">
@@ -73,11 +106,12 @@ TECS: Test Essay Checking Software | Essay
 				<thead>
 					<tr>
 						<th width="10%">Class</th>
-						<th width="15%">Subject</th>
-						<th width="25%">Essay</th>
-						<th width="15%">Start</th>
-						<th width="15%">Deadline</th>
-						<th width="10%"></th>
+						<th width="12%">Subject</th>
+						<th width="20%">Essay</th>
+						<th width="12%">Start</th>
+						<th width="12%">Deadline</th>
+						<th width="15%">Remarks</th>
+						<th width="9%"></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -88,7 +122,12 @@ TECS: Test Essay Checking Software | Essay
 						<td>{{ essay.title }}</td>
 						<td>{{ essay.start_date }}</td>
 						<td>{{ essay.deadline }}</td>
-						<td><center><a href="{% url 'essays:details' essay.id %}">View</a></center></td>
+						<td>
+							{% if not essay.is_all_graded %}
+								<p class="text-error">Needs Grading</p>
+							{% endif %}
+						</td>
+						<td><center><a href="{% url 'essays:details' essay.id %}" class="btn btn-info">View</a></center></td>
 					</tr>
 					{% endfor %}
 				</tbody>
