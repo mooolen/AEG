@@ -16,7 +16,14 @@ TECS: Test Essay Checking Software | Register
 	<form action = "" method = "post" class="form-horizontal">
 		{% csrf_token %}
 		<div class="control-group">
-			<label class="control-label" for="fName">Username</label>
+			<label class="control-label">Name</label>
+			<div class = "controls">
+				<p>{{ form.first_name }}</p>
+				<p>{{ form.last_name }}</p>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">Username</label>
 			<div class = "controls">
 		      {% if form.username.errors %}
 		        <p class="errors">{{ form.username.errors.as_text }}</p>
@@ -24,15 +31,14 @@ TECS: Test Essay Checking Software | Register
 				{{ form.username }}
 			</div>
 		</div>
-		<!--<div class="control-group">
-			<label class="control-label" for="fName">Name</label>
-			<div class = "controls">
-				<p>{{ RegistrationForm.first_name }}</p>
-				<p>{{ RegistrationForm.last_name }}</p>
-			</div>
-		</div>-->
 		<div class="control-group">
-			<label class="control-label" for="fName">Email Address</label>
+			<label class="control-label">School</label>
+			<div class = "controls">
+				{{ form.school }}
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">Email Address</label>
 		      {% if form.email.errors %}
 		        <p class="errors">{{ form.email.errors.as_text }}</p>
 		      {% endif %}
@@ -41,7 +47,7 @@ TECS: Test Essay Checking Software | Register
 			</div>
 		</div>	
 		<div class="control-group">
-			<label class="control-label" for="fName">Password</label>
+			<label class="control-label">Password</label>
 		      {% if form.password1.errors %}
 		        <p class="errors">{{ form.password1.errors.as_text }}</p>
 		      {% endif %}
@@ -50,7 +56,7 @@ TECS: Test Essay Checking Software | Register
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label" for="fName">Retype Password</label>
+			<label class="control-label">Retype Password</label>
 			{% if form.password2.errors %}
 		        <p class="errors">{{ form.password2.errors.as_text }}</p>
 		      {% endif %}

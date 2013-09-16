@@ -1,8 +1,23 @@
 
 from django.contrib.auth.models import User
 from django import forms
+from registration.forms import RegistrationForm
+from django.utils.translation import ugettext_lazy as _
+from app_registration.models import CustomRegistrationProfile
+from registration.models import RegistrationProfile
+from app_auth.models import School
 
-class RegistrationForm(forms.Form):
+attrs_dict = { 'class': 'required' }
+class CustomRegistrationForm(RegistrationForm):
 	first_name = forms.CharField(widget=forms.TextInput(attrs={'type':'text', 'class': 'form-control', 'placeholder': 'First Name', 'autofocus':'autofocus'}))
 	last_name = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Last Name'}))
-	email = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Email'}))
+	school = forms.ModelChoiceField(queryset=School.objects.all(), empty_label=None)
+
+	def save(self, profile_callback=None):
+		new_user = RegistrationProfile.objects.create_inactive_user(username=self.cleaned_data['username'],
+		password=self.cleaned_data['password1'],
+		email=self.cleaned_data['email'])
+		new_profile = CustomRegistrationProfile(user=new_user, first_name=self.cleaned_data['first_name'], last_name=self.cleaned_data['last_name'], school=self.cleaned_data['school'])
+		new_profile.save()
+
+		return new_user

@@ -132,6 +132,14 @@ TEMPLATE_DIRS = (
 	'./templates',
 )
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.request",
+)
+
 INSTALLED_APPS = (
 	'django.contrib.auth',
 	'django.contrib.contenttypes',
@@ -140,13 +148,17 @@ INSTALLED_APPS = (
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
 	'django.contrib.admin',
+	'django.contrib.humanize',
 	# Uncomment the next line to enable admin documentation:
 	# 'django.contrib.admindocs',
 	'app_auth',
 	'app_classes',
-	'app_essays'
+	'app_essays',
+	'app_registration',
+	'registration'
 )
-
+ACCOUNT_ACTIVATION_DAYS = 7 # One-week activation window;
+AUTH_PROFILE_MODULE = "app_registration.CustomRegistrationProfile"
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.
