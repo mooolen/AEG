@@ -19,10 +19,11 @@ from .forms import MailForm
 
 @login_required(redirect_field_name='', login_url='/')
 def dashboard(request):
-	try:
-		avatar = UserProfile.objects.get(user_id = request.user.id).avatar
-	except UserProfile.DoesNotExist:
-		avatar = 'images/avatars/user.png'
+	User_Profile = UserProfile.objects.filter(user_id = request.user.id)
+	if not User_Profile.exists():
+		return redirect("/profile")
+	avatar = User_Profile.get(user_id=request.user.id).avatar
+	
 	return render(request, 'app_classes/dashboard2.html', {'avatar':avatar, 'active_nav':'DASHBOARD'})
 	
 def add_class(request):

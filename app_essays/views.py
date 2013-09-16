@@ -48,7 +48,10 @@ def new_essay(request):
 @login_required(redirect_field_name='', login_url='/')	
 def list_essay(request, errors=None, success=None):
 	active_nav = "EXAMS"
-	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
+	userProfile = UserProfile.objects.filter(user_id = request.user.id)
+	if not userProfile.exists():
+		return redirect("/profile")
+	avatar = userProfile.get(user_id = request.user.id).avatar
 	#IF USER IS A TEACHER
 	if len(Teacher.objects.filter(user_id = request.user.id)) > 0:
 		no_on_going_essays = 0
@@ -188,10 +191,10 @@ def essay_submission(request, essay_response_id):
 
 		if essay_response.grade == None:
 			#SPELLING AND GRAMMAR CHECKER
-			c = pycurl.Curl()
-			url_param = "http://localhost:8081/?language=en-US&text="+urllib.quote_plus(essay_response.response)
-			c.setopt(c.URL, str(url_param))
-			c.perform()
+			#c = pycurl.Curl()
+			#url_param = "http://localhost:8081/?language=en-US&text="+urllib.quote_plus(essay_response.response)
+			#c.setopt(c.URL, str(url_param))
+			#c.perform()
 
 			class EvaluateEssayFormSet(BaseFormSet):
 				def __init__(self, *args, **kwargs):

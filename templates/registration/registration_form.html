@@ -5,67 +5,48 @@
 TECS: Test Essay Checking Software | Register
 {% endblock %}
 
-{% block register %}	
+{% block register %}
 	<h3>TECS: Test Essay Checking Software</h3>
 	<div class="login-form">
 	{% csrf_token %}
 
 	{% if form.errors %}
-	    <p class="errors">Please correct the errors below: {{ form.non_field_errors }}</p>
+	    <p class="text-error">Please correct the errors below: {{ form.non_field_errors }}</p>
 	{% endif %}
 	<form action = "" method = "post" class="form-horizontal">
 		{% csrf_token %}
 		<div class="control-group">
-			<label class="control-label">Name</label>
-			<div class = "controls">
-				<p>{{ form.first_name }}</p>
-				<p>{{ form.last_name }}</p>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label">Username</label>
-			<div class = "controls">
+			{{ form.first_name }}
+			{{ form.last_name }}
+			{{ form.school }}
+			{{ form.username }}
 		      {% if form.username.errors %}
-		        <p class="errors">{{ form.username.errors.as_text }}</p>
+		        <p class="text-error">{{ form.username.errors.as_text }}</p>
 		      {% endif %}
-				{{ form.username }}
-			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">School</label>
-			<div class = "controls">
-				{{ form.school }}
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label">Email Address</label>
-		      {% if form.email.errors %}
-		        <p class="errors">{{ form.email.errors.as_text }}</p>
-		      {% endif %}
-			<div class = "controls">
 				{{ form.email }}
-			</div>
+			      {% if form.email.errors %}
+			        <p class="text-error">{{ form.email.errors.as_text }}</p>
+			      {% endif %}
 		</div>	
 		<div class="control-group">
-			<label class="control-label">Password</label>
-		      {% if form.password1.errors %}
-		        <p class="errors">{{ form.password1.errors.as_text }}</p>
-		      {% endif %}
-			<div class = "controls">
 				{{ form.password1 }}
-			</div>
+			      {% if form.password1.errors %}
+			        <p class="text-error">{{ form.password1.errors.as_text }}</p>
+			      {% endif %}
 		</div>
 		<div class="control-group">
-			<label class="control-label">Retype Password</label>
-			{% if form.password2.errors %}
-		        <p class="errors">{{ form.password2.errors.as_text }}</p>
-		      {% endif %}
-			<div class = "controls">
 				{{ form.password2 }}
-			</div>
-		</div>	
-		<button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
-		<a href="/" class="btn btn-lg btn-danger btn-block" type="button">Cancel</a>
+				{% if form.password2.errors %}
+			        <p class="text-error">{{ form.password2.errors.as_text }}</p>
+			      {% endif %}
+		</div>
+		<div class="control-group"><br/>
+			<button class="btn btn-large btn-success" name="teacher" type="submit">Sign Up as Teacher</button>
+			<button class="btn btn-large btn-success" name="student" type="submit">Sign Up as Student</button>
+		</div>
+		<a href="/" class="btn btn-lg btn-inverse btn-block" type="button">Cancel</a>
 	</form>
 	</div>
 {% endblock %}

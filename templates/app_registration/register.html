@@ -10,9 +10,8 @@ TECS: Test Essay Checking Software | Register
 	<div class="login-form">
 	{% csrf_token %}
 
-<<<<<<< HEAD
 	{% if form.errors %}
-	    <p class="errors">Invalid input. Please try again.</p>
+	    <p class="text-error">Invalid input. Please try again.</p>
 	{% endif %}
 	<form action = "" method = "post" class="form-horizontal">
 		{% csrf_token %}
@@ -33,7 +32,6 @@ TECS: Test Essay Checking Software | Register
 			<label class="control-label" for="fName">Password</label>
 			<div class = "controls">
 				{{ form.password1 }}
-=======
 		{% if form.errors %}
 		    <p class="text-error">Invalid input. Please try again.</p>
 		{% endif %}
@@ -44,7 +42,6 @@ TECS: Test Essay Checking Software | Register
 				<div class = "controls">
 					{{ form.username }}
 				</div>
->>>>>>> 7586f54da913d222fc53f1ec003d23ea73645156
 			</div>
 		</div>
 		<div class="control-group">
@@ -52,13 +49,11 @@ TECS: Test Essay Checking Software | Register
 			<div class = "controls">
 				{{ form.password2 }}
 			</div>
-<<<<<<< HEAD
 		</div>	
 		<button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
 		<a href="/" class="btn btn-lg btn-danger btn-block" type="button">Cancel</a>
 	</form>
 	</div>
-=======
 			<div class="control-group">
 				<label class="control-label" for="fName">Retype Password</label>
 				<div class = "controls">
@@ -71,5 +66,4 @@ TECS: Test Essay Checking Software | Register
   	</div>
   </div>
 </div>
->>>>>>> 7586f54da913d222fc53f1ec003d23ea73645156
 {% endblock %}
