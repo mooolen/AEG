@@ -1,15 +1,15 @@
-from django.conf.urls import patterns, url, include
-from django.conf.urls.defaults import *
-from django.views.generic.base import TemplateView
-from django.contrib.auth import views as auth_views
-#from registration.views import activate
-#from registration.views import register
-from app_registration.forms import CustomRegistrationForm
+"""
+Backwards-compatible URLconf for existing django-registration
+installs; this allows the standard ``include('registration.urls')`` to
+continue working, but that usage is deprecated and will be removed for
+django-registration 1.0. For new installs, use
+``include('registration.backends.default.urls')``.
 
-urlpatterns = patterns('',
-                       url(r'^accounts/register/$',
-					   register,
-					    {'backend': 'accounts.regbackend.RegBackend','form_class':CustomRegistrationForm},        
-					    name='registration_register'
-					    )
-                       )
+"""
+
+import warnings
+
+warnings.warn("include('registration.urls') is deprecated; use include('registration.backends.default.urls') instead.",
+              DeprecationWarning)
+
+from app_registration.backends.default.urls import *

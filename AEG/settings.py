@@ -155,7 +155,6 @@ INSTALLED_APPS = (
 	'app_classes',
 	'app_essays',
 	'app_registration',
-	'registration'
 )
 ACCOUNT_ACTIVATION_DAYS = 7 # One-week activation window;
 AUTH_PROFILE_MODULE = "app_registration.CustomRegistrationProfile"

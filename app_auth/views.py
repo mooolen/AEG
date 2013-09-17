@@ -6,7 +6,7 @@ except ImportError:
 except ImportError:     # Python 2
     from urlparse import urlparse
    
-from registration import signals
+from app_registration import signals
 from django.shortcuts import render_to_response, render, redirect
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
