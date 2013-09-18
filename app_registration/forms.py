@@ -8,7 +8,7 @@ you're using a custom model.
 
 """
 
-
+from app_captcha.fields import ReCaptchaField
 from django.contrib.auth.models import User
 from django import forms
 from django.utils.translation import ugettext_lazy as _
@@ -38,7 +38,8 @@ class RegistrationForm(forms.Form):
                                 label=_("Password"))
     password2 = forms.CharField(widget=forms.PasswordInput(attrs={'type':'password', 'class': 'login-field', 'placeholder': 'Retype Password'}),
                                 label=_("Password (again)"))
-    
+    captcha = ReCaptchaField(attrs={'theme' : 'white'})
+
     def clean_username(self):
         """
         Validate that the username is alphanumeric and is not already

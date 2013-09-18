@@ -155,9 +155,13 @@ INSTALLED_APPS = (
 	'app_classes',
 	'app_essays',
 	'app_registration',
+	'captcha',
 )
 ACCOUNT_ACTIVATION_DAYS = 7 # One-week activation window;
+RECAPTCHA_PUBLIC_KEY = '6Lf-oOcSAAAAAO2-8-yrUFxYjQyluvupPS6GQYQY'
 AUTH_PROFILE_MODULE = "app_registration.CustomRegistrationProfile"
+RECAPTCHA_PRIVATE_KEY = '6Lf-oOcSAAAAAICjmXmGuAjsraOVkrHRIAUENjHJ'
+RECAPTCHA_USE_SSL = False
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.

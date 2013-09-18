@@ -16,9 +16,6 @@ TECS: Test Essay Checking Software | Register
 	<form action = "" method = "post" class="form-horizontal">
 		{% csrf_token %}
 		<div class="control-group">
-			{{ form.first_name }}
-			{{ form.last_name }}
-			{{ form.school }}
 			{{ form.username }}
 		      {% if form.username.errors %}
 		        <p class="text-error">{{ form.username.errors.as_text }}</p>
@@ -41,6 +38,13 @@ TECS: Test Essay Checking Software | Register
 				{% if form.password2.errors %}
 			        <p class="text-error">{{ form.password2.errors.as_text }}</p>
 			      {% endif %}
+		</div>
+		<div class="control-group"><center>
+				{{ form.captcha }}
+				{% if form.captcha.errors %}
+			        <p class="text-error">{{ form.captcha.errors.as_text }}</p>
+			    {% endif %}
+				</center>
 		</div>
 		<div class="control-group"><br/>
 			<button class="btn btn-large btn-success" name="teacher" type="submit">Sign Up as Teacher</button>
