@@ -155,7 +155,7 @@ INSTALLED_APPS = (
 	'app_classes',
 	'app_essays',
 	'app_registration',
-	'captcha',
+	'app_captcha',
 )
 ACCOUNT_ACTIVATION_DAYS = 7 # One-week activation window;
 RECAPTCHA_PUBLIC_KEY = '6Lf-oOcSAAAAAO2-8-yrUFxYjQyluvupPS6GQYQY'

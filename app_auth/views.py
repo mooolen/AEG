@@ -2,9 +2,6 @@ try:
     from urllib.parse import urlparse
 except ImportError:
     from urlparse import urlparse
-
-except ImportError:     # Python 2
-    from urlparse import urlparse
    
 from app_registration import signals
 from django.shortcuts import render_to_response, render, redirect
