@@ -110,7 +110,10 @@ def submit(recaptcha_challenge_field,
             }
         )
     
-    urllib2.install_opener(urllib2.build_opener(HTTPSHandlerV3()))
+    #SET PROXY
+    proxy_handler = urllib2.ProxyHandler({'http': 'http://proxy8.upd.edu.ph:8080/'})
+    
+    urllib2.install_opener(urllib2.build_opener(proxy_handler, HTTPSHandlerV3()))
     httpresp = urllib2.urlopen(request)
 
     return_values = httpresp.read().splitlines()
