@@ -10,7 +10,6 @@ urlpatterns = patterns('',
 	url(r'^', include('app_auth.urls', namespace='auth')),
 	url(r'^', include('app_classes.urls', namespace='classes')),
 	url(r'^', include('app_essays.urls', namespace='essays')),	
-	url(r'^', include('app_student.urls', namespace='student')),
 	#url(r'^', include('app_registration.urls', namespace='register')),
   	url(r'^accounts/', include('app_registration.backends.default.urls')),
 )
