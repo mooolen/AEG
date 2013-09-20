@@ -51,7 +51,7 @@ class EditForm(ModelForm):
 class EnrollForm(ModelForm):
 	class Meta:
 		model = Class
-		exclude = ('teacher', 'date_created', 'is_active', 'student', 'year_level', 'section', 'subject', 'academic_year')
+		fields = ['school', 'key']
 		widgets = {
 			'school': Select(attrs={'class':'selectpicker span6 show-tick', 'data-size':10, 'data-container':"body", 'data-options':"is_hover" }),
 			'key': TextInput(attrs={'class':'input-xlarge span2', 'data-name':'key'}),
