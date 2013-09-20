@@ -23,7 +23,7 @@ class Grade(models.Model):
 
 	def __str__(self):
 		return self.name
-		
+
 class Essay(models.Model):
 	title = models.CharField(max_length=100)
 	instructor = models.ForeignKey(Teacher)
@@ -176,4 +176,21 @@ class EssayCommentForm(ModelForm):
 		#	raise forms.ValidationError("This is required.")
 
 		return comment
-	
+
+class GradeSysForm(ModelForm):
+	class Meta:
+		model = GradingSystem
+		exclude = ('created_by')
+		widgets = {
+			'name': TextInput(attrs={'class':'input-xlarge span4', 'placeholder': 'System Name'}),
+			'description' : Textarea(attrs={'class':'input-xlarge span4', 'rows':'4', 'placeholder':'Description'}),
+		}
+
+class gradeForm(ModelForm):
+	class Meta:
+		model = Grade
+		exclude = ('grading_system')
+		widgets = {
+			'name': TextInput(attrs={'class':'input-xlarge span4', 'placeholder':'1.0'}),
+			'value': TextInput(attrs={'class':'input-xlarge span4', 'placeholder':'93 - 100'}),
+		}

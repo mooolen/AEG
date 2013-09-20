@@ -18,6 +18,7 @@ from django.http import HttpResponseRedirect
 from django.views.generic.edit import FormView
 from django.core.context_processors import csrf
 from app_auth.models import UserProfile, passwordForm, UserProfile, Student, Teacher, School
+from app_essays.models import GradingSystem, GradeSysForm, gradeForm
 from django.contrib.auth.decorators import login_required
 
 from .forms import LoginForm, PasswordForm, ProfileForm, schoolForStudent, schoolForTeacher
@@ -190,7 +191,10 @@ def password_edit(request):
 				err = 'Passwords did not matched.'
 	else:	
 		form_class = PasswordForm()
-	return render(request, 'app_auth/changePassword.html', {'avatar': avatar, 'user_info':user_info, 'form':form_class, 'error': err, 'success':success})
+		gradingSystem = GradingSystem.objects.all()
+		formSys = GradeSysForm()
+		formGrade = gradeForm()
+	return render(request, 'app_auth/changePassword.html', {'avatar': avatar, 'user_info':user_info, 'formGrade':formGrade,'formSys':formSys,'form':form_class, 'error': err, 'success':success, 'gradingSystem':gradingSystem})
 
 def login_on_activation(sender, user, request, **kwargs):
     user.backend='django.contrib.auth.backends.ModelBackend' 
