@@ -31,7 +31,7 @@ class RegistrationForm(forms.Form):
     
     username = forms.RegexField(regex=r'^[\w.@+-]+$',
                                 max_length=30,
-                                label=_("Username"), widget=forms.TextInput(attrs={'type':'text', 'class': 'login-field', 'placeholder': 'Username', 'style':'color: #099', 'autofocus':'autofocus'}),
+                                label=_("Username"), widget=forms.TextInput(attrs={'type':'text', 'class': 'login-field', 'placeholder': 'Username', 'style':'color: #099', 'autofocus':'autofocus', 'autocomplete':'off'}),
                                 error_messages={'invalid': _("This value may contain only letters, numbers and @/./+/-/_ characters.")})
     email = forms.EmailField(label=_("E-mail"), widget=forms.TextInput(attrs={'type':'text', 'class': 'login-field', 'placeholder': 'Email', 'style':'color: #099'}) )
     password1 = forms.CharField(widget=forms.PasswordInput(attrs={'type':'password', 'class': 'login-field', 'placeholder': 'Password'}),
