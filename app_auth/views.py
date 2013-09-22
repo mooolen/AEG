@@ -4,7 +4,7 @@ except ImportError:
     from urlparse import urlparse
    
 from app_registration import signals
-from django.shortcuts import render_to_response, render, redirect
+from django.shortcuts import render_to_response, render, redirect, get_object_or_404
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpResponse
@@ -166,14 +166,13 @@ def profile_edit(request, success=None):
 	return render(request, 'app_auth/profile.html', {'avatar': avatar, 'success':success, 'formProfile':formProfile, 'schoolForm':schoolForm})
 
 @login_required(redirect_field_name='', login_url='/')
-def password_edit(request):
+def password_edit(request, success=None):
 	user_info = UserProfile.objects.filter(user_id = request.user.id)
 	if not user_info.exists():
 		return redirect("/profile")
 	user_info = user_info.get(user_id = request.user.id)
 	avatar = user_info.avatar
 	err = None
-	success = None
 	power = False
 	if request.user.is_staff:
 		power = True
@@ -192,11 +191,11 @@ def password_edit(request):
 				success = 'You have changed your password.'
 			else:
 				err = 'Passwords did not matched.'
-	else:	
+	else:
 		form_class = PasswordForm()
-		gradingSystem = GradingSystem.objects.all()
-		formSys = GradeSysForm()
-		formGrade = gradeForm()
+	gradingSystem = GradingSystem.objects.all()
+	formSys = GradeSysForm()
+	formGrade = gradeForm()
 	return render(request, 'app_auth/changePassword.html', {'avatar': avatar, 'power':power,'user_info':user_info, 'formGrade':formGrade,'formSys':formSys,'form':form_class, 'error': err, 'success':success, 'gradingSystem':gradingSystem})
 
 @login_required(redirect_field_name='', login_url='/')
@@ -229,6 +228,12 @@ def saveGrades(request):
 	formGrade = gradeForm()
 	power = True
 	return render(request, 'app_auth/changePassword.html', {'avatar': avatar, 'error':error,'success':success,'power':power,'user_info':user_info,'form':form_class, 'formGrade':formGrade,'formSys':formSys,'gradingSystem':gradingSystem})
+
+@login_required(redirect_field_name='', login_url='/')
+def deleGradeSys(request, gradeSys_id):
+	GradeSys = get_object_or_404(GradingSystem, pk=gradeSys_id)
+	GradeSys.delete()
+	return password_edit(request, 'You successfully deleted a Grading System.')
 
 def login_on_activation(sender, user, request, **kwargs):
     user.backend='django.contrib.auth.backends.ModelBackend' 

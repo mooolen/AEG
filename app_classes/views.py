@@ -15,7 +15,7 @@ from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
-from .forms import MailForm
+from .forms import MailForm, MailForm2
 
 @login_required(redirect_field_name='', login_url='/')
 def dashboard(request):
@@ -118,7 +118,7 @@ def submit(request):
 
 @login_required(redirect_field_name='', login_url='/')
 def edit(request, class_id):
-	class_info = Class.objects.get(pk=class_id)
+	class_info = get_object_or_404(Class, pk=class_id)
 	power = False
 	if request.method == "POST":
 		formEdit = EditForm(data=request.POST)
@@ -142,14 +142,13 @@ def edit(request, class_id):
 def delete(request, class_id):
 	class_info = get_object_or_404(Class, pk=class_id)
 	class_info.delete()
-	success_url = '/classes/'
 	return class_teacher(request, 0, 'You successfully deleted a class.')
 
 @login_required(redirect_field_name='', login_url='/')
 def viewClassList(request, class_id, message=None, success=True):
-	class_info = Class.objects.get(pk=class_id)
+	class_info = get_object_or_404(Class, pk=class_id)
 	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
-	formMails = MailForm()
+	formMails = MailForm2()
 	return render(request, 'app_classes/viewClassList.html', {'studentList':class_info, 'active_nav':'CLASSES', 'avatar':avatar, 'succ': success,'success':message, 'formMails': formMails})
 
 @login_required(redirect_field_name='', login_url='/')
@@ -175,15 +174,15 @@ def enroll(request):
 
 @login_required(redirect_field_name='', login_url='/')
 def removeStudent(request, class_id, student_id):
-	class_info = Class.objects.get(pk=class_id)
-	student = Student.objects.get(pk=student_id)
+	class_info = get_object_or_404(Class, pk=class_id)
+	student = get_object_or_404(Student, pk=student_id)
 	class_info.student.remove(student)
 	return viewClassList(request, class_id, 'You successfully removed a student.')
 
 @login_required(redirect_field_name='', login_url='/')
 def inviteStudent(request, class_id):
-	class_info = Class.objects.get(pk=class_id)
-	formMails = MailForm(data=request.POST)
+	class_info = get_object_or_404(Class, pk=class_id)
+	formMails = MailForm2(data=request.POST)
 	message = 'Invalid Email address(es)'
 	success = False
 	if formMails.is_valid():
