@@ -50,6 +50,7 @@ class EssayResponse(models.Model):
 	student = models.ForeignKey(Student)
 	response = models.TextField(blank=True, default="")
 	time_started = models.DateTimeField(blank=True, null=True)
+	time_finished = models.DateTimeField(blank=True, null=True)
 	status = models.IntegerField(default=0)	#0 - not yet started ; 1 - started / draft ; 2 - submitted
 	grade = models.ForeignKey(Grade, null=True, blank=True)
 	general_feedback = models.TextField(blank=True, default="")
@@ -133,7 +134,7 @@ class EssayResponseForm(ModelForm):
 		model = EssayResponse
 		fields = ['response']
 		widgets = {
-			'response': Textarea(attrs={'class':'input-xlarge span4', 'rows':'10'}),
+			'response': Textarea(attrs={'class':'input-xlarge span4', 'rows':'10', 'spellcheck':'false'}),
 		}
 
 class EssayResponseGradeForm(ModelForm):
@@ -163,7 +164,7 @@ class EssayCommentForm(ModelForm):
 	def clean_end(self):
 		clean_end = self.cleaned_data.get('end', None)
 		clean_start = self.cleaned_data.get('start', None)
-		if clean_start  > clean_end:
+		if not (clean_start.isspace() or  clean_start.strip() == '') and clean_start  > clean_end:
 			raise forms.ValidationError("This must be greater than the starting sentence no.")
 
 		return clean_end

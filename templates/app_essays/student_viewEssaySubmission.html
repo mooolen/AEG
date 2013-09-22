@@ -30,8 +30,7 @@ TECS: Test Essay Checking Software | Essay
 
 				{% if not essay_response.grade  %}
 					<div class="alert alert-warning">
-						<h4>Message:</h4>
-						<span>Your essay has not yet been graded by your teacher.</span>
+						<h4>STATUS: Not yet graded</h4>
 					</div>
 				{% endif %}
 
@@ -47,6 +46,13 @@ TECS: Test Essay Checking Software | Essay
 
 					<dt>Min. no. of words</dt>
 					<dd>{{ essay_response.essay.min_words }}</dd>
+				</dl>
+
+				<dl class="dl-horizontal">
+					<dt>Time Started</dt>
+					<dd>{{ essay_response.time_started }}</dd>
+					<dt>Time Submitted</dt>
+					<dd>{{ essay_response.time_finished }}</dd>
 				</dl>
 
 				{% if not has_submission %}

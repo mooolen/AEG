@@ -21,8 +21,15 @@ class MultiEmailField(forms.Field):
             validate_email(email)
 
 class MailForm(forms.Form):
-	emails = MultiEmailField(label="Email", widget=forms.Textarea(attrs={'class':'span3'}))
+	emails = MultiEmailField(label="Email", required=False, widget=forms.Textarea(attrs={'class':'span3'}))
 
 	def cleaned_emails(self):
 		data = self.cleaned_data.get('emails', [])
 		return data.split(',')
+
+class MailForm2(forms.Form):
+    emails = MultiEmailField(label="Email", required=True, widget=forms.Textarea(attrs={'class':'span3'}))
+
+    def cleaned_emails(self):
+        data = self.cleaned_data.get('emails', [])
+        return data.split(',')

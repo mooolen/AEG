@@ -25,12 +25,12 @@ TECS: Test Essay Checking Software | Home
 				<thead>
 					<tr>
 						<th width="15%">Class</th>
-						<th width="18%">Teacher</th>
-						<th width="18%">Essay</th>
+						<th width="20%">Teacher</th>
+						<!--th width="18%">Essay</th-->
 						<th width="15%">Deadline</th>
-						<th width="12%">Duration</th>
-						<th width="18%">Status</th>
-						<th width="14%">Action</th>
+						<th width="15%">Duration</th>
+						<th width="20%">Status</th>
+						<th width="15%">Action</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -38,15 +38,16 @@ TECS: Test Essay Checking Software | Home
 					<tr>
 						<td>{{ essay_response.essay.class_name.subject }}</td>
 						<td>{{ essay_response.essay.instructor }}</td>
-						<td>{{ essay_response.essay.title }}</td>
+						<!--td>{{ essay_response.essay.title }}</td-->
 						<td>{{ essay_response.essay.deadline }}</td>
 						<td>
 							{% if essay_response.essay.duration_hours != 0 %}
-								{{ essay_response.essay.duration_hours }} hour(s) 
+								{{ essay_response.essay.duration_hours }} hour(s)
+								<br>
 							{% endif %}
 							
 							{% if essay_response.essay.duration_minutes != 0 %}
-								<br>{{ essay_response.essay.duration_minutes }} minute(s)
+								{{ essay_response.essay.duration_minutes }} minute(s)
 							{% endif %} 
 
 						</td>
@@ -76,12 +77,12 @@ TECS: Test Essay Checking Software | Home
 
 
 			<img class="title-icons" src="{% static 'base/images/icons/documents.png' %}">
-			<h3>Submitted Essays</h3>
+			<h3>Past Essays</h3>
 			{% if no_past_essay_responses %}
 			<br><br>
 			<div class="alert alert-block alert-error">
 				<h4>Oops!</h4>
-				You have not submitted any essays yet.
+				You have no past essays yet.
 			</div>
 			
 			{% else %}
@@ -129,8 +130,6 @@ TECS: Test Essay Checking Software | Home
 			var now = new Date().getTime() / 1000;
 			var diff = now - time_loaded;
 			var time_left = {{ essay_response.time_remaining }} - diff;
-
-
 
 			var hours = Math.floor( time_left / (60*60) );
 			var minutes = Math.floor( (time_left / 60) % 60 );
