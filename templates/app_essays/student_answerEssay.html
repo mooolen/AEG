@@ -77,15 +77,14 @@ TECS: Test Essay Checking Software | Home
 								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 								<h3 class="text-warning">Confirm Submission</h3>
 							</div>
-							<div class="modal-body">
+							<div id="submit-essay-mbody" class="modal-body">
 								<p>Are you sure you want to submit?</p>
 							</div>
 							<div class="modal-footer">		
-								<button type="submit" name="final" class="btn btn-success pull-left"><i class="fui-check"></i><b> Yes</b></button>
+								<button id="final-button" type="submit" name="final" class="btn btn-success pull-left"><i class="fui-check"></i><b> Yes</b></button>
 								<button class="btn btn-inverse" data-dismiss="modal" aria-hidden="true"><i class="fui-cross"></i> Close</button>
 							</div>
 						</div>
-
 					</fieldset>
 				</form>
 
@@ -99,7 +98,7 @@ TECS: Test Essay Checking Software | Home
 						<p>Your current progress had been automatically submitted to your teacher. </p>
 					</div>
 					<div class="modal-footer">
-						<a href="#" class="btn btn-primary">View Submission <span class="fui-arrow-right"></span></a>
+						<a href="{% url 'essays:submission' essay_response.pk %}" class="btn btn-primary">View Submission <span class="fui-arrow-right"></span></a>
 					</div>
 				</div>
 			</div>
@@ -121,11 +120,13 @@ TECS: Test Essay Checking Software | Home
 
 <script>
 	function count(){
-	  var txtVal = $('#id_response').val();
-	  var words = txtVal.trim().replace(/\s+/gi, ' ').split(' ').length;
-	  var chars = txtVal.length;
-	  if(chars===0){words=0;}
-	  output.setAttribute('value', 'Word Count: '+words);
+		var txtVal = $('#id_response').val();
+		var words = txtVal.trim().replace(/\s+/gi, ' ').split(' ').length;
+		var chars = txtVal.length;
+		if(chars===0){
+			words=0;
+		}
+		output.setAttribute('value', 'Word Count: '+words);
 	}
 
 	$('#id_response').on('keyup propertychange', function(){ 
@@ -135,8 +136,10 @@ TECS: Test Essay Checking Software | Home
 
 
 <script type="text/javascript">
+	$("essay-response-form").submit(function() { return false; });
+
 	var frm = $('#essay-response-form');
-	frm.submit(function () {
+	$('#draft-button').click(function (event) {
 		$.ajax({
 			type: frm.attr('method'),
 			url: frm.attr('action'),
@@ -187,5 +190,17 @@ TECS: Test Essay Checking Software | Home
 	}
 </script>
 
+<script>
+	$("#submit-essay").on('show', function () {
+		var txtVal = $('#id_response').val();
+		var words = txtVal.trim().replace(/\s+/gi, ' ').split(' ').length;
 
+		if($("#min-words-error").length == 0 && words < {{ essay_response.essay.min_words }}) {
+			$( "#submit-essay-mbody" ).append("<p id='min-words-error' class='text-error'>Your essay did not meet the minimum number of words required.</p>");
+		}
+		else {
+			$("#min-words-error").remove()
+		}
+	})
+</script>
 {% endblock %}
