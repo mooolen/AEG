@@ -17,10 +17,10 @@ class ProfileForm(forms.Form):
 	first_name = forms.CharField( label='First Name', widget=forms.TextInput(attrs={'type':'text', 'class': 'span3', 'placeholder': 'Required', 'style':'color: #099'}))
 	username = forms.CharField( label='Username', widget=forms.TextInput(attrs={'type':'text', 'class': 'span3', 'placeholder': 'Required', 'style':'color: #099'}))
 	email = forms.CharField( label='Email', widget=forms.TextInput(attrs={'type':'text', 'class': 'span3', 'placeholder': 'Required', 'style':'color: #099'}))
-	street = forms.CharField( label='Street', widget=forms.TextInput(attrs={'type':'text', 'class': 'span3', 'placeholder': 'Required'}))
-	municipality = forms.CharField( label='Municipality', widget=forms.TextInput(attrs={'type':'text', 'class': 'span3', 'placeholder': 'Required'}))
-	province = forms.CharField( label='Province', widget=forms.TextInput(attrs={'type':'text', 'class': 'span3', 'placeholder': 'Required'}))
-	phone_number = forms.CharField( label='Phone Number', widget=forms.TextInput(attrs={'type':'text', 'class': 'span3', 'placeholder': 'Required'}))
+	street = forms.CharField( label='Street', required=False, widget=forms.TextInput(attrs={'type':'text', 'class': 'span3', 'placeholder': 'Optional'}))
+	municipality = forms.CharField( label='Municipality', required=False, widget=forms.TextInput(attrs={'type':'text', 'class': 'span3', 'placeholder': 'Optional'}))
+	province = forms.CharField( label='Province', required=False, widget=forms.TextInput(attrs={'type':'text', 'class': 'span3', 'placeholder': 'Optional'}))
+	phone_number = forms.CharField( label='Phone Number', required=False, widget=forms.TextInput(attrs={'type':'text', 'class': 'span3', 'placeholder': 'Optional'}))
 	avatar = forms.ImageField(label='Avatar', widget=forms.ClearableFileInput(attrs={'type':'file', 'class':'filestyle span3'}))
 
 class schoolForStudent(forms.Form):

@@ -4,7 +4,7 @@ except ImportError:
     from urlparse import urlparse
    
 from app_registration import signals
-from django.shortcuts import render_to_response, render, redirect
+from django.shortcuts import render_to_response, render, redirect, get_object_or_404
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpResponse
@@ -18,7 +18,7 @@ from django.http import HttpResponseRedirect
 from django.views.generic.edit import FormView
 from django.core.context_processors import csrf
 from app_auth.models import UserProfile, passwordForm, UserProfile, Student, Teacher, School
-from app_essays.models import GradingSystem, GradeSysForm, gradeForm
+from app_essays.models import GradingSystem, GradeSysForm, gradeForm, Grade
 from django.contrib.auth.decorators import login_required
 
 from .forms import LoginForm, PasswordForm, ProfileForm, schoolForStudent, schoolForTeacher
@@ -166,14 +166,16 @@ def profile_edit(request, success=None):
 	return render(request, 'app_auth/profile.html', {'avatar': avatar, 'success':success, 'formProfile':formProfile, 'schoolForm':schoolForm})
 
 @login_required(redirect_field_name='', login_url='/')
-def password_edit(request):
+def password_edit(request, success=None):
 	user_info = UserProfile.objects.filter(user_id = request.user.id)
 	if not user_info.exists():
 		return redirect("/profile")
 	user_info = user_info.get(user_id = request.user.id)
 	avatar = user_info.avatar
 	err = None
-	success = None
+	power = False
+	if request.user.is_staff:
+		power = True
 	if request.method == "POST":
 		form_class = PasswordForm(data=request.POST)
 		if form_class.is_valid():
@@ -189,12 +191,49 @@ def password_edit(request):
 				success = 'You have changed your password.'
 			else:
 				err = 'Passwords did not matched.'
-	else:	
+	else:
 		form_class = PasswordForm()
-		gradingSystem = GradingSystem.objects.all()
-		formSys = GradeSysForm()
-		formGrade = gradeForm()
-	return render(request, 'app_auth/changePassword.html', {'avatar': avatar, 'user_info':user_info, 'formGrade':formGrade,'formSys':formSys,'form':form_class, 'error': err, 'success':success, 'gradingSystem':gradingSystem})
+	gradingSystem = GradingSystem.objects.all()
+	formSys = GradeSysForm()
+	formGrade = gradeForm()
+	return render(request, 'app_auth/changePassword.html', {'avatar': avatar, 'power':power,'user_info':user_info, 'formGrade':formGrade,'formSys':formSys,'form':form_class, 'error': err, 'success':success, 'gradingSystem':gradingSystem})
+
+@login_required(redirect_field_name='', login_url='/')
+def saveGrades(request):
+	user_info = UserProfile.objects.filter(user_id = request.user.id)
+	user_info = user_info.get(user_id = request.user.id)
+	avatar = user_info.avatar
+	success = None
+	error = None
+	if request.method == "POST":
+		formSys = GradeSysForm(request.POST)
+		formGrade = gradeForm(request.POST)
+		if formGrade.is_valid() and formSys.is_valid():
+			temp = formSys.save(commit=False)
+			temp.created_by = request.user
+			temp.save()
+			success = 'New Grading System has been added.'
+			#print(temp.id)
+			names = []
+			names = request.POST.getlist('name')
+			for i in range(len(names)):
+				print i, names[i]
+				value = i + 1
+				Grade.objects.create(grading_system=temp, name=names[i], value=value)
+		else:
+			error = 'Invalid input while adding new Grading System'
+	form_class = PasswordForm()
+	gradingSystem = GradingSystem.objects.all()
+	formSys = GradeSysForm()
+	formGrade = gradeForm()
+	power = True
+	return render(request, 'app_auth/changePassword.html', {'avatar': avatar, 'error':error,'success':success,'power':power,'user_info':user_info,'form':form_class, 'formGrade':formGrade,'formSys':formSys,'gradingSystem':gradingSystem})
+
+@login_required(redirect_field_name='', login_url='/')
+def deleGradeSys(request, gradeSys_id):
+	GradeSys = get_object_or_404(GradingSystem, pk=gradeSys_id)
+	GradeSys.delete()
+	return password_edit(request, 'You successfully deleted a Grading System.')
 
 def login_on_activation(sender, user, request, **kwargs):
     user.backend='django.contrib.auth.backends.ModelBackend' 

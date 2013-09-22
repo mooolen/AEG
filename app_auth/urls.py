@@ -8,4 +8,6 @@ urlpatterns = patterns('',
 	# ex: /profile/5/
 	url(r'^profile/$', views.profile_edit, name='profile'),
 	url(r'^edit_password/$', views.password_edit, name='edit_password'),
+	url(r'^saveGrades/$', views.saveGrades, name='saveGrades'),
+	url(r'^deleGradeSys/(?P<gradeSys_id>\d+)/$', views.deleGradeSys, name='deleGradeSys'),
 )
