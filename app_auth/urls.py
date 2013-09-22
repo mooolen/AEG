@@ -10,5 +10,6 @@ urlpatterns = patterns('',
 	url(r'^edit_password/$', views.password_edit, name='edit_password'),
 	url(r'^saveGrades/$', views.saveGrades, name='saveGrades'),
 	url(r'^help/$', views.help,  name='help'),
+	url(r'^viewGradeSys/(?P<gradeSys_id>\d+)/$', views.viewGradeSys, name='grades'),
 	url(r'^deleGradeSys/(?P<gradeSys_id>\d+)/$', views.deleGradeSys, name='deleGradeSys'),
 )

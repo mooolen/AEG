@@ -32,3 +32,9 @@ class schoolForTeacher(forms.Form):
 	def cleaned_school(self):
 		data = self.cleaned_data.get('school', [])
 		return data.split(',')
+
+class GradeForm(forms.Form):
+	name = forms.CharField( label='name', widget=forms.TextInput(attrs={'type':'text', 'class': 'span3', 'placeholder': 'Required', 'style':'color: #099'}))
+	from_value = forms.CharField( label='value', widget=forms.TextInput(attrs={'type':'number', 'class': 'input-xlarge span4 slide', 'placeholder': 'Required', 'style':'color: #099'}))
+	to_value = forms.CharField( label='value', widget=forms.TextInput(attrs={'type':'number', 'class': 'input-xlarge span4 slide', 'placeholder': 'Required', 'style':'color: #099'}))
+

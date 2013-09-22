@@ -21,7 +21,7 @@ from app_auth.models import UserProfile, passwordForm, UserProfile, Student, Tea
 from app_essays.models import GradingSystem, GradeSysForm, gradeForm, Grade
 from django.contrib.auth.decorators import login_required
 
-from .forms import LoginForm, PasswordForm, ProfileForm, schoolForStudent, schoolForTeacher
+from .forms import LoginForm, PasswordForm, ProfileForm, schoolForStudent, schoolForTeacher, GradeForm
 
 class LoginView(FormView):
 	form_class = LoginForm
@@ -215,11 +215,16 @@ def saveGrades(request):
 			success = 'New Grading System has been added.'
 			#print(temp.id)
 			names = []
+			from_values - []
+			to_values = []
 			names = request.POST.getlist('name')
+			#from_values =  request.POST.getlist('from_value')
+			#to_values =  request.POST.getlist('to_value')
 			for i in range(len(names)):
 				print i, names[i]
-				value = i + 1
-				Grade.objects.create(grading_system=temp, name=names[i], value=value)
+				from_values[i] = i + 1
+				to_values[i] = i + 2				
+				Grade.objects.create(grading_system=temp, name=names[i], from_value=from_values[i], to_value=to_values[i])
 		else:
 			error = 'Invalid input while adding new Grading System'
 	form_class = PasswordForm()
@@ -235,6 +240,38 @@ def deleGradeSys(request, gradeSys_id):
 	GradeSys.delete()
 	return password_edit(request, 'You successfully deleted a Grading System.')
 
+
+@login_required(redirect_field_name='', login_url='/')
+def viewGradeSys(request, gradeSys_id):
+	user_info = UserProfile.objects.filter(user_id = request.user.id)
+	user_info = user_info.get(user_id = request.user.id)
+	avatar = user_info.avatar
+	success = None
+	error = None
+	#grade = get_object_or_404(Grade, pk=self.kwargs.get('grade_id'))
+	grades = Grade.objects.all()
+	GradeSys = get_object_or_404(GradingSystem, pk=gradeSys_id)
+	#grades = get_list_or_404(Grade, relevantgs_pk= gradeSys_id)
+
+	if request.method == "POST":
+		grade_form = GradeForm(request.POST)
+
+		if grade_form.is_valid():
+			success = True
+			name = grade_form.cleaned_data['name']
+			from_value = grade_form.cleaned_data['from_value']
+			to_value = grade_form.cleaned_data['to_value']
+
+	else:
+		grade_form=GradeForm()
+	return render(request, 'app_auth/gradingSystemView.html', {'avatar': avatar, 'error':error,'success':success,'user_info':user_info, 'grade_form':grade_form, 'grades':grades})
+'''
+@login_required(redirect_field_name='', login_url='/')
+def deleGrade(request, grade_id):
+	Grade_obj = get_object_or_404(Grade, pk=grade_id)
+	Grade_obj.delete()
+	return grades(request, 'You successfully deleted a Grading System.')
+'''
 def login_on_activation(sender, user, request, **kwargs):
     user.backend='django.contrib.auth.backends.ModelBackend' 
     login(request,user)
