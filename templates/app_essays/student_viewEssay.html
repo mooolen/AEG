@@ -42,11 +42,12 @@ TECS: Test Essay Checking Software | Home
 						<td>{{ essay_response.essay.deadline }}</td>
 						<td>
 							{% if essay_response.essay.duration_hours != 0 %}
-								{{ essay_response.essay.duration_hours }} hour(s) 
+								{{ essay_response.essay.duration_hours }} hour(s)
+								<br>
 							{% endif %}
 							
 							{% if essay_response.essay.duration_minutes != 0 %}
-								<br>{{ essay_response.essay.duration_minutes }} minute(s)
+								{{ essay_response.essay.duration_minutes }} minute(s)
 							{% endif %} 
 
 						</td>
@@ -129,8 +130,6 @@ TECS: Test Essay Checking Software | Home
 			var now = new Date().getTime() / 1000;
 			var diff = now - time_loaded;
 			var time_left = {{ essay_response.time_remaining }} - diff;
-
-
 
 			var hours = Math.floor( time_left / (60*60) );
 			var minutes = Math.floor( (time_left / 60) % 60 );

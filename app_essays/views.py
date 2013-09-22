@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.utils import timezone
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.forms.formsets import formset_factory, BaseFormSet
 from django.core.context_processors import csrf
 
@@ -12,7 +12,7 @@ from app_classes.models import Class
 
 from datetime import datetime
 import operator, pycurl, urllib
-import nltk
+import nltk, json
 
 @login_required(redirect_field_name='', login_url='/')
 def new_essay(request):
@@ -103,7 +103,7 @@ def essay_details(request, essay_id=None):
 		essay_responses = sorted(EssayResponse.objects.filter(essay_id=essay.pk), key=operator.attrgetter('student.user.last_name', 'student.user.first_name')) # I used this way of sorting because we cannot use order_by() for case insensitive sorting :(
 		if essay.deadline >= timezone.now():
 			return render(request, 'app_essays/teacher_viewExamInfo_onGoing.html', {'avatar':avatar, 'active_nav':'EXAMS', 'essay':essay, 'essay_responses':essay_responses})
-		else: 
+		else:
 			all_graded = EssayResponse.objects.filter(essay_id=essay.pk, grade=None).exists()
 			return render(request, 'app_essays/teacher_viewExamInfo_forGrading.html', {'avatar':avatar, 'active_nav':'EXAMS', 'essay':essay, 'essay_responses':essay_responses, 'all_graded':all_graded})
 	
@@ -117,16 +117,41 @@ def answer_essay(request, essay_response_id):
 		essay_response.status = 1
 		essay_response.time_started = datetime.now()
 		essay_response.save()
+		essay_response = EssayResponse.objects.get(pk=int(essay_response_id))
 
-	if request.method == 'POST':
+
+	if request.is_ajax():
 		form = EssayResponseForm(request.POST, request)
 		if form.is_valid():
 			response_data = form.cleaned_data['response']
 			essay_response.response = response_data
 			essay_response.save()
 
-			if 'draft' in request.POST:
-				return redirect('essays:answer', essay_response_id=essay_response.pk)
+			if request.POST['submission_type'] == 'DRAFT':
+				data = {'message':'Saved!', 'has_errors':0}
+
+			elif request.POST['submission_type'] == 'FINAL':
+				essay_response.status = 2
+				essay_response.save()
+				data = {}
+				
+			else:
+				print request.POST['submission_type']
+				data = {'message':'Oops!', 'has_errors':1}
+		else:
+			data = {'message':'Oops! Something went wrong. Try again.', 'has_errors':1}
+		
+		return HttpResponse(json.dumps(data), content_type="application/json")
+
+	elif request.method == 'POST':
+		form = EssayResponseForm(request.POST, request)
+		if form.is_valid():
+			response_data = form.cleaned_data['response']
+			essay_response.response = response_data
+			essay_response.save()
+
+			#if 'draft' in request.POST:
+			#	return redirect('essays:answer', essay_response_id=essay_response.pk)
 
 			if 'final' in request.POST:
 				essay_response.status = 2
@@ -218,3 +243,10 @@ def essay_submission(request, essay_response_id):
 		if essay_response.grade != None:
 			comments = EssayComment.objects.filter(essay=essay_response)
 		return render(request, 'app_essays/student_viewEssaySubmission.html', {'avatar':avatar, 'active_nav':'EXAMS', 'essay_response':essay_response, 'has_submission':has_submission, 'comments':comments, 'numbered_response':numbered_response})
+
+def time_remaining_ajax(request, essay_response_id):
+
+	essay_response = EssayResponse.objects.get(pk=int(essay_response_id))
+	data = {'time_remaining':essay_response.time_remaining}
+	return HttpResponse(json.dumps(data), content_type="application/json")
+	

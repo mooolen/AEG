@@ -133,3 +133,30 @@
   vertical-align: middle;
   margin: 0 auto;
 }
+
+.navbar .nav ul {
+  width: 190px;
+}
+
+.text-white {
+color: #ffffff;
+}
+
+.modal-icons {
+  float: left;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.signup {
+  background-color: #f1c40f;
+  width: 100%;
+  position: absolute;
+  text-align: center;
+}
+
+.signup-screen {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 30px auto 30px;
+}
