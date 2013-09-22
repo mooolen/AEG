@@ -19,10 +19,11 @@ class GradingSystem(models.Model):
 class Grade(models.Model):
 	grading_system = models.ForeignKey(GradingSystem)
 	name = models.CharField(max_length=20)
-	value = models.FloatField()	
+	from_value = models.FloatField()	
+	to_value = models.FloatField()
 
 	def __str__(self):
-		return self.name
+		return u'%s %s %s' % (self.name, self.from_value, self.to_value)
 
 class Essay(models.Model):
 	title = models.CharField(max_length=100)
@@ -190,8 +191,9 @@ class GradeSysForm(ModelForm):
 class gradeForm(ModelForm):
 	class Meta:
 		model = Grade
-		exclude = ('grading_system', 'value')
+		exclude = ('grading_system','from_value', 'to_value')
 		widgets = {
 			'name': TextInput(attrs={'class':'input-xlarge span4', 'placeholder':'1.0'}),
-			#'value': TextInput(attrs={'class':'input-xlarge span4', 'placeholder':'93 - 100'}),
+			#'from_value': TextInput(attrs={'type':'number','class':'input-xlarge span4 slide', 'placeholder':'93'}),
+			#'to_value': TextInput(attrs={'type':'number','class':'input-xlarge span4 slide', 'placeholder':'100'}),
 		}
