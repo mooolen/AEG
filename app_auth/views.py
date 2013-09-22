@@ -18,7 +18,7 @@ from django.http import HttpResponseRedirect
 from django.views.generic.edit import FormView
 from django.core.context_processors import csrf
 from app_auth.models import UserProfile, passwordForm, UserProfile, Student, Teacher, School
-from app_essays.models import GradingSystem, GradeSysForm, gradeForm
+from app_essays.models import GradingSystem, GradeSysForm, gradeForm, Grade
 from django.contrib.auth.decorators import login_required
 
 from .forms import LoginForm, PasswordForm, ProfileForm, schoolForStudent, schoolForTeacher
@@ -174,6 +174,9 @@ def password_edit(request):
 	avatar = user_info.avatar
 	err = None
 	success = None
+	power = False
+	if request.user.is_staff:
+		power = True
 	if request.method == "POST":
 		form_class = PasswordForm(data=request.POST)
 		if form_class.is_valid():
@@ -194,7 +197,38 @@ def password_edit(request):
 		gradingSystem = GradingSystem.objects.all()
 		formSys = GradeSysForm()
 		formGrade = gradeForm()
-	return render(request, 'app_auth/changePassword.html', {'avatar': avatar, 'user_info':user_info, 'formGrade':formGrade,'formSys':formSys,'form':form_class, 'error': err, 'success':success, 'gradingSystem':gradingSystem})
+	return render(request, 'app_auth/changePassword.html', {'avatar': avatar, 'power':power,'user_info':user_info, 'formGrade':formGrade,'formSys':formSys,'form':form_class, 'error': err, 'success':success, 'gradingSystem':gradingSystem})
+
+@login_required(redirect_field_name='', login_url='/')
+def saveGrades(request):
+	user_info = UserProfile.objects.filter(user_id = request.user.id)
+	user_info = user_info.get(user_id = request.user.id)
+	avatar = user_info.avatar
+	success = None
+	error = None
+	if request.method == "POST":
+		formSys = GradeSysForm(request.POST)
+		formGrade = gradeForm(request.POST)
+		if formGrade.is_valid() and formSys.is_valid():
+			temp = formSys.save(commit=False)
+			temp.created_by = request.user
+			temp.save()
+			success = 'New Grading System has been added.'
+			#print(temp.id)
+			names = []
+			names = request.POST.getlist('name')
+			for i in range(len(names)):
+				print i, names[i]
+				value = i + 1
+				Grade.objects.create(grading_system=temp, name=names[i], value=value)
+		else:
+			error = 'Invalid input while adding new Grading System'
+	form_class = PasswordForm()
+	gradingSystem = GradingSystem.objects.all()
+	formSys = GradeSysForm()
+	formGrade = gradeForm()
+	power = True
+	return render(request, 'app_auth/changePassword.html', {'avatar': avatar, 'error':error,'success':success,'power':power,'user_info':user_info,'form':form_class, 'formGrade':formGrade,'formSys':formSys,'gradingSystem':gradingSystem})
 
 def login_on_activation(sender, user, request, **kwargs):
     user.backend='django.contrib.auth.backends.ModelBackend' 

@@ -15,7 +15,6 @@ TECS: Test Essay Checking Software | Teacher Classes
     <script type="text/javascript">
         $(window).on('load', function () {
         	$(":file").filestyle({'classInput': "span3",'style':"margin-top: 10px"});
-        	$('.selectpicker').selectpicker();
         });
     </script>
 </head>
@@ -24,6 +23,7 @@ TECS: Test Essay Checking Software | Teacher Classes
 		<div class="content">
 			{% if success %}
 				<div class="alert alert-success">
+					<button type="button" class="close" data-dismiss="alert">&times;</button>
 		          <strong>Success!</strong> {{ success }}
 		        </div>
 			{% endif %}

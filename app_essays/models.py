@@ -9,12 +9,12 @@ from app_classes.models import Class
 import datetime, nltk.data
 
 class GradingSystem(models.Model):
-	name = models.CharField(max_length=50)
+	gradeName = models.CharField(max_length=50)
 	created_by = models.ForeignKey(User)
 	description = models.TextField(max_length=100)
 	
 	def __str__(self):
-		return u'%s %s' % (self.name, self.description)
+		return u'%s %s' % (self.gradeName, self.description)
 
 class Grade(models.Model):
 	grading_system = models.ForeignKey(GradingSystem)
@@ -182,15 +182,15 @@ class GradeSysForm(ModelForm):
 		model = GradingSystem
 		exclude = ('created_by')
 		widgets = {
-			'name': TextInput(attrs={'class':'input-xlarge span4', 'placeholder': 'System Name'}),
+			'gradeName': TextInput(attrs={'class':'input-xlarge span4', 'placeholder': 'System Name'}),
 			'description' : Textarea(attrs={'class':'input-xlarge span4', 'rows':'4', 'placeholder':'Description'}),
 		}
 
 class gradeForm(ModelForm):
 	class Meta:
 		model = Grade
-		exclude = ('grading_system')
+		exclude = ('grading_system', 'value')
 		widgets = {
 			'name': TextInput(attrs={'class':'input-xlarge span4', 'placeholder':'1.0'}),
-			'value': TextInput(attrs={'class':'input-xlarge span4', 'placeholder':'93 - 100'}),
+			#'value': TextInput(attrs={'class':'input-xlarge span4', 'placeholder':'93 - 100'}),
 		}
