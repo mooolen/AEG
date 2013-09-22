@@ -234,3 +234,15 @@ def login_on_activation(sender, user, request, **kwargs):
     user.backend='django.contrib.auth.backends.ModelBackend' 
     login(request,user)
 signals.user_activated.connect(login_on_activation)
+
+
+@login_required(redirect_field_name='', login_url='/')
+def help(request):
+	User_Profile = UserProfile.objects.filter(user_id = request.user.id)
+	if not User_Profile.exists():
+		return redirect("/profile")
+	avatar = User_Profile.get(user_id=request.user.id).avatar
+	if len(Teacher.objects.filter(user_id = request.user.id)) > 0:
+		return render(request, 'app_auth/teacher_help.html', {'avatar':avatar, 'active_nav':'DASHBOARD'})
+	elif len(Student.objects.filter(user_id = request.user.id)) > 0:
+		return render(request, 'app_auth/student_help.html', {'avatar':avatar, 'active_nav':'DASHBOARD'})
