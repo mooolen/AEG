@@ -9,6 +9,7 @@ from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpResponse
 from django.template import RequestContext
+from django.db.models import Q
 from django.contrib.auth import (
 	REDIRECT_FIELD_NAME, login, logout, authenticate
 )
@@ -18,8 +19,11 @@ from django.http import HttpResponseRedirect
 from django.views.generic.edit import FormView
 from django.core.context_processors import csrf
 from app_auth.models import UserProfile, passwordForm, UserProfile, Student, Teacher, School
+from app_classes.models import Class
+from app_essays.models import Essay, EssayResponse
 from app_essays.models import GradingSystem, GradeSysForm, gradeForm, Grade
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
 
 from .forms import LoginForm, PasswordForm, ProfileForm, schoolForStudent, schoolForTeacher, GradeForm
 
@@ -277,6 +281,19 @@ def login_on_activation(sender, user, request, **kwargs):
     login(request,user)
 signals.user_activated.connect(login_on_activation)
 
+def dashboard(request):
+	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
+	
+	if len(Teacher.objects.filter(user_id = request.user.id)) > 0:
+		class_count = Class.objects.filter(teacher=Teacher.objects.get(user=request.user), is_active=1).count()
+		exam_count = EssayResponse.objects.filter(instructor = Teacher.objects.get(user = request.user), status=1).filter(start_date__lte=timezone.now(), deadline__gte=timezone.now()).count()
+		needs_grading_count =   EssayResponse.objects.filter(essay=Essay.objects.filter(instructor_id = Teacher.objects.get(user_id = request.user.id).id).filter(deadline__lt=timezone.now()), grade=None).count()
+		return render(request, 'app_auth/teacher_dashboard.html', {'avatar': avatar, 'class_count':class_count, 'exam_count':exam_count, 'needs_grading_count':needs_grading_count})
+	elif len(Student.objects.filter(user_id = request.user.id)) > 0:
+		class_count = Class.objects.filter(student=Student.objects.get(user=request.user), is_active=1).count()
+		exam_count = EssayResponse.objects.filter(~Q(essay__status=0), student=Student.objects.get(user_id = request.user.id)).filter(essay__start_date__lte=timezone.now(), essay__deadline__gte=timezone.now()).count()
+		in_progress_count = EssayResponse.objects.filter(~Q(essay__status=1), student=Student.objects.get(user_id = request.user.id)).filter(essay__start_date__lte=timezone.now(), essay__deadline__gte=timezone.now()).count()
+		return render(request, 'app_auth/student_dashboard.html', {'avatar': avatar, 'class_count':class_count, 'exam_count':exam_count, 'in_progress_count':in_progress_count})
 
 @login_required(redirect_field_name='', login_url='/')
 def help(request):
@@ -288,3 +305,4 @@ def help(request):
 		return render(request, 'app_auth/teacher_help.html', {'avatar':avatar, 'active_nav':'DASHBOARD'})
 	elif len(Student.objects.filter(user_id = request.user.id)) > 0:
 		return render(request, 'app_auth/student_help.html', {'avatar':avatar, 'active_nav':'DASHBOARD'})
+

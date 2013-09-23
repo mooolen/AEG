@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.http import HttpResponseRedirect, HttpResponse
 from django.forms.formsets import formset_factory, BaseFormSet
 from django.core.context_processors import csrf
+from django.core.mail import send_mail
 
 from app_auth.models import UserProfile, Student, Teacher
 from app_essays.models import Essay, EssayResponse, GradingSystem, EssayForm, EssayComment, Grade, EssayResponseForm, EssayResponseGradeForm, EssayCommentForm
@@ -30,10 +31,14 @@ def new_essay(request):
 
 			students = Class.objects.get(pk=Essay.objects.get(pk=data.pk).class_name.pk).student.all()
 
+			emails = []
 			for student in students:
 				response = EssayResponse(essay=data, student=student)
 				response.save()
+				emails.append(student.user.email)
 
+			message = request.user.last_name + ' ' + request.user.first_name + ' has sent an exam in your class.'			
+			send_mail('[TECS] New exam has started!', message, request.user.email, emails)
 			#return HttpResponseRedirect('/essays/')
 			return list_essay(request, None, 'New exam has been added.')
 		else :
@@ -62,6 +67,10 @@ def list_essay(request, errors=None, success=None):
 		on_going_essays = Essay.objects.filter(instructor_id = Teacher.objects.get(user_id = request.user.id).id, status=1).filter(start_date__lte=timezone.now(), deadline__gte=timezone.now())
 		past_essays = Essay.objects.filter(instructor_id = Teacher.objects.get(user_id = request.user.id).id).filter(deadline__lt=timezone.now())
 		
+		#MANUAL WAY TO CHANGE STATUS OF AN ESSAY IF IT'S PAST THE DEADLINE
+		Essay.objects.filter(instructor_id = Teacher.objects.get(user_id = request.user.id).id).filter(deadline__lt=timezone.now()).update(status=2)
+
+
 		if (len(on_queue_essays) == 0 ):
 			no_on_queue_essays = 1	
 		if (len(on_going_essays) == 0 ):
@@ -79,6 +88,9 @@ def list_essay(request, errors=None, success=None):
 		#on_going_essay_responses = EssayResponse.objects.filter(~Q(status=2), student=Student.objects.get(user_id = request.user.id)).filter(essay__deadline__gte=timezone.now())
 		on_going_essay_responses = EssayResponse.objects.filter(~Q(essay__status=-1), student=Student.objects.get(user_id = request.user.id)).filter(essay__start_date__lte=timezone.now(), essay__deadline__gte=timezone.now())
 		past_essay_responses = EssayResponse.objects.filter(~Q(essay__status=-1), student=Student.objects.get(user_id = request.user.id)).filter(essay__deadline__lt=timezone.now())
+
+		#MANUAL WAY TO CHANGE STATUS OF AN ESSAY IF IT'S PAST THE DEADLINE
+		EssayResponse.objects.filter(essay__status__gt=-1, essay__status__lt=2, student=Student.objects.get(user_id = request.user.id)).filter(essay__deadline__lt=timezone.now()).update(status=2)
 
 		if (len(on_going_essay_responses) == 0 ):
 			no_on_going_essay_responses = 1	
