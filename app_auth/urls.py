@@ -12,4 +12,5 @@ urlpatterns = patterns('',
 	url(r'^help/$', views.help,  name='help'),
 	url(r'^viewGradeSys/(?P<gradeSys_id>\d+)/$', views.viewGradeSys, name='grades'),
 	url(r'^deleGradeSys/(?P<gradeSys_id>\d+)/$', views.deleGradeSys, name='deleGradeSys'),
+	url(r'^deleGrade/(?P<grade_id>\d+)/$', views.deleGrade, name='deleGrade'),
 )
