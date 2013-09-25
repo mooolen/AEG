@@ -23,7 +23,7 @@ class Grade(models.Model):
 	to_value = models.FloatField()
 
 	def __str__(self):
-		return u'%s %s %s' % (self.name, self.from_value, self.to_value)
+		return u'%s: %s - %s' % (self.name, self.from_value, self.to_value)
 
 class Essay(models.Model):
 	title = models.CharField(max_length=100)
