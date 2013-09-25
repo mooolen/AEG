@@ -6,6 +6,19 @@ TECS: Test Essay Checking Software | Grading System
 {% endblock %}
 
 {% block content %}
+<head>
+  <script src="{% static 'base/js/jquery.min.js' %}"></script>
+
+  <script>
+      $(function() {
+        var tooltips = $( "[title]" ).tooltip();
+        $(document)(function() {
+          tooltips.tooltip( "open" );
+        })
+      });
+  </script>
+  
+</head>
 <div class="page-content">
 	<div class="row-fluid">
 		<div class="content">
@@ -72,7 +85,7 @@ TECS: Test Essay Checking Software | Grading System
                 <th><center>Grade Name</center></th>
                 <th><center>Value (From)</center></th>
                 <th><center>Value (To)</center></th>
-               <th><center><button type="button" onClick="addRow('myTable')" data-trigger="hover" data-placement="left" onclick="addRow(myTable)" title data-original-title="Add more Grade Name fields" class="btn btn-mini btn-primary"><i class="fui-plus"></i></button></center></th>
+               <th><center><button type="button" onClick="addRow('myTable')" data-trigger="hover" data-placement="left" onclick="addRow(myTable)" title data-original-title="Add more fields" class="btn btn-mini btn-primary"><i class="fui-plus"></i></button></center></th>
               </tr>
             </thead>
             <tbody>
@@ -88,7 +101,7 @@ TECS: Test Essay Checking Software | Grading System
           </table>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" >Save <i class="fui-check"></i></button>
+            <button type="submit" class="btn btn-primary pull-left" >Save <i class="fui-check"></i></button>
             <button type="button" class="btn btn-warning" data-dismiss="modal" aria-hidden="true">Cancel <i class="fui-new"></i></button>
             <input type="hidden" name="course_id" id="course_id" value="" />
         </div>

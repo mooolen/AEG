@@ -11,7 +11,7 @@ TECS: Test Essay Checking Software | Register
 	{% csrf_token %}
 
 	{% if form.errors %}
-	    <p class="text-error">Please correct the errors below: {{ form.non_field_errors }}</p>
+	    <p class="text-error">Please correct the errors below: <br/>{{ form.non_field_errors.as_text|cut:"* " }}</p>
 	{% endif %}
 	<form action = "" method = "post" class="form-horizontal">
 		{% csrf_token %}		
@@ -19,34 +19,34 @@ TECS: Test Essay Checking Software | Register
 			<span class="nav-header">Email Address</span>
 				{{ form.email }}
 			      {% if form.email.errors %}
-			        <p class="text-error">{{ form.email.errors.as_text }}</p>
+			        <p class="text-error">{{ form.email.errors.as_text|cut:"* " }}</p>
 			      {% endif %}
 		</div>
 		<div class="control-group">
 			<span class="nav-header">Username</span>
 			{{ form.username }}
-		      {% if form.username.errors %}z
-		        <p class="text-error">{{ form.username.errors.as_text }}</p>
+		      {% if form.username.errors %}
+		        <p class="text-error">{{ form.username.errors.as_text|cut:"* " }}</p>
 		      {% endif %}
 		</div>	
 		<div class="control-group">
 			<span class="nav-header">Password</span>
 				{{ form.password1 }}
 			      {% if form.password1.errors %}
-			        <p class="text-error">{{ form.password1.errors.as_text }}</p>
+			        <p class="text-error">{{ form.password1.errors.as_text|cut:"* " }}</p>
 			      {% endif %}
 		</div>
 		<div class="control-group">
 			<span class="nav-header">Re-type Password</span>
 				{{ form.password2 }}
 				{% if form.password2.errors %}
-			        <p class="text-error">{{ form.password2.errors.as_text }}</p>
+			        <p class="text-error">{{ form.password2.errors.as_text|cut:"* " }}</p>
 			      {% endif %}
 		</div>
 		<div class="control-group"><center>
 				{{ form.captcha }}
 				{% if form.captcha.errors %}
-			        <p class="text-error">{{ form.captcha.errors.as_text }}</p>
+			        <p class="text-error">{{ form.captcha.errors.as_text|cut:"* " }}</p>
 			    {% endif %}
 				</center>
 		</div>

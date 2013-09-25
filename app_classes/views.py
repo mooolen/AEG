@@ -8,13 +8,13 @@ from app_classes.models import Class, ClassForm, EditForm, EnrollForm
 from django.shortcuts import render, get_object_or_404
 from app_auth.models import UserProfile, Teacher, School, Student
 from django.db.models import Count
-from django.db.models import Count
 from django import forms
 from django.forms.widgets import Textarea
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
-from django.core.mail import send_mail
-from django.template.loader import render_to_string
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string, get_template
+from django.template import Context
 from .forms import MailForm, MailForm2
 
 @login_required(redirect_field_name='', login_url='/')
@@ -25,15 +25,7 @@ def dashboard(request):
 	avatar = User_Profile.get(user_id=request.user.id).avatar
 	
 	return render(request, 'app_classes/dashboard2.html', {'avatar':avatar, 'active_nav':'DASHBOARD'})
-	
-def add_class(request):
-	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
-	return render(request, 'app_classes/add_class.html', {'avatar':avatar})
-	
-def class_list(request):
-	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
-	return render(request, 'app_classes/dashboard2.html', {'avatar': avatar})
-
+		
 @login_required(redirect_field_name='', login_url='/')
 def class_teacher(request, err=None, success=None):
 	User_Profile = UserProfile.objects.filter(user_id = request.user.id)
@@ -90,7 +82,7 @@ def submit(request):
 			mail = []
 			for email in emails.values():
 				mail = email
-			print(mail)
+
 			#rendered = render_to_string("users/emails/data.txt", {'data': data})
 			try:
 				teacher = Teacher.objects.get(user=request.user)
@@ -108,9 +100,21 @@ def submit(request):
 
 			random_data = os.urandom(128)
 			random_data = hashlib.md5(random_data).hexdigest()[:16]
-			send_mail('Subject', 'You are invited to class '+ yearType_info + '-' + section_info + ' ' + subject_info + '. The key class is: ' + random_data, 'fsvaeg@gmail.com', mail)
 			form.key = random_data
 			form.save()
+
+			template = get_template('app_classes/perl.html').render(
+				Context({
+					'sender': request.user,
+					'studentList': form,
+				})
+			)
+			if mail:
+				mailSend = EmailMessage('Invitation to join Class', template, 'fsvaeg@gmail.com', mail )
+				mailSend.content_subtype = "html"  # Main content is now text/html
+				mailSend.send()
+			#send_mail('Subject', 'You are invited to class '+ yearType_info + '-' + section_info + ' ' + subject_info + '. The key class is: ' + random_data, 'fsvaeg@gmail.com', mail)
+			
 			return redirect(success_url)
 		else:
 			return teacher_addNewClass(request, form_class, formMails)
@@ -149,7 +153,7 @@ def viewClassList(request, class_id, message=None, success=True):
 	class_info = get_object_or_404(Class, pk=class_id)
 	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
 	formMails = MailForm2()
-	return render(request, 'app_classes/viewClassList.html', {'studentList':class_info, 'active_nav':'CLASSES', 'avatar':avatar, 'succ': success,'success':message, 'formMails': formMails})
+	return render(request, 'app_classes/viewClassList.html', {'mailSend':False, 'studentList':class_info, 'active_nav':'CLASSES', 'avatar':avatar, 'succ': success,'success':message, 'formMails': formMails})
 
 @login_required(redirect_field_name='', login_url='/')
 def enroll(request):
@@ -182,17 +186,41 @@ def removeStudent(request, class_id, student_id):
 @login_required(redirect_field_name='', login_url='/')
 def inviteStudent(request, class_id):
 	class_info = get_object_or_404(Class, pk=class_id)
-	formMails = MailForm2(data=request.POST)
+	sender = request.user
+	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
 	message = 'Invalid Email address(es)'
 	success = False
-	if formMails.is_valid():
-		emails = formMails.cleaned_data
-		mail = []
-		for email in emails.values():
-			mail = email
+	mail = None
+	count = 0
 
-		send_mail('Subject', 'You are invited to class '+ class_info.year_level + '-' + class_info.section + ' ' + class_info.subject + '. The key class is: ' + class_info.key, 'fsvaeg@gmail.com', mail )
-		message = 'Invitations are sent successfully.'
-		success = True
+	if request.method == "POST":
+		formMails = MailForm2(data=request.POST)
+		sendNow = request.POST.get('sendNow')
 
-	return viewClassList(request, class_id, message, success)
+		template = get_template('app_classes/perl.html').render(
+			Context({
+				'sender': sender,
+				'studentList': class_info,
+			})
+		)
+		if formMails.is_valid():
+			emails = formMails.cleaned_data
+			mail = []
+			for email in emails.values():
+				mail = email
+			
+			count = len(mail)
+			if sendNow == 'sendNow':
+				mailSend = EmailMessage('Invitation to join Class', template, 'fsvaeg@gmail.com', mail )
+				mailSend.content_subtype = "html"  # Main content is now text/html
+				mailSend.send()
+				success = True
+				message = 'Invitations were sent successfully.'
+				return viewClassList(request, class_id, message, success)
+		else:
+			return viewClassList(request, class_id, message, success)
+	else:
+		formMails = MailForm2()
+
+	#return viewClassList(request, class_id, message, success)
+	return render(request, 'app_classes/viewClassList.html', {'mails':mail, 'active_nav':'CLASSES', 'count':count, 'formMails':formMails,'sender':sender,'avatar':avatar, 'studentList':class_info, 'mailSend':True})

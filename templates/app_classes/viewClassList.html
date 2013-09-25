@@ -19,15 +19,13 @@ TECS: Test Essay Checking Software | Home
 	</script>
 	
 </head>
-	
 
-<div class="page-content">
-	<div id="myModal" data-backdrop="static" data-keyboard="false" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	  <div class="modal-header">
-	    <h3 id="myModalLabel">Send Invitation</h3>
-	  </div>
+<div id="myModal" data-backdrop="static" data-keyboard="false" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <h3 id="myModalLabel">Make Invitation</h3>
+  </div>
+  <form class="form-inline" action="{% url 'classes:inviteStudent' studentList.id %}" method="post">{% csrf_token %}
 	  <div class="modal-body">
-	  	<form class="form-inline" action="{% url 'classes:inviteStudent' studentList.id %}" method="post">{% csrf_token %}
 	    	{% for form in formMails %}
 			<div class="control-group">
 				<div class="controls">
@@ -46,13 +44,13 @@ TECS: Test Essay Checking Software | Home
 	  		{% endfor %}
 	  	</div>
 	  	<div class="modal-footer">
-		    <button type="submit" class="btn btn-primary" >Send <i class="fui-check"></i></button>
+		    <button type="submit" class="btn btn-primary pull-left" >Make Invitation <i class="fui-check"></i></button>
 		    <button type="button" class="btn btn-warning" data-dismiss="modal" aria-hidden="true">Cancel <i class="fui-new"></i></button>
-		    <input type="hidden" name="course_id" id="course_id" value="" />
 	  </div>
-	  </form>
-	</div>
+  </form>
+</div>	
 
+<div class="page-content">
 	<div class="row-fluid">
 		<div class="content">
 			<p class="pull-right">
@@ -62,11 +60,50 @@ TECS: Test Essay Checking Software | Home
 			<img class="title-icons" src={% static 'base/img/icons/Pocket@2x.png' %}>
 			<h3 class="title">{{ studentList.year_level }}-{{ studentList.section }}: {{ studentList.subject }} for (S.Y. {{ studentList.academic_year }})</h3>
 			
+			{% if mailSend %}
+				<div class="alert alert-block alert-success">
+					Please review the invitation below carefully. You may not cancel an invitation once it has been submitted. If you want to disregard this mail, click <b>"Cancel"</b>. If you are ready to submit your invitation, click <b>"Send Invitation"</b>.
+					<br/><br/>
+					Number of people to Invite: <b>{{ count }}</b>
+				</div>
+
+				<form class="form form-horizontal" action="{% url 'classes:inviteStudent' studentList.id %}" method="POST"> {% csrf_token %}
+					<fieldset>
+						<div class="palette-turquoise">
+							<center>
+								<img class="title-icons" style="float: none; padding-bottom:3px; padding-top:5px; margin-right: -5px" src="{% static 'base/img/icons/Mail@2x.png' %}">
+			            		<div class="btn btn-primary" style="text-shadow:none"><b>You have been invited to join this class!</b></div>
+			            	</center>
+			         	</div>
+
+				          <div class="demo-text-box prl" style="border-radius: 0px;">
+				            <p>
+				            	From: <span style="color: #1abc9c">{{ sender.email }} [{{ sender.last_name }}, {{ sender.first_name }}]</span><br/>
+								Subject: Invitation to join {{ studentList.year_level }}-{{ studentList.section }}<br/>
+								Class Key: <span style="color: #1abc9c">{{ studentList.key }}</span><br/><br/>
+								Please <a href="/" style="text-decoration: none">Log-in</a> or <a href="http://localhost:8000/accounts/register/" style="text-decoration: none">Register</a> to tecs.upd.edu.ph and enter the Class Key to enroll.
+							</p>
+							<div style="display:none">
+								{% for form in formMails %}
+									{{ form }}
+								{% endfor %}
+							</div>
+				          </div>
+
+				        <div class="form-actions">
+		    				<input type="hidden" value="sendNow" name="sendNow" />
+							<button type="submit" class="btn btn-primary"><b>Send Invitation</b><i class="fui-check"></i></button> 
+							<a href="{% url 'classes:viewClass' studentList.id %}" type="button" class="btn btn-danger"><b>Cancel</b><i class="fui-cross"></i></a>
+						</div>
+					</fieldset>
+				</form>
+				{% else %}
+
 			<table class="table table-striped">
 				{% if studentList.student.all.count %}
 					{% if success %}
-						<button type="button" class="close" data-dismiss="alert">&times;</button>
 						<div {% if succ %} class="alert alert-block alert-success" {% else %} class="alert alert-block alert-error" {% endif %}>
+						<button type="button" class="close" data-dismiss="alert">&times;</button>
 				          <h4><strong>{% if succ %}Success!{% else %}Error!{% endif %}</strong></h4> {{ success }}
 				        </div>
 				    {% endif %}
@@ -106,6 +143,7 @@ TECS: Test Essay Checking Software | Home
 			        </div>
 			    {% endif %}
 			</table>
+			{% endif %}
 		</div>
 	</div>
 </div>

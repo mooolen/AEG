@@ -21,13 +21,13 @@ class ProfileForm(forms.Form):
 	municipality = forms.CharField( label='Municipality', required=False, widget=forms.TextInput(attrs={'type':'text', 'class': 'span3', 'placeholder': 'Optional'}))
 	province = forms.CharField( label='Province', required=False, widget=forms.TextInput(attrs={'type':'text', 'class': 'span3', 'placeholder': 'Optional'}))
 	phone_number = forms.CharField( label='Phone Number', required=False, widget=forms.TextInput(attrs={'type':'text', 'class': 'span3', 'placeholder': 'Optional'}))
-	avatar = forms.ImageField(label='Avatar', widget=forms.ClearableFileInput(attrs={'type':'file', 'class':'filestyle span3'}))
+	avatar = forms.ImageField(label='Avatar', required=False, widget=forms.ClearableFileInput(attrs={'type':'file', 'class':'filestyle span3'}))
 
 class schoolForStudent(forms.Form):
-	school = forms.ModelChoiceField(label='School', queryset=School.objects.all(), widget=forms.Select(attrs={'class':'selectpicker span6 show-tick', 'data-size':10, }))
+	school = forms.ModelChoiceField(label='School', queryset=School.objects.all(), widget=forms.Select(attrs={'class':'select span12', 'data-size':10, }))
 
 class schoolForTeacher(forms.Form):
-	school = forms.ModelMultipleChoiceField(label='School', queryset=School.objects.all(), widget=forms.SelectMultiple(attrs={'class':'selectpicker span7 show-tick', 'data-size':10, }))
+	school = forms.ModelMultipleChoiceField(label='School', queryset=School.objects.all(), widget=forms.SelectMultiple(attrs={'class':'select span12', 'data-size':10, }))
 
 	def cleaned_school(self):
 		data = self.cleaned_data.get('school', [])

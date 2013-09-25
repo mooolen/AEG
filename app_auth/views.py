@@ -107,6 +107,7 @@ def profile_edit(request, success=None):
 					teacher.save()
 				else:
 					teacher = teacher.get(user=request.user)
+					teacher.school.clear()
 				for school in temp:
 					print(school)
 					teacher.school.add(school)
@@ -122,8 +123,10 @@ def profile_edit(request, success=None):
 				userProfile_info = user_info.get(user_id=request.user.id)
 				userProfile_info.avatar = userProfile_info.avatar
 
-				if temp['avatar'] is not None:
-					userProfile_info.avatar = temp['avatar']
+				if not temp['avatar']:
+					userProfile_info.avatar = 'images/avatars/user.png'
+				else:
+					userProfile_info.avatar = temp['avatar']	
 				userProfile_info.street = temp['street']
 				userProfile_info.municipality = temp['municipality']
 				userProfile_info.province = temp['province']
@@ -144,9 +147,10 @@ def profile_edit(request, success=None):
 	
 	if user_info.exists():
 		schoolForm = schoolForStudent()
-		if request.user.is_staff:
-			schoolForm = schoolForTeacher()
 		user_info = user_info.get(user_id=request.user.id)
+		if request.user.is_staff:
+			schoolForm = schoolForTeacher(initial={'school':Teacher.objects.get(user=request.user).school.values_list('id',flat=True)})
+		
 		avatar = user_info.avatar
 		if not power:
 			try:
@@ -154,7 +158,7 @@ def profile_edit(request, success=None):
 			except:
 				pass
 			if request.user.is_staff:
-				schoolForm = schoolForTeacher()#(initial={'school':Teacher.objects.get(user=request.user).school})
+				schoolForm = schoolForTeacher(initial={'school':Teacher.objects.get(user=request.user).school.values_list('id',flat=True)})
 			formProfile = ProfileForm(initial={
 				'last_name':request.user.last_name, 'first_name':request.user.first_name, 'email':request.user.email, 'avatar':user_info.avatar,
 				'username': request.user.username, 'street':user_info.street, 'municipality':user_info.municipality,
@@ -197,7 +201,7 @@ def password_edit(request, success=None):
 				err = 'Passwords did not matched.'
 	else:
 		form_class = PasswordForm()
-	gradingSystem = GradingSystem.objects.all()
+	gradingSystem = GradingSystem.objects.filter(created_by=request.user)
 	formSys = GradeSysForm()
 	formGrade = gradeForm()
 	return render(request, 'app_auth/changePassword.html', {'avatar': avatar, 'power':power,'user_info':user_info, 'formGrade':formGrade,'formSys':formSys,'form':form_class, 'error': err, 'success':success, 'gradingSystem':gradingSystem})
@@ -219,20 +223,19 @@ def saveGrades(request):
 			success = 'New Grading System has been added.'
 			#print(temp.id)
 			names = []
-			#from_values = []
-			#to_values = []
+			from_value = []
+			to_value = []
 			names = request.POST.getlist('name')
-			#from_values =  request.POST.getlist('from_value')
-			#to_values =  request.POST.getlist('to_value')
+			from_value = request.POST.getlist('from_value')
+			to_value = request.POST.getlist('to_value')
+			print(from_value)
 			for i in range(len(names)):
 				print i, names[i]
-				from_values = i + 1
-				to_values = i + 2				
-				Grade.objects.create(grading_system=temp, name=names[i], from_value=from_values, to_value=to_values)
+				Grade.objects.create(grading_system=temp, name=names[i], from_value=from_value[i], to_value=to_value[i])
 		else:
 			error = 'Invalid input while adding new Grading System'
 	form_class = PasswordForm()
-	gradingSystem = GradingSystem.objects.all()
+	gradingSystem = GradingSystem.objects.filter(created_by=request.user)
 	formSys = GradeSysForm()
 	formGrade = gradeForm()
 	power = True
@@ -253,8 +256,8 @@ def viewGradeSys(request, gradeSys_id, success=None):
 	success = None
 	error = None
 	#grade = get_object_or_404(Grade, pk=self.kwargs.get('grade_id'))
-	grades = Grade.objects.all()
 	GradeSys = get_object_or_404(GradingSystem, pk=gradeSys_id)
+	grades = Grade.objects.filter(grading_system=GradeSys)
 	#grades = get_list_or_404(Grade, relevantgs_pk= gradeSys_id)
 
 	if request.method == "POST":
@@ -282,11 +285,13 @@ def login_on_activation(sender, user, request, **kwargs):
 signals.user_activated.connect(login_on_activation)
 
 def dashboard(request):
-	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
-	
+	User_Profile = UserProfile.objects.filter(user_id = request.user.id)
+	if not User_Profile.exists():
+		return redirect("/profile")
+	avatar = User_Profile.get(user_id=request.user.id).avatar
 	if len(Teacher.objects.filter(user_id = request.user.id)) > 0:
 		class_count = Class.objects.filter(teacher=Teacher.objects.get(user=request.user), is_active=1).count()
-		exam_count = EssayResponse.objects.filter(instructor = Teacher.objects.get(user = request.user), status=1).filter(start_date__lte=timezone.now(), deadline__gte=timezone.now()).count()
+		exam_count = Essay.objects.filter(instructor = Teacher.objects.get(user = request.user), status=1).filter(start_date__lte=timezone.now(), deadline__gte=timezone.now()).count()
 		needs_grading_count =   EssayResponse.objects.filter(essay=Essay.objects.filter(instructor_id = Teacher.objects.get(user_id = request.user.id).id).filter(deadline__lt=timezone.now()), grade=None).count()
 		return render(request, 'app_auth/teacher_dashboard.html', {'avatar': avatar, 'class_count':class_count, 'exam_count':exam_count, 'needs_grading_count':needs_grading_count})
 	elif len(Student.objects.filter(user_id = request.user.id)) > 0:

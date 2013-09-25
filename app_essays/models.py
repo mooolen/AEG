@@ -191,9 +191,9 @@ class GradeSysForm(ModelForm):
 class gradeForm(ModelForm):
 	class Meta:
 		model = Grade
-		exclude = ('grading_system','from_value', 'to_value')
+		exclude = ('grading_system',)
 		widgets = {
 			'name': TextInput(attrs={'class':'input-xlarge span4', 'placeholder':'1.0'}),
-			#'from_value': TextInput(attrs={'type':'number','class':'input-xlarge span4 slide', 'placeholder':'93'}),
-			#'to_value': TextInput(attrs={'type':'number','class':'input-xlarge span4 slide', 'placeholder':'100'}),
+			'from_value': TextInput(attrs={'type':'number','class':'input-xlarge span4 slide', 'min':0, 'placeholder':'93'}),
+			'to_value': TextInput(attrs={'type':'number','class':'input-xlarge span4 slide', 'min':0, 'placeholder':'100'}),
 		}
