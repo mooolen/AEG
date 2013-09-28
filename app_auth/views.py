@@ -123,6 +123,7 @@ def profile_edit(request, success=None):
 				userProfile_info = user_info.get(user_id=request.user.id)
 				userProfile_info.avatar = userProfile_info.avatar
 
+				print temp['avatar']
 				if not temp['avatar']:
 					userProfile_info.avatar = 'images/avatars/user.png'
 				else:
