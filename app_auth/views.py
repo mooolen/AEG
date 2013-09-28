@@ -224,15 +224,13 @@ def saveGrades(request):
 			success = 'New Grading System has been added.'
 			#print(temp.id)
 			names = []
-			from_value = []
-			to_value = []
+			value = []
 			names = request.POST.getlist('name')
-			from_value = request.POST.getlist('from_value')
-			to_value = request.POST.getlist('to_value')
-			print(from_value)
+			value = request.POST.getlist('value')
+			print(value)
 			for i in range(len(names)):
 				print i, names[i]
-				Grade.objects.create(grading_system=temp, name=names[i], from_value=from_value[i], to_value=to_value[i])
+				Grade.objects.create(grading_system=temp, name=names[i], value=value[i])
 		else:
 			error = 'Invalid input while adding new Grading System'
 	form_class = PasswordForm()
@@ -267,9 +265,10 @@ def viewGradeSys(request, gradeSys_id, success=None):
 		if grade_form.is_valid():
 			success = True
 			name = grade_form.cleaned_data['name']
-			from_value = grade_form.cleaned_data['from_value']
-			to_value = grade_form.cleaned_data['to_value']
-
+			value = grade_form.cleaned_data['value']
+			success = "You have successfully added a grade on this grading system.";
+			grade_form.save()
+				
 	else:
 		grade_form=GradeForm()
 	return render(request, 'app_auth/gradingSystemView.html', {'avatar': avatar, 'error':error,'success':success,'user_info':user_info, 'grade_form':grade_form, 'grades':grades})

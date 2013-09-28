@@ -47,8 +47,7 @@ TECS: Test Essay Checking Software | Grading System
 					<tr>
 						<th><center>#</center></th>
 						<th><center>Grade</center></th>
-						<th><center>Value (From)</center></th>
-						<th><center>Value (To)</center></th>
+						<th><center>Value</center></th>
 						<th><center>Delete</center></th>
 					</tr>
 				</thead>
@@ -57,8 +56,7 @@ TECS: Test Essay Checking Software | Grading System
 						<tr>
 							<td><center>{{forloop.counter}}</center></td>
 							<td><center>{{grade.name}}</center></td>
-							<td><center>{{grade.from_value}}</center></td>
-							<td><center>{{grade.to_value}}</center></td>
+							<td><center>{{grade.value}}</center></td>
 							<td><center><a href="{% url 'auth:deleGrade' grade.id %}" onclick="return confirm('Are you sure you want to delete this Grading System?')" class="btn btn-danger"><span class=""><i class="fui-cross"></i></span></a></center></td>
 						</tr>
 						{% endfor %}
@@ -83,8 +81,7 @@ TECS: Test Essay Checking Software | Grading System
             <thead>
               <tr>
                 <th><center>Grade Name</center></th>
-                <th><center>Value (From)</center></th>
-                <th><center>Value (To)</center></th>
+                <th><center>Grade Value</center></th>
                <th><center><button type="button" onClick="addRow('myTable')" data-trigger="hover" data-placement="left" onclick="addRow(myTable)" title data-original-title="Add more fields" class="btn btn-mini btn-primary"><i class="fui-plus"></i></button></center></th>
               </tr>
             </thead>
@@ -132,17 +129,8 @@ TECS: Test Essay Checking Software | Grading System
       element2.setAttribute('class','input-xlarge span4 slide');
       element2.setAttribute('placeholder','1'); 
       element2.setAttribute('min',1); 
-      element2.setAttribute('name','from_value'); 
+      element2.setAttribute('name','value'); 
       cell2.appendChild(element2);
-
-      var cell5 = row.insertCell(2);
-      var element5 = document.createElement("input");
-      element5.type = "number";
-      element5.setAttribute('class','input-xlarge span4 slide');
-      element5.setAttribute('placeholder','1'); 
-      element5.setAttribute('min',1); 
-      element5.setAttribute('name','to_value'); 
-      cell5.appendChild(element5);
 
       var cell3 = row.insertCell(3);
       cell3.setAttribute('style', 'text-align:center')
