@@ -10,9 +10,6 @@
 				</a>
 				<ul class="nav pull-right">
 					<li>
-						<a href="#">Settings</a>
-					</li>
-					<li>
 						<a href="/help/">Help</a>
 					</li>
 					<li class="active dropdown">
@@ -21,8 +18,8 @@
 							<b class="caret"></b>
 						</a>
 						<ul>
-							<li><a href="{% url 'auth:profile' %}">My Profile</a></li>
-							<li><a href="{% url 'auth:edit_password' %}">My Account</a></li>
+							<li><a href="#">My Profile</a></li>
+							<li><a href="{% url 'auth:edit_profile' %}">Settings</a></li>
 							<li><a href="{% url 'auth:user_logout' %}">Logout</a></li>
 						</ul>
 					</li>

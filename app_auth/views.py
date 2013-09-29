@@ -21,11 +21,12 @@ from django.core.context_processors import csrf
 from app_auth.models import UserProfile, passwordForm, UserProfile, Student, Teacher, School
 from app_classes.models import Class
 from app_essays.models import Essay, EssayResponse
-from app_essays.models import GradingSystem, GradeSysForm, gradeForm, Grade
+from app_essays.models import GradingSystem, GradeSysForm, Grade
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
+from .forms import LoginForm, PasswordForm, ProfileForm, schoolForStudent, schoolForTeacher, GradeForm_Option1, GradeForm_Option2
 
-from .forms import LoginForm, PasswordForm, ProfileForm, schoolForStudent, schoolForTeacher, GradeForm
+import numpy
 
 class LoginView(FormView):
 	form_class = LoginForm
@@ -172,7 +173,7 @@ def profile_edit(request, success=None):
 		avatar = 'images/avatars/user.png'
 		formProfile = ProfileForm(initial={'last_name':request.user.last_name, 'first_name':request.user.first_name, 'email':request.user.email,
 			'username': request.user.username,})
-	return render(request, 'app_auth/profile.html', {'avatar': avatar, 'success':success, 'formProfile':formProfile, 'schoolForm':schoolForm})
+	return render(request, 'app_auth/profile.html', {'avatar': avatar, 'active_nav':'PROFILE', 'success':success, 'formProfile':formProfile, 'schoolForm':schoolForm})
 
 @login_required(redirect_field_name='', login_url='/')
 def password_edit(request, success=None):
@@ -202,82 +203,85 @@ def password_edit(request, success=None):
 				err = 'Passwords did not matched.'
 	else:
 		form_class = PasswordForm()
-	gradingSystem = GradingSystem.objects.filter(created_by=request.user)
-	formSys = GradeSysForm()
-	formGrade = gradeForm()
-	return render(request, 'app_auth/changePassword.html', {'avatar': avatar, 'power':power,'user_info':user_info, 'formGrade':formGrade,'formSys':formSys,'form':form_class, 'error': err, 'success':success, 'gradingSystem':gradingSystem})
+
+	return render(request, 'app_auth/changePassword.html', {'avatar': avatar, 'active_nav':'ACCOUNT', 'power':power,'user_info':user_info, 'form':form_class, 'error': err, 'success':success})
 
 @login_required(redirect_field_name='', login_url='/')
-def saveGrades(request):
-	user_info = UserProfile.objects.filter(user_id = request.user.id)
-	user_info = user_info.get(user_id = request.user.id)
-	avatar = user_info.avatar
-	success = None
-	error = None
-	if request.method == "POST":
-		formSys = GradeSysForm(request.POST)
-		formGrade = gradeForm(request.POST)
-		if formGrade.is_valid() and formSys.is_valid():
-			temp = formSys.save(commit=False)
-			temp.created_by = request.user
-			temp.save()
-			success = 'New Grading System has been added.'
-			#print(temp.id)
-			names = []
-			value = []
-			names = request.POST.getlist('name')
-			value = request.POST.getlist('value')
-			print(value)
-			for i in range(len(names)):
-				print i, names[i]
-				Grade.objects.create(grading_system=temp, name=names[i], value=value[i])
-		else:
-			error = 'Invalid input while adding new Grading System'
-	form_class = PasswordForm()
-	gradingSystem = GradingSystem.objects.filter(created_by=request.user)
-	formSys = GradeSysForm()
-	formGrade = gradeForm()
-	power = True
-	return render(request, 'app_auth/changePassword.html', {'avatar': avatar, 'error':error,'success':success,'power':power,'user_info':user_info,'form':form_class, 'formGrade':formGrade,'formSys':formSys,'gradingSystem':gradingSystem})
+def grading_system(request):
+	avatar = UserProfile.objects.get(user_id=request.user.id).avatar
+
+	gradingsys = GradingSystem.objects.filter(created_by=request.user, is_active=1)
+	gradingsys_admin = GradingSystem.objects.filter(created_by=1, is_active=1)
+
+	return render(request, 'app_auth/grading_systems.html', {'avatar': avatar, 'active_nav':'GRADESYS', 'gradingsys':gradingsys, 'gradingsys_admin':gradingsys_admin})
 
 @login_required(redirect_field_name='', login_url='/')
-def deleGradeSys(request, gradeSys_id):
-	GradeSys = get_object_or_404(GradingSystem, pk=gradeSys_id)
-	GradeSys.delete()
-	return password_edit(request, 'You successfully deleted a Grading System.')
-
+def grading_system_view(request, gradeSys_id):
+	gradesys = get_object_or_404(GradingSystem, Q(created_by__pk=1) | Q(created_by=request.user), pk=gradeSys_id, is_active=1)
+	grades = Grade.objects.filter(grading_system=gradesys).order_by('value')
+	by_admin = 1 if gradesys.created_by.pk == 1 else 0
+	return render(request, 'app_auth/grading_systems_view.html', {'gradesys': gradesys, 'grades': grades, 'by_admin':by_admin})
 
 @login_required(redirect_field_name='', login_url='/')
-def viewGradeSys(request, gradeSys_id, success=None):
-	user_info = UserProfile.objects.filter(user_id = request.user.id)
-	user_info = user_info.get(user_id = request.user.id)
-	avatar = user_info.avatar
-	success = None
-	error = None
-	#grade = get_object_or_404(Grade, pk=self.kwargs.get('grade_id'))
-	GradeSys = get_object_or_404(GradingSystem, pk=gradeSys_id)
-	grades = Grade.objects.filter(grading_system=GradeSys)
-	#grades = get_list_or_404(Grade, relevantgs_pk= gradeSys_id)
+def grading_system_new(request):
+	avatar = UserProfile.objects.get(user_id=request.user.id).avatar
+	
 
-	if request.method == "POST":
-		grade_form = GradeForm(request.POST)
+	if request.method == 'POST':
+		formSys = GradeSysForm(request.POST, request)
+		if 'option1' in request.POST:
+			formGrade1 = GradeForm_Option1(request.POST, request)
+			formGrade2 = GradeForm_Option2()
+			print formGrade1.data['grades']
 
-		if grade_form.is_valid():
-			success = True
-			name = grade_form.cleaned_data['name']
-			value = grade_form.cleaned_data['value']
-			success = "You have successfully added a grade on this grading system.";
-			grade_form.save()
+			if formSys.is_valid() and formGrade1.is_valid():
+				cd_sys = formSys.save(commit=False)
+				cd_sys.created_by = request.user
+				cd_sys.is_active = 1
+				cd_sys.save()
+
+				cd_grades = formGrade1.cleaned_data
+				for idx, grade in enumerate(cd_grades['grades'].split(',')):
+					Grade.objects.create(grading_system=cd_sys, name=grade, value=idx)
+
+				return redirect('auth:gradesys')
+
+
+		elif 'option2' in request.POST:
+			formGrade1 = GradeForm_Option1()
+			formGrade2 = GradeForm_Option2(request.POST, request)
+
+			if formSys.is_valid() and formGrade2.is_valid():
+				cd_sys = formSys.save(commit=False)
+				cd_sys.created_by = request.user
+				cd_sys.is_active = 1
+				cd_sys.save()
+
+				cd_grades = formGrade2.cleaned_data
+
+				if cd_grades['start'] < cd_grades['end']:
+					for idx, grade in enumerate(numpy.arange(cd_grades['start'], cd_grades['end']-1, abs(cd_grades['step']))):
+						Grade.objects.create(grading_system=cd_sys, name=grade, value=idx)
+				else:
+					for idx, grade in enumerate(numpy.arange(cd_grades['start'], cd_grades['end']+1, -abs(cd_grades['step']))):
+						Grade.objects.create(grading_system=cd_sys, name=grade, value=idx)
 				
+				return redirect('auth:gradesys')
 	else:
-		grade_form=GradeForm()
-	return render(request, 'app_auth/gradingSystemView.html', {'avatar': avatar, 'error':error,'success':success,'user_info':user_info, 'grade_form':grade_form, 'grades':grades})
+		formSys = GradeSysForm()
+		formGrade1 = GradeForm_Option1()
+		formGrade2 = GradeForm_Option2()
+
+	return render(request, 'app_auth/grading_systems_new.html', {'avatar': avatar, 'active_nav':'GRADESYS', 'formSys':formSys, 'formGrade1':formGrade1, 'formGrade2':formGrade2})
+
 
 @login_required(redirect_field_name='', login_url='/')
-def deleGrade(request, grade_id):
-	Grade_obj = get_object_or_404(Grade, pk=grade_id)
-	Grade_obj.delete()
-	return password_edit(request,'You have successfully deleted a Grade.')
+def grading_system_delete(request):
+	if request.method == 'POST':
+		print ">>>>>", request.POST['gradesysid']
+		GradeSys = get_object_or_404(GradingSystem, pk=request.POST['gradesysid'], created_by=request.user)
+		GradeSys.delete()
+	return redirect('auth:gradesys')
 
 def login_on_activation(sender, user, request, **kwargs):
     user.backend='django.contrib.auth.backends.ModelBackend' 

@@ -9,12 +9,13 @@ from app_classes.models import Class
 import datetime, nltk.data
 
 class GradingSystem(models.Model):
-	gradeName = models.CharField(max_length=50)
+	system = models.CharField(max_length=50)
 	created_by = models.ForeignKey(User)
-	description = models.TextField(max_length=100)
+	description = models.TextField(max_length=100, blank=True)
+	is_active = models.IntegerField(default=0)
 	
 	def __str__(self):
-		return u'%s %s' % (self.gradeName, self.description)
+		return u'%s (%s)' % (self.system, self.description)
 
 class Grade(models.Model):
 	grading_system = models.ForeignKey(GradingSystem)
@@ -181,17 +182,8 @@ class EssayCommentForm(ModelForm):
 class GradeSysForm(ModelForm):
 	class Meta:
 		model = GradingSystem
-		exclude = ('created_by')
+		exclude = ('created_by', 'is_active')
 		widgets = {
-			'gradeName': TextInput(attrs={'class':'input-xlarge span4', 'placeholder': 'System Name'}),
+			'system': TextInput(attrs={'class':'input-xlarge span4', 'placeholder': 'System Name'}),
 			'description' : Textarea(attrs={'class':'input-xlarge span4', 'rows':'4', 'placeholder':'Description'}),
-		}
-
-class gradeForm(ModelForm):
-	class Meta:
-		model = Grade
-		exclude = ('grading_system',)
-		widgets = {
-			'name': TextInput(attrs={'class':'input-xlarge span4', 'placeholder':'1.0'}),
-			'value': TextInput(attrs={'type':'number','class':'input-xlarge span4 slide', 'min':0, 'placeholder':'93'}),
 		}

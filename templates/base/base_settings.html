@@ -11,15 +11,13 @@
 		<link href="{% static 'base/css/flat-ui.css' %}" rel="stylesheet" media="screen">
 		<link href="{% static 'base/css/style.css' %}" rel="stylesheet" media="screen">
   		<link rel="shortcut icon" type="text/css" href="{% static 'base/img/icons/favicon.ico' %}" />
-		
-		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-
+  		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 		{% block custom_style %}{% endblock %}
 
 		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 		<!--[if lt IE 9]>
 			<script src="../../assets/js/html5shiv.js"></script>
-			<script src="../../assets/js/respond.min.js"></script>
+			<script src="../../assets/js/respond.min.js"}></script>
 		<![endif]-->
 	</head>
 
@@ -35,8 +33,9 @@
 		</div>
 
 		
-		<script src="{% static 'base/js/bootstrap.min.js' %}"></script>
-		<script src="{% static 'base/js/bootstrap-select.js' %}"></script>
+	    <script src="{% static 'base/js/jquery.ui.touch-punch.min.js' %}"}></script>
+		<script src="{% static 'base/js/bootstrap.min.js' %}"}></script>
 		{% block custom_script %}{% endblock %}
+
 	</body>
 </html>

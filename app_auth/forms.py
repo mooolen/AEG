@@ -2,6 +2,7 @@
 from django.contrib.auth.models import User
 from app_auth.models import School
 from django import forms
+from decimal import Decimal
 
 class LoginForm(forms.Form):
     username = forms.CharField(widget=forms.TextInput(attrs={'type':'text', 'class': 'login-field', 'placeholder': 'Username', 'autofocus':'autofocus', 'autocomplete':'off'}))
@@ -33,6 +34,26 @@ class schoolForTeacher(forms.Form):
 		data = self.cleaned_data.get('school', [])
 		return data.split(',')
 
-class GradeForm(forms.Form):
-	name = forms.CharField( label='name', widget=forms.TextInput(attrs={'type':'text', 'class': 'span3', 'placeholder': 'Required', 'style':'color: #099'}))
-	value = forms.CharField( label='value', widget=forms.TextInput(attrs={'type':'number', 'class': 'input-xlarge span4 slide', 'placeholder': 'Required', 'style':'color: #099'}))
+class GradeForm_Option1(forms.Form):
+	grades = forms.CharField(max_length=1024, widget=forms.TextInput(attrs={'class':'tagsinput', 'style':'display: none;' }))
+
+	def clean_grades(self):
+		grades = self.cleaned_data['grades']
+		num_input = len(grades.split(','))
+		if num_input < 2:
+			raise forms.ValidationError("Enter at least 2 grade values.")
+		return grades
+
+class GradeForm_Option2(forms.Form):
+	start = forms.FloatField(widget=forms.TextInput(attrs={'class':'span1'}))
+	end = forms.FloatField(widget=forms.TextInput(attrs={'class':'span1'}))
+	step = forms.FloatField(widget=forms.TextInput(attrs={'class':'span1'}))
+
+	def clean_step(self):
+		clean_start = self.cleaned_data['start']
+		clean_end = self.cleaned_data['end']
+		clean_step = self.cleaned_data['step']
+
+		if Decimal(str(clean_end - clean_start + 1))%Decimal(str(clean_step)) != Decimal('0.0'):
+			raise forms.ValidationError("Using this interval won't reach the last possible grade value.")
+		return clean_step
