@@ -8,6 +8,8 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 
 from django.contrib.auth.models import User
+from app_auth.models import UserProfile, Teacher, Student
+
 from app_registration import signals
 from app_registration.forms import RegistrationForm
 
@@ -92,11 +94,15 @@ class RegistrationView(_RequestPassingFormView):
         username = user_info['username']
         user = User.objects.get(username=username)
 
+        UserProfile.objects.create(user=user)
         if 'teacher' in request.POST:
-            print('teacher')
             user.is_staff = True
             user.save()
-
+            #CREATE USER PROFILE HERE
+            Teacher.objects.create(user=user)
+        else:
+            Student.objects.create(user=user)
+           
         try:
             to, args, kwargs = success_url
             return redirect(to, *args, **kwargs)

@@ -11,9 +11,14 @@ class UserProfile(models.Model):
 	municipality = models.TextField(blank=True)
 	phone_number = models.TextField(max_length=7, blank=True)
 	
-
 	def __str__(self):
 		return u'%s, %s' % (self.user.last_name, self.user.first_name)
+
+	def role(self):
+		if len(Teacher.objects.filter(user_id = self.user.id)) > 0:
+			return 'TEACHER'
+		elif len(Student.objects.filter(user_id = self.user.id)) > 0:
+			return 'STUDENT'
 
 class School(models.Model):
 	name = models.CharField(max_length=100)
@@ -28,14 +33,14 @@ class School(models.Model):
 
 class Teacher(models.Model):
 	user = models.ForeignKey(User)
-	school = models.ManyToManyField(School)
+	school = models.ManyToManyField(School, blank=True, null=True)
 	
 	def __str__(self):
 		return u'%s, %s' % (self.user.last_name, self.user.first_name)
 
 class Student(models.Model):
 	user = models.ForeignKey(User)
-	school = models.ForeignKey(School)
+	school = models.ForeignKey(School, blank=True, null=True)
 
 	def __str__(self):
 		return u'%s, %s' % (self.user.last_name, self.user.first_name)

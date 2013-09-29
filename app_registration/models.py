@@ -21,7 +21,6 @@ try:
 except ImportError:
     datetime_now = datetime.datetime.now
 
-
 SHA1_RE = re.compile('^[a-f0-9]{40}$')
 
 
@@ -65,6 +64,7 @@ class RegistrationManager(models.Manager):
                 user = profile.user
                 user.is_active = True
                 user.save()
+
                 profile.activation_key = self.model.ACTIVATED
                 profile.save()
                 return user

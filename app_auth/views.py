@@ -18,7 +18,7 @@ from django.contrib.auth.models import User, check_password
 from django.http import HttpResponseRedirect
 from django.views.generic.edit import FormView
 from django.core.context_processors import csrf
-from app_auth.models import UserProfile, passwordForm, UserProfile, Student, Teacher, School
+from app_auth.models import UserProfile, passwordForm, Student, Teacher, School
 from app_classes.models import Class
 from app_essays.models import Essay, EssayResponse
 from app_essays.models import GradingSystem, GradeSysForm, Grade
@@ -88,6 +88,18 @@ def user_logout(request):
     return logout_then_login(request,login_url='/')
 
 @login_required(redirect_field_name='', login_url='/')
+def profile_view(request):
+	avatar = UserProfile.objects.get(user_id=request.user.id).avatar
+	role = UserProfile.objects.get(user_id = request.user.id).role
+	profile = UserProfile.objects.get(user=request.user)
+	if len(Teacher.objects.filter(user_id = request.user.id)) > 0:
+		role = 'Teacher'
+	elif len(Student.objects.filter(user_id = request.user.id)) > 0:
+		role = 'Student'
+	return render(request, 'app_auth/profile_view.html', {'avatar': avatar, 'role':role, 'profile':profile, 'role':role})
+
+
+@login_required(redirect_field_name='', login_url='/')
 def profile_edit(request, success=None):
 	user_info = UserProfile.objects.filter(user_id = request.user.id)
 	power = False
@@ -124,11 +136,11 @@ def profile_edit(request, success=None):
 				userProfile_info = user_info.get(user_id=request.user.id)
 				userProfile_info.avatar = userProfile_info.avatar
 
-				print temp['avatar']
 				if not temp['avatar']:
 					userProfile_info.avatar = 'images/avatars/user.png'
 				else:
 					userProfile_info.avatar = temp['avatar']	
+				
 				userProfile_info.street = temp['street']
 				userProfile_info.municipality = temp['municipality']
 				userProfile_info.province = temp['province']
@@ -137,7 +149,7 @@ def profile_edit(request, success=None):
 
 			else:	
 				UserProfile.objects.create(avatar=temp['avatar'], user_id=request.user.id, street=temp['street'], municipality=temp['municipality'], province=temp['province'], phone_number=temp['phone_number'])
-				
+			
 			#user update
 			USER_info = User.objects.get(id=request.user.id)
 			USER_info.last_name = temp['last_name']
@@ -145,11 +157,12 @@ def profile_edit(request, success=None):
 			USER_info.email = temp['email']
 			USER_info.username = temp['username']
 			USER_info.save()
-			return redirect("/dashboard")
-	
+			return redirect("auth:profile")
 	if user_info.exists():
 		schoolForm = schoolForStudent()
 		user_info = user_info.get(user_id=request.user.id)
+		role = UserProfile.objects.get(user_id = request.user.id).role
+
 		if request.user.is_staff:
 			schoolForm = schoolForTeacher(initial={'school':Teacher.objects.get(user=request.user).school.values_list('id',flat=True)})
 		
@@ -171,13 +184,16 @@ def profile_edit(request, success=None):
 		if request.user.is_staff:
 			schoolForm = schoolForTeacher()
 		avatar = 'images/avatars/user.png'
+		role = None
 		formProfile = ProfileForm(initial={'last_name':request.user.last_name, 'first_name':request.user.first_name, 'email':request.user.email,
 			'username': request.user.username,})
-	return render(request, 'app_auth/profile.html', {'avatar': avatar, 'active_nav':'PROFILE', 'success':success, 'formProfile':formProfile, 'schoolForm':schoolForm})
+	return render(request, 'app_auth/profile_edit.html', {'avatar': avatar, 'role':role, 'role':role, 'active_nav':'PROFILE', 'success':success, 'formProfile':formProfile, 'schoolForm':schoolForm})
 
 @login_required(redirect_field_name='', login_url='/')
 def password_edit(request, success=None):
 	user_info = UserProfile.objects.filter(user_id = request.user.id)
+	role = UserProfile.objects.get(user_id = request.user.id).role
+
 	if not user_info.exists():
 		return redirect("/profile")
 	user_info = user_info.get(user_id = request.user.id)
@@ -204,16 +220,17 @@ def password_edit(request, success=None):
 	else:
 		form_class = PasswordForm()
 
-	return render(request, 'app_auth/changePassword.html', {'avatar': avatar, 'active_nav':'ACCOUNT', 'power':power,'user_info':user_info, 'form':form_class, 'error': err, 'success':success})
+	return render(request, 'app_auth/changePassword.html', {'avatar': avatar, 'role':role, 'active_nav':'ACCOUNT', 'power':power,'user_info':user_info, 'form':form_class, 'error': err, 'success':success})
 
 @login_required(redirect_field_name='', login_url='/')
 def grading_system(request):
 	avatar = UserProfile.objects.get(user_id=request.user.id).avatar
+	role = UserProfile.objects.get(user_id = request.user.id).role
 
 	gradingsys = GradingSystem.objects.filter(created_by=request.user, is_active=1)
 	gradingsys_admin = GradingSystem.objects.filter(created_by=1, is_active=1)
 
-	return render(request, 'app_auth/grading_systems.html', {'avatar': avatar, 'active_nav':'GRADESYS', 'gradingsys':gradingsys, 'gradingsys_admin':gradingsys_admin})
+	return render(request, 'app_auth/grading_systems.html', {'avatar': avatar, 'role':role, 'active_nav':'GRADESYS', 'gradingsys':gradingsys, 'gradingsys_admin':gradingsys_admin})
 
 @login_required(redirect_field_name='', login_url='/')
 def grading_system_view(request, gradeSys_id):
@@ -225,8 +242,8 @@ def grading_system_view(request, gradeSys_id):
 @login_required(redirect_field_name='', login_url='/')
 def grading_system_new(request):
 	avatar = UserProfile.objects.get(user_id=request.user.id).avatar
+	role = UserProfile.objects.get(user_id = request.user.id).role
 	
-
 	if request.method == 'POST':
 		formSys = GradeSysForm(request.POST, request)
 		if 'option1' in request.POST:
@@ -272,7 +289,7 @@ def grading_system_new(request):
 		formGrade1 = GradeForm_Option1()
 		formGrade2 = GradeForm_Option2()
 
-	return render(request, 'app_auth/grading_systems_new.html', {'avatar': avatar, 'active_nav':'GRADESYS', 'formSys':formSys, 'formGrade1':formGrade1, 'formGrade2':formGrade2})
+	return render(request, 'app_auth/grading_systems_new.html', {'avatar': avatar, 'role':role, 'active_nav':'GRADESYS', 'formSys':formSys, 'formGrade1':formGrade1, 'formGrade2':formGrade2})
 
 
 @login_required(redirect_field_name='', login_url='/')
@@ -290,19 +307,24 @@ signals.user_activated.connect(login_on_activation)
 
 def dashboard(request):
 	User_Profile = UserProfile.objects.filter(user_id = request.user.id)
+
 	if not User_Profile.exists():
-		return redirect("/profile")
+		return redirect('auth:edit_profile')
+	else:
+		role = User_Profile.get(user_id=request.user.id).role
+
 	avatar = User_Profile.get(user_id=request.user.id).avatar
+
 	if len(Teacher.objects.filter(user_id = request.user.id)) > 0:
 		class_count = Class.objects.filter(teacher=Teacher.objects.get(user=request.user), is_active=1).count()
 		exam_count = Essay.objects.filter(instructor = Teacher.objects.get(user = request.user), status=1).filter(start_date__lte=timezone.now(), deadline__gte=timezone.now()).count()
 		needs_grading_count =   EssayResponse.objects.filter(essay=Essay.objects.filter(instructor_id = Teacher.objects.get(user_id = request.user.id).id).filter(deadline__lt=timezone.now()), grade=None).count()
-		return render(request, 'app_auth/teacher_dashboard.html', {'avatar': avatar, 'class_count':class_count, 'exam_count':exam_count, 'needs_grading_count':needs_grading_count})
+		return render(request, 'app_auth/teacher_dashboard.html', {'avatar': avatar, 'role':role, 'class_count':class_count, 'exam_count':exam_count, 'needs_grading_count':needs_grading_count})
 	elif len(Student.objects.filter(user_id = request.user.id)) > 0:
 		class_count = Class.objects.filter(student=Student.objects.get(user=request.user), is_active=1).count()
 		exam_count = EssayResponse.objects.filter(~Q(essay__status=0), student=Student.objects.get(user_id = request.user.id)).filter(essay__start_date__lte=timezone.now(), essay__deadline__gte=timezone.now()).count()
 		in_progress_count = EssayResponse.objects.filter(~Q(essay__status=1), student=Student.objects.get(user_id = request.user.id)).filter(essay__start_date__lte=timezone.now(), essay__deadline__gte=timezone.now()).count()
-		return render(request, 'app_auth/student_dashboard.html', {'avatar': avatar, 'class_count':class_count, 'exam_count':exam_count, 'in_progress_count':in_progress_count})
+		return render(request, 'app_auth/student_dashboard.html', {'avatar': avatar, 'role':role, 'class_count':class_count, 'exam_count':exam_count, 'in_progress_count':in_progress_count})
 
 @login_required(redirect_field_name='', login_url='/')
 def help(request):

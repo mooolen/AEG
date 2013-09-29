@@ -6,7 +6,7 @@
 	</div>
 	<ul>
 		<li {% if active_nav == 'PROFILE' %} class="todo-done" {% endif %}>
-			<a href="{% url 'auth:profile' %}" class="sidebar-link">
+			<a href="{% url 'auth:edit_profile' %}" class="sidebar-link">
 				<div class="todo-icon fui-user"></div>
 				<div class="todo-content">
 					<h4 class="todo-name">
@@ -25,6 +25,7 @@
 				</div>
 			</a>
 		</li>
+		{% if role == 'TEACHER' %}
 		<li {% if active_nav == 'GRADESYS' %} class="todo-done" {% endif %}>
 			<a href="{% url 'auth:gradesys' %}" class="sidebar-link">
 				<div class="todo-icon fui-check"></div>
@@ -35,6 +36,6 @@
 				</div>
 			</a>
 		</li>
-		
+		{% endif %}
 	</ul>
 </div>
