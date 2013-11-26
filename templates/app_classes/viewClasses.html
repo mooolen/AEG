@@ -8,6 +8,7 @@ TECS: Test Essay Checking Software | Home
 {% block content %}
 <head>
 	<script src="{% static 'base/js/jquery.min.js' %}"></script>
+
 	<script>
 	    $(function() {
 		    var tooltips = $( "[title]" ).tooltip();
@@ -16,15 +17,24 @@ TECS: Test Essay Checking Software | Home
 		    })
 	    });
 	</script>
+	
 </head>
+
 <div class="page-content">
 	<div class="row-fluid">
 		<div class="content">
 			<p class="pull-right">
-				<a href="{% url 'classes:enroll' %}" data-toggle="tooltip" data-placement="left" title data-original-title="Enroll to a Class" class="btn btn-warning"><i class="fui-cmd"></i></a>
+				<a href="#myModal" role="button" data-toggle="modal" data-placement="left" title data-original-title="Enroll to a Class" class="btn btn-warning"><i class="fui-cmd"></i></a>
 			</p>
 			<img class="title-icons" src={% static 'base/img/icons/Clipboard@2x.png' %}>
 			<h3 class="title">My Classes</h3>
+			{% if error %}
+				<div class="alert alert-block alert-error">
+					<button type="button" class="close" data-dismiss="alert">&times;</button>
+		          <h4><strong>Oops!</strong></h4>
+		          {{ error }}
+		        </div>
+		    {% endif %}
 			{% if hasClasses %}
 				<div class="alert alert-block alert-error">
 		          <h4><strong>Oops!</strong></h4>
@@ -52,7 +62,7 @@ TECS: Test Essay Checking Software | Home
 				<tbody>
 					{% for section in sections %}
 					<tr>
-						<td><center>{{section.id}}</center></td>
+						<td><center>{{forloop.counter}}</center></td>
 						<td><center>{{section.year_level}} - {{section.section}}</center></td>
 						<td><center>{{section.subject}}</center></td>
 						<td><center>{{section.teacher.user.last_name}}, {{section.teacher.user.first_name}}</center></td>
@@ -66,4 +76,31 @@ TECS: Test Essay Checking Software | Home
 			{% endif %}
 	</div>
 </div>
+
+<div id="myModal" class="modal hide fade" data-backdrop="static">
+	<div class="modal-header palette-emerald">
+		<h3 class="text-white">Enroll to Class</h3>
+	</div>
+	<div class="modal-body">
+		<form class="form form-horizontal" action="{% url 'classes:enroll' %}" method="post">{% csrf_token %}<center>
+		{% for form in formEnroll %}
+		<div class="control-group">
+			<label class="control-label" for="level">{{ form.label_tag }}</label>
+			<div class="controls">
+				{{ form }}
+				{% for error in form.errors %}
+				<p class="text-error">{{ error }}</p>
+				{% endfor %}
+			</div>
+		</div> 
+		{% endfor %}
+		</center>
+	</div>
+	<div class="modal-footer"> 
+		<button type="submit" name="gradesys-send"  class="btn btn-primary pull-left" >Enroll <span class="fui-check"></span></button>
+		<button type="button" class="btn btn-warning" data-dismiss="modal" aria-hidden="true">Cancel <i class="fui-new"></i></button>
+	</div>
+</div>
+
+<script src="{% static 'base/js/jquery.min.js' %}"></script>
 {% endblock %}

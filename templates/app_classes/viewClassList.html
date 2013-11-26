@@ -20,41 +20,42 @@ TECS: Test Essay Checking Software | Home
 	
 </head>
 
-<div id="myModal" data-backdrop="static" data-keyboard="false" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-header">
-    <h3 id="myModalLabel">Make Invitation</h3>
-  </div>
-  <form class="form-inline" action="{% url 'classes:inviteStudent' studentList.id %}" method="post">{% csrf_token %}
-	  <div class="modal-body">
-	    	{% for form in formMails %}
-			<div class="control-group">
-				<div class="controls">
-					<div>
-						<p>Please seperate each person by comma. For example:</p>
-						<div style="padding-left: 100px">
-							<i>cheryleighverano@gmail.com, master@yahoo.com</i>
-						</div>
-					</div><br/>
-					{{ form }}
-					{% for error in form.errors %}
-					<p class="text-error">{{ error }}</p>
-					{% endfor %}
-				</div>		
-			</div> 	
-	  		{% endfor %}
-	  	</div>
-	  	<div class="modal-footer">
-		    <button type="submit" class="btn btn-primary pull-left" >Make Invitation <i class="fui-check"></i></button>
-		    <button type="button" class="btn btn-warning" data-dismiss="modal" aria-hidden="true">Cancel <i class="fui-new"></i></button>
-	  </div>
-  </form>
+<div id="myModal" class="modal hide fade" data-backdrop="static">
+	<div class="modal-header palette-emerald">
+		<h3 class="text-white">Make Invitation</h3>
+	</div>
+	<div class="modal-body">
+		<form action="{% url 'classes:inviteStudent' %}" method="post">{% csrf_token %}
+		{% for form in formMails %}
+		<div class="control-group">
+			<div class="controls">
+				<div>
+					<p>Please seperate each person by comma. For example:</p>
+					<div style="padding-left: 100px">
+					<i>cheryleighverano@gmail.com, master@yahoo.com</i>
+					</div>
+				</div><br/>
+				{{ form }}
+				{% for error in form.errors %}
+				<p class="text-error">{{ error }}</p>
+				{% endfor %}
+			</div>		
+		</div> 	
+		{% endfor %}
+		<input type="hidden" id="cid" name="cid" value={{ studentList.id }} >
+	</div>
+	<div class="modal-footer"> 
+		<button type="submit" name="gradesys-send"  class="btn btn-primary pull-left" >Make Invitation <span class="fui-check"></span></button>
+		<button type="button" class="btn btn-warning" data-dismiss="modal" aria-hidden="true">Cancel <i class="fui-new"></i></button>
+	</div>
+	</form>
 </div>	
 
 <div class="page-content">
 	<div class="row-fluid">
 		<div class="content">
 			<p class="pull-right">
-				<a href="#myModal" role="button" data-toggle="modal" data-trigger="hover" data-placement="left" title data-original-title="Invite Students" class="btn btn-success"><i class="fui-mail"></i></a>
+				<a href="#myModal" role="button" data-toggle="modal" data-trigger="hover" data-placement="left" title data-original-title="Invite Students" class="btn btn-success sentMail "><i class="fui-mail"></i></a>
 				<a href="{% url 'classes:edit' studentList.id %}" data-toggle="tooltip" data-trigger="hover" data-placement="left" title data-original-title="Edit Class Info" class="btn btn-warning"><i class="fui-new"></i></a>
 			</p>
 			<img class="title-icons" src={% static 'base/img/icons/Pocket@2x.png' %}>
@@ -67,7 +68,7 @@ TECS: Test Essay Checking Software | Home
 					Number of people to Invite: <b>{{ count }}</b>
 				</div>
 
-				<form class="form form-horizontal" action="{% url 'classes:inviteStudent' studentList.id %}" method="POST"> {% csrf_token %}
+				<form class="form form-horizontal" action="{% url 'classes:inviteStudent' %}" method="POST"> {% csrf_token %}
 					<fieldset>
 						<div class="palette-turquoise">
 							<center>
@@ -81,7 +82,7 @@ TECS: Test Essay Checking Software | Home
 				            	From: <span style="color: #1abc9c">{{ sender.email }} [{{ sender.last_name }}, {{ sender.first_name }}]</span><br/>
 								Subject: Invitation to join {{ studentList.year_level }}-{{ studentList.section }}<br/>
 								Class Key: <span style="color: #1abc9c">{{ studentList.key }}</span><br/><br/>
-								Please <a href="/" style="text-decoration: none">Log-in</a> or <a href="http://localhost:8000/accounts/register/" style="text-decoration: none">Register</a> to tecs.upd.edu.ph and enter the Class Key to enroll.
+								Please <a href="tecs.herokuapp.com" style="color: #1abc9c; text-decoration: none;">Log-in</a> or Register to <a href="http://tecs.herokuapp.com/accounts/register/" style="color: #1abc9c; text-decoration: none">tecs.herokuapp.com</a> and enter the Class Key to enroll in a Class.
 							</p>
 							<div style="display:none">
 								{% for form in formMails %}
@@ -89,7 +90,7 @@ TECS: Test Essay Checking Software | Home
 								{% endfor %}
 							</div>
 				          </div>
-
+				        <input type="hidden" id="cid" name="cid" value={{ studentList.id }} >
 				        <div class="form-actions">
 		    				<input type="hidden" value="sendNow" name="sendNow" />
 							<button type="submit" class="btn btn-primary"><b>Send Invitation</b><i class="fui-check"></i></button> 
@@ -125,8 +126,8 @@ TECS: Test Essay Checking Software | Home
 						<td><center>{{student.user.first_name}}</center></td>
 						<td><center>{{student.user.email}}</center></td>
 						<td>{% if student.user.is_active %}<center style="color:#1abc9c">Active</center>
-						{% else %}<center style="color:red">Inactive</center></td>{% endif %}
-						<td><center><a href="{% url 'classes:removeStudent' studentList.id student.id %}" onclick="return confirm('Are you sure you want to remove this student from this class?')" class="btn btn-danger"><span class=""><i class="fui-cross"></i></span></a></center></td>
+						{% else %}<center style="color:red">Inactive</center></td>{% endif %} 
+						<td><center><button type="button" class="delsys-button btn btn-danger" data-classid={{ studentList.id }} data-studentid={{ student.id }} data-toggle="modal" data-target="#confirm-delete"><i class="fui-cross"></i></span></button></center></td>
 					</tr>	
 					{% endfor %}			
 				</tbody>
@@ -147,6 +148,33 @@ TECS: Test Essay Checking Software | Home
 		</div>
 	</div>
 </div>
+
+<div id="confirm-delete" class="modal hide fade" data-backdrop="static">
+		<div class="modal-header palette-alizarin">
+			<h3 class="text-white">Confirm Delete</h3>
+		</div>
+		<div class="modal-body">
+			<p>Are you sure you want to delete this student from the class?</p>
+			<p>Continuing with this action, will erase his/her account on this class. </p>
+			<form action="{% url 'classes:removeStudent' %}" method="post">{% csrf_token %}
+				<input type="hidden" id="class_id" name="class_id" value="">
+				<input type="hidden" id="student_id" name="student_id" value="">
+			<form>
+		</div>
+		<div class="modal-footer">
+			<button type="submit" name="gradesys-delete" class="btn btn-danger pull-left">Delete <span class="fui-cross"></span></button>
+			<button class="btn btn-inverse" data-dismiss="modal" aria-hidden="true">Close</button>
+		</div>
+</div>
+
+<script>
+	$(".delsys-button").on("click", function() {
+		var classid = $(this).data('classid')
+		var studid = $(this).data('studentid')
+		$("#class_id").val(classid)
+		$("#student_id").val(studid)
+	});
+</script>
 
 <script src="{% static 'base/js/jquery.min.js' %}"></script>
 

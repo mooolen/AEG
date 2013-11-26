@@ -16,6 +16,7 @@ from django.core.mail import EmailMessage
 from django.template.loader import render_to_string, get_template
 from django.template import Context
 from .forms import MailForm, MailForm2
+from email.MIMEImage import MIMEImage
 
 @login_required(redirect_field_name='', login_url='/')
 def dashboard(request):
@@ -27,7 +28,7 @@ def dashboard(request):
 	return render(request, 'app_classes/dashboard2.html', {'avatar':avatar, 'active_nav':'DASHBOARD'})
 		
 @login_required(redirect_field_name='', login_url='/')
-def class_teacher(request, err=None, success=None):
+def class_teacher(request, err=None, success=None, formStud=None):
 	User_Profile = UserProfile.objects.filter(user_id = request.user.id)
 	if not User_Profile.exists():
 		return redirect("/profile")
@@ -36,6 +37,7 @@ def class_teacher(request, err=None, success=None):
 	teacher = Teacher.objects.filter(user=request.user)
 	hasClasses = None
 	power = True
+	formEnroll = formStud or EnrollForm()
 	link = 'app_classes/class_teacher.html'
 	if teacher.exists():
 		sections = Class.objects.filter(teacher=teacher)
@@ -51,7 +53,7 @@ def class_teacher(request, err=None, success=None):
 	if power and (sections is None or not sections.exists()):
 		hasClasses = 'You don\'t have Classes yet'
 	avatar = User_Profile.avatar
-	return render(request, link, {'avatar':avatar, 'active_nav':'CLASSES', 'sections':sections, 'error': err, 'success':success, 'hasClasses':hasClasses, 'power':power})
+	return render(request, link, {'avatar':avatar, 'active_nav':'CLASSES', 'formEnroll':formEnroll, 'sections':sections, 'error': err, 'success':success, 'hasClasses':hasClasses, 'power':power})
 
 @login_required(redirect_field_name='', login_url='/')
 def teacher_addNewClass(request, add_form=None, email_form=None):
@@ -110,8 +112,15 @@ def submit(request):
 				})
 			)
 			if mail:
-				mailSend = EmailMessage('Invitation to join Class', template, 'fsvaeg@gmail.com', mail )
+				fp = open('./static/base/img/icons/Mail@2x.png', 'rb')
+				msgImage = MIMEImage(fp.read())
+				fp.close()
+
+				msgImage.add_header('Content-ID', '<image1>')
+
+				mailSend = EmailMessage('[TECS] Invitation to join Class', template, 'fsvaeg@gmail.com', mail )
 				mailSend.content_subtype = "html"  # Main content is now text/html
+				mailSend.attach(msgImage)
 				mailSend.send()
 			#send_mail('Subject', 'You are invited to class '+ yearType_info + '-' + section_info + ' ' + subject_info + '. The key class is: ' + random_data, 'fsvaeg@gmail.com', mail)
 			
@@ -143,8 +152,8 @@ def edit(request, class_id):
 	return render(request, 'app_classes/teacher_editClass.html', {'avatar':avatar, 'active_nav':'CLASSES', 'class_info':class_info, 'formEdit':formEdit})
 			
 @login_required(redirect_field_name='', login_url='/')
-def delete(request, class_id):
-	class_info = get_object_or_404(Class, pk=class_id)
+def delete(request):
+	class_info = get_object_or_404(Class, pk=request.POST['class_id'])
 	class_info.delete()
 	return class_teacher(request, 0, 'You successfully deleted a class.')
 
@@ -172,19 +181,22 @@ def enroll(request):
 				class_info.student.add(student)
 				return class_teacher(request, 0, 'You are added to the class.')
 			err = 'Invalid Key Combination.'
+		else:
+			err = 'There is unfilled form field.'
 	else:
 		formEnroll = EnrollForm()
-	return render(request, 'app_classes/enrollClass.html', {'active_nav':'CLASSES','avatar':avatar, 'formEnroll':formEnroll, 'error':err})
+	return class_teacher(request, err, 0, formEnroll)
 
 @login_required(redirect_field_name='', login_url='/')
-def removeStudent(request, class_id, student_id):
-	class_info = get_object_or_404(Class, pk=class_id)
-	student = get_object_or_404(Student, pk=student_id)
+def removeStudent(request):
+	class_info = get_object_or_404(Class, pk=request.POST['class_id'])
+	student = get_object_or_404(Student, pk=request.POST['student_id'])
 	class_info.student.remove(student)
-	return viewClassList(request, class_id, 'You successfully removed a student.')
+	return viewClassList(request, request.POST['class_id'], 'You successfully removed a student.')
 
 @login_required(redirect_field_name='', login_url='/')
-def inviteStudent(request, class_id):
+def inviteStudent(request):
+	class_id = request.POST['cid']
 	class_info = get_object_or_404(Class, pk=class_id)
 	sender = request.user
 	avatar = UserProfile.objects.get(user_id = request.user.id).avatar
@@ -211,8 +223,15 @@ def inviteStudent(request, class_id):
 			
 			count = len(mail)
 			if sendNow == 'sendNow':
-				mailSend = EmailMessage('Invitation to join Class', template, 'fsvaeg@gmail.com', mail )
+				fp = open('./static/base/img/icons/Mail@2x.png', 'rb')
+				msgImage = MIMEImage(fp.read())
+				fp.close()
+
+				msgImage.add_header('Content-ID', '<image1>')
+
+				mailSend = EmailMessage('[TECS] Invitation to join Class', template, 'fsvaeg@gmail.com', mail )
 				mailSend.content_subtype = "html"  # Main content is now text/html
+				mailSend.attach(msgImage)
 				mailSend.send()
 				success = True
 				message = 'Invitations were sent successfully.'

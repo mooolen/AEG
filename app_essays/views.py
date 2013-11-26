@@ -5,7 +5,9 @@ from django.utils import timezone
 from django.http import HttpResponseRedirect, HttpResponse
 from django.forms.formsets import formset_factory, BaseFormSet
 from django.core.context_processors import csrf
-from django.core.mail import send_mail
+from email.MIMEImage import MIMEImage
+from django.template.loader import render_to_string
+from django.core.mail import EmailMessage
 
 from app_auth.models import UserProfile, Student, Teacher
 from app_essays.models import Essay, EssayResponse, GradingSystem, EssayForm, EssayComment, Grade, EssayResponseForm, EssayResponseGradeForm, EssayCommentForm
@@ -37,9 +39,24 @@ def new_essay(request):
 				response.save()
 				emails.append(student.user.email)
 
-			message = request.user.last_name + ' ' + request.user.first_name + ' has sent an exam in your class.'			
-			send_mail('[TECS] New exam has started!', message, request.user.email, emails)
-			#return HttpResponseRedirect('/essays/')
+			c = {
+                'user': request.user,
+                'class': Class.objects.get(pk=Essay.objects.get(pk=data.pk).class_name.pk),
+                'title': cd['title'],
+            }
+
+			fp = open('./static/base/img/icons/notes.png', 'rb')
+			msgImage = MIMEImage(fp.read())
+			fp.close()
+			msgImage.add_header('Content-ID', '<image1>')
+
+			email = render_to_string('app_essays/new_essay_email.html', c)
+
+			mailSend = EmailMessage('[TECS] New exam has started!', email, request.user.email, emails )
+			mailSend.content_subtype = "html"
+			mailSend.attach(msgImage)
+			mailSend.send()
+
 			return list_essay(request, None, 'New exam has been added.')
 		else :
 			errors = 1
@@ -241,7 +258,7 @@ def essay_submission(request, essay_response_id):
 						return redirect('essays:list')
 				else:
 					er_form = EssayResponseGradeForm()
-					er_form.fields['grade'].queryset = Grade.objects.filter(grading_system = essay_response.essay.grading_system).order_by('from_value')
+					er_form.fields['grade'].queryset = Grade.objects.filter(grading_system = essay_response.essay.grading_system).order_by('value')
 					c_formset = EssayCommentFormSet()
 
 				c = {'er_form': er_form,

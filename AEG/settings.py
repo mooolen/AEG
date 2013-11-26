@@ -1,6 +1,8 @@
 # Django settings for AEG project.
-import os.path
+import os
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -30,15 +32,16 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 #EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-#EMAIL_USE_TLS = True
-#EMAIL_HOST = 'smtp.gmail.com'
-#EMAIL_PORT = 587
-#EMAIL_HOST_USER = 'fsvaeg@gmail.com'
-#EMAIL_HOST_PASSWORD = 'Waterbury'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'fsvaeg@gmail.com'
+EMAIL_HOST_PASSWORD = 'Waterbury'
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -65,7 +68,7 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
-MEDIA_ROOT = './media'
+MEDIA_ROOT = os.path.join(BASE_DIR, '../media') #'mediafiles'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -76,7 +79,7 @@ MEDIA_URL = '/media/'
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = os.path.join(PROJECT_DIR, 'static/')
+STATIC_ROOT = os.path.join(PROJECT_DIR, './static/')
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
@@ -88,8 +91,7 @@ STATICFILES_DIRS = (
 	# Always use forward slashes, even on Windows.
 	# Don't forget to use absolute paths, not relative paths.
 	#'C:/Documents and Settings/Admin/Desktop/AEG/static',
-	'/home/molen/Desktop/AEG/static',
-	'./static',
+	os.path.join(BASE_DIR, '../static'),
 )
 
 # List of finder classes that know how to find static files in
@@ -130,8 +132,7 @@ TEMPLATE_DIRS = (
 	# Always use forward slashes, even on Windows.
 	# Don't forget to use absolute paths, not relative paths.
 	#'C:/Documents and Settings/Admin/Desktop/AEG/templates',
-	'/home/molen/Desktop/AEG/templates',
-	'./templates',
+	os.path.join(BASE_DIR, "../templates"),
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
